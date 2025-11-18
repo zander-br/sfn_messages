@@ -34,12 +34,16 @@ lint-mypy:
 
 # Tests
 
-.PHONY: test test-pytest
+.PHONY: test test-pytest test-coverage-report
 
 test: test-pytest
 
-test-pytest:
-	uv run pytest $(TESTS_DIR)
+test-pytest .coverage:
+	uv run coverage run -m pytest $(TESTS_DIR)
+	uv run coverage report -m
+
+test-coverage-report: .coverage
+	uv run coverage html
 
 
 # Clean
@@ -56,7 +60,7 @@ clean-pycache:
 	find $(SRC_DIR) $(TESTS_DIR) -type d -empty -delete
 
 clean-python-tools:
-	rm -rf .ruff_cache .mypy_cache .pytest_cache
+	rm -rf .ruff_cache .mypy_cache .pytest_cache .coverage .coverage.* htmlcov
 
 dist-clean: clean
 	rm -rf .venv $(SRC_DIR)/*.egg-info
