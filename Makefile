@@ -15,9 +15,9 @@ fmt:
 
 # Lint
 
-.PHONY: lint lint-uv-lock lint-ruff-format lint-ruff-check
+.PHONY: lint lint-uv-lock lint-ruff-format lint-ruff-check lint-mypy
 
-lint: lint-uv-lock lint-ruff-format lint-ruff-check
+lint: lint-uv-lock lint-ruff-format lint-ruff-check lint-mypy
 
 lint-uv-lock:
 	uv lock --check
@@ -27,6 +27,9 @@ lint-ruff-format:
 
 lint-ruff-check:
 	uv run ruff check $(SRC_DIR) $(TESTS_DIR)
+
+lint-mypy:
+	uv run mypy --show-error-context --pretty $(SRC_DIR) $(TESTS_DIR)
 
 
 # Tests
@@ -50,7 +53,7 @@ clean-pycache:
 	find $(SRC_DIR) $(TESTS_DIR) -type d -empty -delete
 
 clean-python-tools:
-	rm -rf .ruff_cache
+	rm -rf .ruff_cache .mypy_cache
 
 dist-clean: clean
 	rm -rf .venv $(SRC_DIR)/*.egg-info
