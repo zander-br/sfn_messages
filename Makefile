@@ -4,6 +4,14 @@ SRC_DIR := src
 TESTS_DIR := tests
 
 
+# Build
+
+.PHONY: build
+
+build:
+	uv build
+
+
 # Format
 
 .PHONY: fmt
