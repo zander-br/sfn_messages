@@ -21,3 +21,11 @@ class EnumMixin(Enum):
                     pass
 
         return None
+
+
+class SystemDomain(EnumMixin):
+    SPB01 = 'SPB01'
+    SPB02 = 'SPB02'
+    MES01 = 'MES01'
+    MES02 = 'MES02'
+    MES03 = 'MES03'

@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Self
 from xml.etree.ElementTree import Element, SubElement, fromstring
 
 from pydantic import Field, model_validator
@@ -9,7 +9,7 @@ from sfn_messages.core.registry import register
 from .model import GEN0006
 
 
-class GEN0006_V511(GEN0006):
+class GEN0006_V511(GEN0006):  # noqa: N801
     VERSION: ClassVar[str] = '5.11'
 
     from_ispb: str = Field(..., pattern=r'^[0-9A-Z]{8}$')
@@ -23,7 +23,7 @@ class GEN0006_V511(GEN0006):
     provider_timestamp: datetime | None = Field(default=None)
 
     @model_validator(mode='after')
-    def validate_required_by_message_code(self) -> GEN0006_V511:
+    def validate_required_by_message_code(self) -> Self:
         code = self.message_code.value
         errors: list[str] = []
 
@@ -57,7 +57,7 @@ class GEN0006_V511(GEN0006):
         SubElement(message_element, 'DtMovto').text = self.settlement_date.strftime('%Y-%m-%d')
 
     @classmethod
-    def from_xml(cls, xml: str) -> GEN0006_V511:
+    def from_xml(cls, xml: str) -> Self:
         tree = fromstring(xml)
         control_params = cls._extract_control_segment(tree)
         params: dict[str, Any] = {

@@ -26,7 +26,7 @@ class BaseMessage(BaseModel, ABC):
     @abstractmethod
     def from_xml(cls, xml: str) -> Self: ...
 
-    def _build_control_segment(self, root: Element):
+    def _build_control_segment(self, root: Element) -> None:
         control = SubElement(root, 'BCMSG')
         SubElement(control, 'IdentdEmissor').text = self.from_ispb
         SubElement(control, 'IdentdDestinatario').text = self.to_ispb

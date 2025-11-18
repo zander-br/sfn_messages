@@ -1,13 +1,14 @@
-from datetime import date, datetime
-from typing import Any, Dict
+from datetime import UTC, date, datetime
+from typing import Any
 
 import pytest
+from pydantic import ValidationError
 
 from sfn_messages.gen.gen0006.enums import CertificateIssue
 from sfn_messages.gen.gen0006.v511 import GEN0006_V511
 
 
-def make_valid_params() -> Dict[str, Any]:
+def make_valid_params() -> dict[str, Any]:
     return {
         'from_ispb': '31680151',
         'to_ispb': '00038166',
@@ -24,7 +25,7 @@ def make_valid_params() -> Dict[str, Any]:
     }
 
 
-def test_gen0006_v511_valid_model():
+def test_gen0006_v511_valid_model() -> None:
     params = make_valid_params()
 
     msg = GEN0006_V511.model_validate(params)
@@ -38,12 +39,12 @@ def test_gen0006_v511_valid_model():
     assert msg.settlement_date == date(2025, 11, 8)
 
 
-def test_gen0006_v511_missing_certificate_fields():
+def test_gen0006_v511_missing_certificate_fields() -> None:
     params = make_valid_params()
     params['certificate_issue'] = None
     params['certificate_serial_number'] = None
 
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ValidationError) as exc:
         GEN0006_V511.model_validate(params)
 
     msg = str(exc.value)
@@ -51,25 +52,25 @@ def test_gen0006_v511_missing_certificate_fields():
     assert 'certificate_serial_number is required' in msg
 
 
-def test_gen0006_v511_missing_timestamp_for_r1():
+def test_gen0006_v511_missing_timestamp_for_r1() -> None:
     params = make_valid_params()
     params['message_code'] = 'GEN0006R1'
     params['certificate_issue'] = None
     params['certificate_serial_number'] = None
     params['provider_timestamp'] = None
 
-    with pytest.raises(Exception) as exc:
+    with pytest.raises(ValidationError) as exc:
         GEN0006_V511.model_validate(params)
 
     assert 'provider_timestamp is required' in str(exc.value)
 
 
-def test_gen0006_v511_valid_r1():
+def test_gen0006_v511_valid_r1() -> None:
     params = make_valid_params()
     params['message_code'] = 'GEN0006R1'
     params['certificate_issue'] = None
     params['certificate_serial_number'] = None
-    params['provider_timestamp'] = datetime(2025, 11, 8, 10, 30)
+    params['provider_timestamp'] = datetime(2025, 11, 8, 10, 30, tzinfo=UTC)
 
     msg = GEN0006_V511.model_validate(params)
 
@@ -77,7 +78,7 @@ def test_gen0006_v511_valid_r1():
     assert msg.provider_timestamp is not None
 
 
-def test_gen0006_v511_to_xml():
+def test_gen0006_v511_to_xml() -> None:
     params = make_valid_params()
     msg = GEN0006_V511.model_validate(params)
 
@@ -94,7 +95,7 @@ def test_gen0006_v511_to_xml():
     assert '<DtMovto>2025-11-08</DtMovto>' in xml
 
 
-def test_gen0006_v511_from_xml():
+def test_gen0006_v511_from_xml() -> None:
     xml = """
     <DOC>
       <BCMSG>
@@ -129,7 +130,7 @@ def test_gen0006_v511_from_xml():
     assert msg.settlement_date == date(2025, 11, 8)
 
 
-def test_gen0006_v511_roundtrip():
+def test_gen0006_v511_roundtrip() -> None:
     params = make_valid_params()
     msg1 = GEN0006_V511.model_validate(params)
 

@@ -1,6 +1,10 @@
 import importlib
+from typing import TYPE_CHECKING
 
-from sfn_messages.core.errors import MessageNotImplementedError
+from sfn_messages.core.errors import MessageDefaultVersionError, MessageNotImplementedError
+
+if TYPE_CHECKING:
+    from sfn_messages.core.base_message import BaseMessage
 
 MESSAGE_REGISTRY: dict[tuple[str, str], type] = {}
 DEFAULT_VERSION: dict[str, str] = {}
@@ -27,13 +31,13 @@ def _auto_import(message_code: str, version: str | None) -> None:
         return
 
 
-def resolve(message_code: str, version: str | None):
+def resolve(message_code: str, version: str | None) -> type[BaseMessage]:
     message_code = message_code.upper()
     _auto_import(message_code, version)
 
     if version is None:
         if message_code not in DEFAULT_VERSION:
-            raise MessageNotImplementedError(f'{message_code} does not have a default version.')
+            raise MessageDefaultVersionError(message_code=message_code)
         version = DEFAULT_VERSION[message_code]
 
     key = (message_code, version)
@@ -41,6 +45,6 @@ def resolve(message_code: str, version: str | None):
     if key not in MESSAGE_REGISTRY:
         _auto_import(message_code, version)
         if key not in MESSAGE_REGISTRY:
-            raise MessageNotImplementedError(f'{message_code} version {version} is not implemented.')
+            raise MessageNotImplementedError(message_code=message_code, version=version)
 
     return MESSAGE_REGISTRY[key]
