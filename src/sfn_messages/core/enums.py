@@ -1,10 +1,11 @@
+from contextlib import suppress
 from enum import Enum
 from typing import Any
 
 
 class EnumMixin(Enum):
     @classmethod
-    def _missing_(cls, value: Any) -> Any:
+    def _missing_(cls, value: Any) -> Any:  # noqa: ANN401
         if isinstance(value, cls):
             return value
 
@@ -15,10 +16,8 @@ class EnumMixin(Enum):
                 return cls.__members__[v]
 
             if v.isdigit():
-                try:
+                with suppress(ValueError):
                     return cls(int(v))
-                except ValueError:
-                    pass
 
         return None
 
