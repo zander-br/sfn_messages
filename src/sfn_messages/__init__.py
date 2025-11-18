@@ -1,11 +1,11 @@
 from __future__ import annotations
 
+import re
 from typing import Any
 
-import re
-
-from sfn_messages.core.registry import resolve
 from sfn_messages.core.base_message import BaseMessage
+from sfn_messages.core.registry import resolve
+
 
 def from_xml(xml: str) -> BaseMessage:
     pattern = r'<CodMsg>(.*?)</CodMsg>'
@@ -16,6 +16,7 @@ def from_xml(xml: str) -> BaseMessage:
     message_code = match.group(1).strip().upper()
     cls: type[BaseMessage] = resolve(message_code, None)
     return cls.from_xml(xml)
+
 
 def to_xml(data: dict[str, Any], message_code: str, version: str | None = None) -> str:
     normalized_code = message_code.replace('.', '').upper()

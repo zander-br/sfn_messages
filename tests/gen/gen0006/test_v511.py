@@ -5,8 +5,8 @@ from typing import Any, Dict
 
 import pytest
 
-from sfn_messages.gen.gen0006.v511 import GEN0006_V511
 from sfn_messages.gen.gen0006.enums import CertificateIssue
+from sfn_messages.gen.gen0006.v511 import GEN0006_V511
 
 
 def make_valid_params() -> Dict[str, Any]:

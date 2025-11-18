@@ -2,10 +2,12 @@ from __future__ import annotations
 
 from datetime import date, datetime
 from typing import Any, ClassVar
-from pydantic import Field, model_validator
 from xml.etree.ElementTree import Element, SubElement, fromstring
 
+from pydantic import Field, model_validator
+
 from sfn_messages.core.registry import register
+
 from .model import GEN0006
 
 

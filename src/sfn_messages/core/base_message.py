@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from typing import Self
+from xml.etree.ElementTree import Element, SubElement
 
 from pydantic import BaseModel, ConfigDict
-from xml.etree.ElementTree import Element, SubElement
 
 from sfn_messages.core.enums import SystemDomain
 from sfn_messages.core.xml_utils import pretty_xml
@@ -26,8 +26,7 @@ class BaseMessage(BaseModel, ABC):
 
     @classmethod
     @abstractmethod
-    def from_xml(cls, xml: str) -> Self:
-        ...
+    def from_xml(cls, xml: str) -> Self: ...
 
     def _build_control_segment(self, root: Element):
         control = SubElement(root, 'BCMSG')
@@ -37,8 +36,7 @@ class BaseMessage(BaseModel, ABC):
         SubElement(control, 'NUOp').text = self.operation_number
 
     @abstractmethod
-    def _build_system_segment(self, root: Element) -> None:
-        ...
+    def _build_system_segment(self, root: Element) -> None: ...
 
     @classmethod
     def _extract_control_segment(cls, tree: Element) -> dict[str, str | None]:

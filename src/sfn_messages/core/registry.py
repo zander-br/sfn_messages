@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib
+
 from sfn_messages.core.errors import MessageNotImplementedError
 
 MESSAGE_REGISTRY: dict[tuple[str, str], type] = {}

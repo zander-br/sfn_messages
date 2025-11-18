@@ -1,5 +1,6 @@
 from sfn_messages.core.enum_mixin import EnumMixin
 
+
 class CertificateIssue(EnumMixin):
     SERPRO = 1
     CERTISIGN = 2

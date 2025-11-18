@@ -1,5 +1,6 @@
 from xml.dom import minidom
-from xml.etree.ElementTree import tostring, Element
+from xml.etree.ElementTree import Element, tostring
+
 
 def pretty_xml(elem: Element) -> str:
     rough = tostring(elem, encoding='unicode')
