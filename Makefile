@@ -34,9 +34,12 @@ lint-mypy:
 
 # Tests
 
-.PHONY: test
+.PHONY: test test-pytest
 
-test:
+test: test-pytest
+
+test-pytest:
+	uv run pytest $(TESTS_DIR)
 
 
 # Clean
@@ -53,7 +56,7 @@ clean-pycache:
 	find $(SRC_DIR) $(TESTS_DIR) -type d -empty -delete
 
 clean-python-tools:
-	rm -rf .ruff_cache .mypy_cache
+	rm -rf .ruff_cache .mypy_cache .pytest_cache
 
 dist-clean: clean
 	rm -rf .venv $(SRC_DIR)/*.egg-info
