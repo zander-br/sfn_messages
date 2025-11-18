@@ -1,7 +1,8 @@
 from datetime import date, datetime
 from typing import Any, ClassVar, Self
-from xml.etree.ElementTree import Element, SubElement, fromstring
+from xml.etree.ElementTree import Element, SubElement
 
+from defusedxml.ElementTree import fromstring
 from pydantic import Field, model_validator
 
 from sfn_messages.core.registry import register
