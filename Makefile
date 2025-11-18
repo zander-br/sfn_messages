@@ -15,15 +15,18 @@ fmt:
 
 # Lint
 
-.PHONY: lint lint-uv-lock lint-ruff-format
+.PHONY: lint lint-uv-lock lint-ruff-format lint-ruff-check
 
-lint: lint-uv-lock lint-ruff-format
+lint: lint-uv-lock lint-ruff-format lint-ruff-check
 
 lint-uv-lock:
 	uv lock --check
 
 lint-ruff-format:
 	uv run ruff format --diff $(SRC_DIR) $(TESTS_DIR)
+
+lint-ruff-check:
+	uv run ruff check $(SRC_DIR) $(TESTS_DIR)
 
 
 # Tests
