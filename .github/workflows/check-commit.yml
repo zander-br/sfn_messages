@@ -1,0 +1,68 @@
+name: Check Commit
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Check Lints
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.14"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Generate cachetag
+        run: echo "lint-$(date +%U)" > cachetag
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "${{ matrix.python-version }}"
+          activate-environment: "true"
+          cache-dependency-glob: |
+            **/pyproject.toml
+            **/cachetag
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run lints
+        run: make lint
+
+  test:
+    name: Check Test
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.14"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Generate cachetag
+        run: echo "test-$(date +%U)" > cachetag
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "${{ matrix.python-version }}"
+          activate-environment: "true"
+          cache-dependency-glob: |
+            **/pyproject.toml
+            **/cachetag
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run tests
+        run: make test
