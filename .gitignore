@@ -1,13 +1,20 @@
 # Python-generated files
-__pycache__/
-*.py[oc]
-build/
-dist/
-wheels/
+*.py[cod]
+__pycache__
+
+# Development tools
+/.venv
+/build
+/dist
+/wheels
+/requirements.txt
 *.egg-info
-
-# Virtual environments
-.venv
-
-# uv files
 /uv.lock
+
+# Editor
+*.swp
+/.idea
+/.vscode
+
+# Others
+.DS_Store

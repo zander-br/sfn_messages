@@ -4,19 +4,20 @@ build-backend = "uv_build"
 
 [project]
 name = "sfn-messages"
-version = "0.1.0"
+version = "0.0.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
+urls = {repository = "https://github.com/zander-br/sfn_messages"}
+classifiers = ["Private :: Do Not Upload"]
 dependencies = [
-    "pydantic>=2.12.4",
-    "ruff>=0.14.5",
+    "pydantic >=2.12.4,<3",
 ]
 
 [dependency-groups]
 dev = [
-    "pytest>=9.0.1",
-    "ruff>=0.14.5",
+    "pytest >=9.0.1,<10",
+    "ruff >=0.14.5,<0.15",
 ]
 
 [tool.ruff]
@@ -33,7 +34,6 @@ select = ["ALL"]
 ignore = ["D", "S311", "COM812"]
 
 [tool.ruff.lint.per-file-ignores]
-"src/mq_proxy/endpoints/*.py" = ["TC001"]
 "tests/*.py" = ["S101"]
 
 [tool.ruff.lint.pydocstyle]
@@ -43,4 +43,4 @@ convention = "google"
 inline-quotes = "single"
 
 [tool.pytest.ini_options]
-pythonpath = ["."]
+pythonpath = ["tests"]
