@@ -9,16 +9,21 @@ TESTS_DIR := tests
 .PHONY: fmt
 
 fmt:
+	uv run ruff check --select I001 --fix $(SRC_DIR) $(TESTS_DIR)
+	uv run ruff format $(SRC_DIR) $(TESTS_DIR)
 
 
 # Lint
 
-.PHONY: lint lint-uv-lock
+.PHONY: lint lint-uv-lock lint-ruff-format
 
-lint: lint-uv-lock
+lint: lint-uv-lock lint-ruff-format
 
 lint-uv-lock:
 	uv lock --check
+
+lint-ruff-format:
+	uv run ruff format --diff $(SRC_DIR) $(TESTS_DIR)
 
 
 # Tests
@@ -42,6 +47,7 @@ clean-pycache:
 	find $(SRC_DIR) $(TESTS_DIR) -type d -empty -delete
 
 clean-python-tools:
+	rm -rf .ruff_cache
 
 dist-clean: clean
 	rm -rf .venv $(SRC_DIR)/*.egg-info
