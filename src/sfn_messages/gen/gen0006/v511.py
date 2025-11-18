@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from datetime import date, datetime
 from typing import Any, ClassVar
 from xml.etree.ElementTree import Element, SubElement, fromstring

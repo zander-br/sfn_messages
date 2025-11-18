@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 from typing import Self
 from xml.etree.ElementTree import Element, SubElement
