@@ -1,0 +1,36 @@
+{
+    "name": "sfn-messages",
+
+    "image": "mcr.microsoft.com/devcontainers/python:2-3.14-trixie",
+
+    "containerEnv": {
+        "UV_LINK_MODE": "symlink"
+    },
+    "otherPortsAttributes": {
+        "onAutoForward": "ignore"
+    },
+
+    "postCreateCommand": "./.devcontainer/setup.sh",
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "editorconfig.editorconfig",
+                "tamasfe.even-better-toml",
+                "charliermarsh.ruff",
+                "matangover.mypy"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "./.venv/bin/python",
+                "ruff.importStrategy": "fromEnvironment",
+                "mypy.runUsingActiveInterpreter": true,
+                "mypy.targets": ["src", "tests"],
+                "python.testing.pytestEnabled": true,
+                "python.testing.pytestArgs": ["-vv", "tests"],
+                "[python]": {
+                    "editor.defaultFormatter": "charliermarsh.ruff"
+                }
+            }
+        }
+    }
+}
