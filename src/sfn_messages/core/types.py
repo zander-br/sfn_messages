@@ -1,5 +1,5 @@
 from contextlib import suppress
-from enum import Enum, IntEnum, StrEnum
+from enum import Enum, StrEnum
 from typing import Annotated, Any
 
 from pydantic import GetPydanticSchema
@@ -24,15 +24,6 @@ class EnumMixin(Enum):
         return None
 
 
-class CertificateIssue(EnumMixin, IntEnum):
-    SERPRO = 1
-    CERTISIGN = 2
-    SERASA = 4
-    AC_CAIXA = 5
-    AC_VALIDA = 6
-    AC_SOLUTI = 7
-
-
 class SystemDomain(EnumMixin, StrEnum):
     SPB01 = 'SPB01'
     SPB02 = 'SPB02'
@@ -41,13 +32,39 @@ class SystemDomain(EnumMixin, StrEnum):
     MES03 = 'MES03'
 
 
+type Description = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            max_length=200,
+            strip_whitespace=True,
+        )
+    ),
+]
+
+type InstitutionControlNumber = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(min_length=1, max_length=20, strip_whitespace=True)
+    ),
+]
+
 type Ispb = Annotated[
     str,
     GetPydanticSchema(
         lambda _tp, _handler: core_schema.str_schema(
             pattern=r'^[0-9A-Za-z]{8}$',
-            min_length=8,
-            max_length=8,
+            strip_whitespace=True,
+            to_upper=True,
+        )
+    ),
+]
+
+type OperationNumber = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            pattern=r'^[0-9A-Z]{8}[0-9]{13}$',
             strip_whitespace=True,
             to_upper=True,
         )

@@ -5,7 +5,7 @@ from xml.etree import ElementTree as ET
 from defusedxml.ElementTree import fromstring
 from pydantic import BaseModel
 
-from .types import Ispb, SystemDomain
+from .types import Ispb, OperationNumber, SystemDomain
 
 
 @dataclass(frozen=True, slots=True)
@@ -20,7 +20,7 @@ class BaseMessage(BaseModel):
     from_ispb: Annotated[Ispb, XmlPath('DOC/BCMSG/IdentdEmissor/text()')]
     to_ispb: Annotated[Ispb, XmlPath('DOC/BCMSG/IdentdDestinatario/text()')]
     system_domain: Annotated[SystemDomain, XmlPath('DOC/BCMSG/DomSist/text()')]
-    operation_number: Annotated[str, XmlPath('DOC/BCMSG/NUOp/text()')]
+    operation_number: Annotated[OperationNumber, XmlPath('DOC/BCMSG/NUOp/text()')]
 
     def to_xml(self) -> str:
         fields = (
@@ -31,8 +31,6 @@ class BaseMessage(BaseModel):
         )
         root = ET.Element('DOC')
         for field_value, xml_path in fields:
-            if field_value is None:
-                continue
             pointer = root
             root_name, *path_names, local_name = xml_path.parts()
             if pointer.tag != root_name:
