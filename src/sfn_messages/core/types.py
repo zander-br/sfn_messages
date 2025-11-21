@@ -1,6 +1,7 @@
 from contextlib import suppress
 from enum import Enum, StrEnum
-from typing import Annotated, Any
+from functools import cache
+from typing import Annotated, Any, Self
 
 from pydantic import GetPydanticSchema
 from pydantic_core import core_schema
@@ -22,6 +23,28 @@ class EnumMixin(Enum):
             with suppress(KeyError):
                 return cls._member_map_[upper_value]
         return None
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[Self, str] | None:
+        return None
+
+    @classmethod
+    @cache
+    def _xml_to_value(cls) -> dict[str, Self] | None:
+        if value_to_xml := cls._value_to_xml():
+            return {value: key for key, value in value_to_xml.items()}
+        return None
+
+    def to_xml_value(self) -> str:
+        if value_to_xml := self._value_to_xml():
+            return value_to_xml[self]
+        return str(self)
+
+    @classmethod
+    def from_xml_value(cls, xml_value: str) -> Self:
+        if xml_to_value := cls._xml_to_value():
+            return cls(xml_to_value[xml_value])
+        return cls(xml_value)
 
 
 class SystemDomain(EnumMixin, StrEnum):
