@@ -1,4 +1,4 @@
-from enum import IntEnum
+from enum import StrEnum
 from typing import Annotated
 
 from pydantic import GetPydanticSchema
@@ -7,13 +7,24 @@ from pydantic_core import core_schema
 from sfn_messages.core.types import EnumMixin
 
 
-class CertificateIssue(EnumMixin, IntEnum):
-    SERPRO = 1
-    CERTISIGN = 2
-    SERASA = 4
-    AC_CAIXA = 5
-    AC_VALIDA = 6
-    AC_SOLUTI = 7
+class CertificateIssue(EnumMixin, StrEnum):
+    SERPRO = 'SERPRO'
+    CERTISIGN = 'CERTISIGN'
+    SERASA = 'SERASA'
+    AC_CAIXA = 'AC_CAIXA'
+    AC_VALIDA = 'AC_VALIDA'
+    AC_SOLUTI = 'AC_SOLUTI'
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[CertificateIssue, str]:
+        return {
+            cls.SERPRO: '1',
+            cls.CERTISIGN: '2',
+            cls.SERASA: '4',
+            cls.AC_CAIXA: '5',
+            cls.AC_VALIDA: '6',
+            cls.AC_SOLUTI: '7',
+        }
 
 
 type CertificateSerialNumber = Annotated[
