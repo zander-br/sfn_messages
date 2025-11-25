@@ -1,5 +1,7 @@
+from contextlib import suppress
 from dataclasses import dataclass
-from typing import Annotated, Any, Protocol, Self, runtime_checkable
+from queue import Queue
+from typing import Annotated, Any, Protocol, Self, Union, runtime_checkable
 from xml.etree import ElementTree as ET
 
 from defusedxml.ElementTree import fromstring
@@ -85,7 +87,16 @@ class BaseMessage(BaseModel):
 
     @classmethod
     def _from_xml_value(cls, field_name: str, xml_value: str, /) -> object:
-        klass = cls.__pydantic_fields__[field_name].annotation
-        if isinstance(klass, type) and issubclass(klass, MappableToXmlValue):
-            return klass.from_xml_value(xml_value)
+        classes = Queue[Any]()
+        if klass := cls.__pydantic_fields__[field_name].annotation:
+            classes.put(klass)
+        while not classes.empty():
+            klass = classes.get()
+            if isinstance(klass, Union):  # type: ignore[arg-type]
+                for k in klass.__args__:
+                    classes.put(k)
+                continue
+            if isinstance(klass, type) and issubclass(klass, MappableToXmlValue):
+                with suppress(ValueError):
+                    return klass.from_xml_value(xml_value)
         return str(xml_value)

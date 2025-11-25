@@ -365,6 +365,7 @@ def test_str0008_from_xml() -> None:
                 <Hist>Payment for services</Hist>
                 <DtAgendt>2025-09-09</DtAgendt>
                 <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
                 <DtMovto>2025-09-08</DtMovto>
             </STR0008>
         </SISMSG>
@@ -395,6 +396,7 @@ def test_str0008_from_xml() -> None:
     assert str0008.institution_control_number == '31680151202509090425'
     assert str0008.operation_number == '316801512509080000001'
     assert str0008.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
+    assert str0008.priority == Priority.MEDIUM
     assert str0008.scheduled_date == date(2025, 9, 9)
     assert str0008.scheduled_time == time(15, 30)
     assert str0008.settlement_date == date(2025, 9, 8)
