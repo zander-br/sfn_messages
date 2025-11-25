@@ -326,6 +326,48 @@ class Priority(EnumMixin, StrEnum):
         }
 
 
+class StrSettlementStatus(EnumMixin, StrEnum):
+    CANCELED = 'CANCELED'
+    CANCELED_CONTINGENCY = 'CANCELED_CONTINGENCY'
+    EFFECTIVE = 'EFFECTIVE'
+    EFFECTIVE_CONTINGENCY = 'EFFECTIVE_CONTINGENCY'
+    EFFECTIVE_OPTIMIZATION = 'EFFECTIVE_OPTIMIZATION'
+    EFFECTIVE_SCHEDULED = 'EFFECTIVE_SCHEDULED'
+    PENDING_INSUFFICIENT_FUNDS = 'PENDING_INSUFFICIENT_FUNDS'
+    PENDING_INSUFFICIENT_FUNDS_CONTINGENCY = 'PENDING_INSUFFICIENT_FUNDS_CONTINGENCY'
+    PENDING_INSUFFICIENT_FUNDS_REJECTED_AFTER_DEADLINE = 'PENDING_INSUFFICIENT_FUNDS_REJECTED_AFTER_DEADLINE'
+    PENDING_INSUFFICIENT_FUNDS_REJECTED_AFTER_DEADLINE_CONTINGENCY = (
+        'PENDING_INSUFFICIENT_FUNDS_REJECTED_AFTER_DEADLINE_CONTINGENCY'
+    )
+    PENDING_REJECTED_EXCLUSION_SUSPENSION = 'PENDING_REJECTED_EXCLUSION_SUSPENSION'
+    PENDING_REJECTED_EXCLUSION_SUSPENSION_CONTINGENCY = 'PENDING_REJECTED_EXCLUSION_SUSPENSION_CONTINGENCY'
+    PENDING_SCHEDULED = 'PENDING_SCHEDULED'
+    PENDING_SCHEDULED_CONTINGENCY = 'PENDING_SCHEDULED_CONTINGENCY'
+    REJECTED_INSUFFICIENT_FUNDS_CONTINGENCY = 'REJECTED_INSUFFICIENT_FUNDS_CONTINGENCY'
+    REJECTED_NO_FUNDS = 'REJECTED_NO_FUNDS'
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[StrSettlementStatus, str]:
+        return {
+            cls.CANCELED: '14',
+            cls.CANCELED_CONTINGENCY: '15',
+            cls.EFFECTIVE: '1',
+            cls.EFFECTIVE_CONTINGENCY: '2',
+            cls.EFFECTIVE_OPTIMIZATION: '3',
+            cls.EFFECTIVE_SCHEDULED: '4',
+            cls.PENDING_INSUFFICIENT_FUNDS: '17',
+            cls.PENDING_INSUFFICIENT_FUNDS_CONTINGENCY: '19',
+            cls.PENDING_INSUFFICIENT_FUNDS_REJECTED_AFTER_DEADLINE: '24',
+            cls.PENDING_INSUFFICIENT_FUNDS_REJECTED_AFTER_DEADLINE_CONTINGENCY: '25',
+            cls.PENDING_REJECTED_EXCLUSION_SUSPENSION: '22',
+            cls.PENDING_REJECTED_EXCLUSION_SUSPENSION_CONTINGENCY: '23',
+            cls.PENDING_SCHEDULED: '18',
+            cls.PENDING_SCHEDULED_CONTINGENCY: '20',
+            cls.REJECTED_INSUFFICIENT_FUNDS_CONTINGENCY: '9',
+            cls.REJECTED_NO_FUNDS: '5',
+        }
+
+
 type AccountNumber = Annotated[
     str,
     GetPydanticSchema(
@@ -435,5 +477,16 @@ type TransactionId = Annotated[
     str,
     GetPydanticSchema(
         lambda _tp, _handler: core_schema.str_schema(min_length=1, max_length=25, strip_whitespace=True)
+    ),
+]
+
+type StrControlNumber = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            pattern=r'^STR\d{4}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{9}$',
+            strip_whitespace=True,
+            to_upper=True,
+        )
     ),
 ]

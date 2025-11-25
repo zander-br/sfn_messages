@@ -16,6 +16,8 @@ from sfn_messages.core.types import (
     OperationNumber,
     PersonType,
     Priority,
+    StrControlNumber,
+    StrSettlementStatus,
     SystemDomain,
     TransactionId,
 )
@@ -63,6 +65,10 @@ class OperationNumberModel(BaseModel):
 
 class TransactionIdModel(BaseModel):
     transaction_id: TransactionId
+
+
+class StrControlNumberModel(BaseModel):
+    str_control_number: StrControlNumber
 
 
 @pytest.mark.parametrize(
@@ -1052,3 +1058,181 @@ def test_priority_values_from_xml_value(input_value: str, expected_enum: Priorit
 def test_priority_rejects_invalid_value(priority: str) -> None:
     with pytest.raises(ValueError, match=priority):
         Priority(priority)
+
+
+@pytest.mark.parametrize(
+    'str_control_number',
+    [
+        'STR20250101000000001',  # 2025-01-01, minimal sequence
+        'STR19991231999999999',  # 1999-12-31, max sequence
+        'STR20240229000000001',  # 2024-02-29 (valid leap day syntactically)
+        'STR20251130012345678',  # 2025-11-30
+        'STR00000101000000000',  # year 0000, 01-01, sequence all zeros
+        'STR20251201000000099',  # 2025-12-01
+        'STR20250930098765432',  # 2025-09-30
+    ],
+)
+def test_str_control_number_accepts_valid_values(str_control_number: str) -> None:
+    model = StrControlNumberModel(str_control_number=str_control_number)
+    assert model.str_control_number == str_control_number
+
+
+def test_str_control_number_accepts_whitespace() -> None:
+    model = StrControlNumberModel(str_control_number='  STR20250101000000001  ')
+    assert model.str_control_number == 'STR20250101000000001'
+
+
+@pytest.mark.parametrize(
+    'str_control_number',
+    [
+        'STX20250101000000001',  # invalid prefix
+        'STR20251301000000001',  # invalid month 13
+        'STR20250001000000001',  # invalid month 00
+        'STR20251232000000001',  # invalid day 32
+        'STR20251200000000001',  # invalid day 00
+        'STR2025010100000001',  # too short (8-digit sequence)
+        'STR202501010000000001',  # too long (10-digit sequence)
+        'STR2025A101000000001',  # non-digit in date part
+        'STR20250101A00000001',  # non-digit in sequence part
+        '202520101000000001',  # missing STR prefix
+        'STR2025010100000000A',  # letter at the end
+    ],
+)
+def test_str_control_number_rejects_invalid_formats(str_control_number: str) -> None:
+    with pytest.raises(ValidationError) as exc:
+        StrControlNumberModel(str_control_number=str_control_number)
+    assert "String should match pattern '^STR\\d{4}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])\\d{9}$'" in str(exc.value)
+
+
+@pytest.mark.parametrize(
+    ('input_value', 'expected_enum'),
+    [
+        ('CANCELED', StrSettlementStatus.CANCELED),
+        ('CANCELED_CONTINGENCY', StrSettlementStatus.CANCELED_CONTINGENCY),
+        ('EFFECTIVE', StrSettlementStatus.EFFECTIVE),
+        ('EFFECTIVE_CONTINGENCY', StrSettlementStatus.EFFECTIVE_CONTINGENCY),
+        ('EFFECTIVE_OPTIMIZATION', StrSettlementStatus.EFFECTIVE_OPTIMIZATION),
+        ('EFFECTIVE_SCHEDULED', StrSettlementStatus.EFFECTIVE_SCHEDULED),
+        ('PENDING_INSUFFICIENT_FUNDS', StrSettlementStatus.PENDING_INSUFFICIENT_FUNDS),
+        ('PENDING_INSUFFICIENT_FUNDS_CONTINGENCY', StrSettlementStatus.PENDING_INSUFFICIENT_FUNDS_CONTINGENCY),
+        (
+            'PENDING_INSUFFICIENT_FUNDS_REJECTED_AFTER_DEADLINE',
+            StrSettlementStatus.PENDING_INSUFFICIENT_FUNDS_REJECTED_AFTER_DEADLINE,
+        ),
+        (
+            'PENDING_INSUFFICIENT_FUNDS_REJECTED_AFTER_DEADLINE_CONTINGENCY',
+            StrSettlementStatus.PENDING_INSUFFICIENT_FUNDS_REJECTED_AFTER_DEADLINE_CONTINGENCY,
+        ),
+        ('PENDING_REJECTED_EXCLUSION_SUSPENSION', StrSettlementStatus.PENDING_REJECTED_EXCLUSION_SUSPENSION),
+        (
+            'PENDING_REJECTED_EXCLUSION_SUSPENSION_CONTINGENCY',
+            StrSettlementStatus.PENDING_REJECTED_EXCLUSION_SUSPENSION_CONTINGENCY,
+        ),
+        ('PENDING_SCHEDULED', StrSettlementStatus.PENDING_SCHEDULED),
+        ('PENDING_SCHEDULED_CONTINGENCY', StrSettlementStatus.PENDING_SCHEDULED_CONTINGENCY),
+        ('REJECTED_INSUFFICIENT_FUNDS_CONTINGENCY', StrSettlementStatus.REJECTED_INSUFFICIENT_FUNDS_CONTINGENCY),
+        ('REJECTED_NO_FUNDS', StrSettlementStatus.REJECTED_NO_FUNDS),
+    ],
+)
+def test_str_settlement_status_accepts_exact_values(input_value: str, expected_enum: StrSettlementStatus) -> None:
+    assert StrSettlementStatus(input_value) is expected_enum
+
+
+@pytest.mark.parametrize(
+    ('input_value', 'expected_enum'),
+    [
+        (StrSettlementStatus.CANCELED, '14'),
+        (StrSettlementStatus.CANCELED_CONTINGENCY, '15'),
+        (StrSettlementStatus.EFFECTIVE, '1'),
+        (StrSettlementStatus.EFFECTIVE_CONTINGENCY, '2'),
+        (StrSettlementStatus.EFFECTIVE_OPTIMIZATION, '3'),
+        (StrSettlementStatus.EFFECTIVE_SCHEDULED, '4'),
+        (StrSettlementStatus.PENDING_INSUFFICIENT_FUNDS, '17'),
+        (StrSettlementStatus.PENDING_INSUFFICIENT_FUNDS_CONTINGENCY, '19'),
+        (StrSettlementStatus.PENDING_INSUFFICIENT_FUNDS_REJECTED_AFTER_DEADLINE, '24'),
+        (StrSettlementStatus.PENDING_INSUFFICIENT_FUNDS_REJECTED_AFTER_DEADLINE_CONTINGENCY, '25'),
+        (StrSettlementStatus.PENDING_REJECTED_EXCLUSION_SUSPENSION, '22'),
+        (StrSettlementStatus.PENDING_REJECTED_EXCLUSION_SUSPENSION_CONTINGENCY, '23'),
+        (StrSettlementStatus.PENDING_SCHEDULED, '18'),
+        (StrSettlementStatus.PENDING_SCHEDULED_CONTINGENCY, '20'),
+        (StrSettlementStatus.REJECTED_INSUFFICIENT_FUNDS_CONTINGENCY, '9'),
+        (StrSettlementStatus.REJECTED_NO_FUNDS, '5'),
+    ],
+)
+def test_str_settlement_status_values_to_xml_value(input_value: StrSettlementStatus, expected_enum: str) -> None:
+    assert input_value.to_xml_value() == expected_enum
+
+
+@pytest.mark.parametrize(
+    ('input_value', 'expected_enum'),
+    [
+        ('14', StrSettlementStatus.CANCELED),
+        ('15', StrSettlementStatus.CANCELED_CONTINGENCY),
+        ('1', StrSettlementStatus.EFFECTIVE),
+        ('2', StrSettlementStatus.EFFECTIVE_CONTINGENCY),
+        ('3', StrSettlementStatus.EFFECTIVE_OPTIMIZATION),
+        ('4', StrSettlementStatus.EFFECTIVE_SCHEDULED),
+        ('17', StrSettlementStatus.PENDING_INSUFFICIENT_FUNDS),
+        ('19', StrSettlementStatus.PENDING_INSUFFICIENT_FUNDS_CONTINGENCY),
+        ('24', StrSettlementStatus.PENDING_INSUFFICIENT_FUNDS_REJECTED_AFTER_DEADLINE),
+        ('25', StrSettlementStatus.PENDING_INSUFFICIENT_FUNDS_REJECTED_AFTER_DEADLINE_CONTINGENCY),
+        ('22', StrSettlementStatus.PENDING_REJECTED_EXCLUSION_SUSPENSION),
+        ('23', StrSettlementStatus.PENDING_REJECTED_EXCLUSION_SUSPENSION_CONTINGENCY),
+        ('18', StrSettlementStatus.PENDING_SCHEDULED),
+        ('20', StrSettlementStatus.PENDING_SCHEDULED_CONTINGENCY),
+        ('9', StrSettlementStatus.REJECTED_INSUFFICIENT_FUNDS_CONTINGENCY),
+        ('5', StrSettlementStatus.REJECTED_NO_FUNDS),
+    ],
+)
+def test_str_settlement_status_values_from_xml_value(input_value: str, expected_enum: StrSettlementStatus) -> None:
+    assert StrSettlementStatus.from_xml_value(input_value) == expected_enum
+
+
+@pytest.mark.parametrize(
+    ('input_value', 'expected_enum'),
+    [
+        ('canceled', StrSettlementStatus.CANCELED),
+        ('canceled_contingency', StrSettlementStatus.CANCELED_CONTINGENCY),
+        ('effective', StrSettlementStatus.EFFECTIVE),
+        ('effective_contingency', StrSettlementStatus.EFFECTIVE_CONTINGENCY),
+        ('effective_optimization', StrSettlementStatus.EFFECTIVE_OPTIMIZATION),
+        ('effective_scheduled', StrSettlementStatus.EFFECTIVE_SCHEDULED),
+        ('pending_insufficient_funds', StrSettlementStatus.PENDING_INSUFFICIENT_FUNDS),
+        ('pending_insufficient_funds_contingency', StrSettlementStatus.PENDING_INSUFFICIENT_FUNDS_CONTINGENCY),
+        (
+            'pending_insufficient_funds_rejected_after_deadline',
+            StrSettlementStatus.PENDING_INSUFFICIENT_FUNDS_REJECTED_AFTER_DEADLINE,
+        ),
+        (
+            'pending_insufficient_funds_rejected_after_deadline_contingency',
+            StrSettlementStatus.PENDING_INSUFFICIENT_FUNDS_REJECTED_AFTER_DEADLINE_CONTINGENCY,
+        ),
+        ('pending_rejected_exclusion_suspension', StrSettlementStatus.PENDING_REJECTED_EXCLUSION_SUSPENSION),
+        (
+            'pending_rejected_exclusion_suspension_contingency',
+            StrSettlementStatus.PENDING_REJECTED_EXCLUSION_SUSPENSION_CONTINGENCY,
+        ),
+        ('pending_scheduled', StrSettlementStatus.PENDING_SCHEDULED),
+        ('pending_scheduled_contingency', StrSettlementStatus.PENDING_SCHEDULED_CONTINGENCY),
+        ('rejected_insufficient_funds_contingency', StrSettlementStatus.REJECTED_INSUFFICIENT_FUNDS_CONTINGENCY),
+        ('rejected_no_funds', StrSettlementStatus.REJECTED_NO_FUNDS),
+    ],
+)
+def test_str_settlement_status_accepts_case_insensitive_values(
+    input_value: str, expected_enum: StrSettlementStatus
+) -> None:
+    assert StrSettlementStatus(input_value) is expected_enum
+
+
+@pytest.mark.parametrize(
+    'invalid_value',
+    [
+        'CANCEL',  # Invalid abbreviation
+        'EFFECT',  # Invalid abbreviation
+        '12345',  # Numeric string
+        'INVALID_STATUS',  # Completely invalid
+    ],
+)
+def test_str_settlement_status_rejects_invalid_value(invalid_value: str) -> None:
+    with pytest.raises(ValueError, match=invalid_value):
+        StrSettlementStatus(invalid_value)
