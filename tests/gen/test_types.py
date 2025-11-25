@@ -23,6 +23,36 @@ def test_certificate_issue_accepts_name_case_insensitive(input_value: str, expec
     assert CertificateIssue(input_value) is expected_enum
 
 
+@pytest.mark.parametrize(
+    ('input_value', 'expected_enum'),
+    [
+        (CertificateIssue.SERPRO, '1'),
+        (CertificateIssue.CERTISIGN, '2'),
+        (CertificateIssue.SERASA, '4'),
+        (CertificateIssue.AC_CAIXA, '5'),
+        (CertificateIssue.AC_VALIDA, '6'),
+        (CertificateIssue.AC_SOLUTI, '7'),
+    ],
+)
+def test_certificate_issue_to_xml_value(input_value: CertificateIssue, expected_enum: str) -> None:
+    assert input_value.to_xml_value() == expected_enum
+
+
+@pytest.mark.parametrize(
+    ('input_value', 'expected_enum'),
+    [
+        ('1', CertificateIssue.SERPRO),
+        ('2', CertificateIssue.CERTISIGN),
+        ('4', CertificateIssue.SERASA),
+        ('5', CertificateIssue.AC_CAIXA),
+        ('6', CertificateIssue.AC_VALIDA),
+        ('7', CertificateIssue.AC_SOLUTI),
+    ],
+)
+def test_certificate_issue_accepts_xml_value(input_value: str, expected_enum: CertificateIssue) -> None:
+    assert CertificateIssue.from_xml_value(input_value) is expected_enum
+
+
 def test_certificate_issue_rejects_invalid_value() -> None:
     with pytest.raises(ValueError, match='UNKNOWN'):
         CertificateIssue('UNKNOWN')

@@ -5,6 +5,21 @@ from typing import Annotated, Any, Self
 
 from pydantic import GetPydanticSchema
 from pydantic_core import core_schema
+from validate_docbr import CNPJ, CPF
+
+
+def cnpj_validator(value: str) -> str:
+    if not CNPJ().validate(value):
+        msg = 'Invalid CNPJ format'
+        raise ValueError(msg)
+    return value
+
+
+def cpf_validator(value: str) -> str:
+    if not CPF().validate(value):
+        msg = 'Invalid CPF format'
+        raise ValueError(msg)
+    return value
 
 
 class EnumMixin(Enum):
@@ -47,6 +62,246 @@ class EnumMixin(Enum):
         return cls(xml_value)
 
 
+class AccountType(EnumMixin, StrEnum):
+    CURRENT = 'CURRENT'
+    DEPOSIT = 'DEPOSIT'
+    OVERDRAFT = 'OVERDRAFT'
+    PAYMENT = 'PAYMENT'
+    SAVINGS = 'SAVINGS'
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[AccountType, str] | None:
+        return {
+            cls.CURRENT: 'CC',
+            cls.DEPOSIT: 'CD',
+            cls.OVERDRAFT: 'CG',
+            cls.PAYMENT: 'PG',
+            cls.SAVINGS: 'PP',
+        }
+
+
+class PersonType(EnumMixin, StrEnum):
+    BUSINESS = 'BUSINESS'
+    INDIVIDUAL = 'INDIVIDUAL'
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[PersonType, str]:
+        return {
+            cls.BUSINESS: 'J',
+            cls.INDIVIDUAL: 'F',
+        }
+
+
+class CustomerPurpose(EnumMixin, StrEnum):
+    TAX_PAYMENT = 'TAX_PAYMENT'
+    CREDIT_IN_ACCOUNT = 'CREDIT_IN_ACCOUNT'
+    JUDICIAL_DEPOSIT = 'JUDICIAL_DEPOSIT'
+    ALIMONY = 'ALIMONY'
+    CREDIT_ASSIGNMENT_CLIENT = 'CREDIT_ASSIGNMENT_CLIENT'
+    CREDIT_ASSIGNMENT_FIDC = 'CREDIT_ASSIGNMENT_FIDC'
+    CONTRACTUAL_CASHFLOW_CLIENT = 'CONTRACTUAL_CASHFLOW_CLIENT'
+    ADVANCE_CASHFLOW_CLIENT = 'ADVANCE_CASHFLOW_CLIENT'
+    CREDIT_ADJUSTMENTS = 'CREDIT_ADJUSTMENTS'
+    PAYMENT_BROKERS = 'PAYMENT_BROKERS'
+    TRANSFER_SAME_OWNER = 'TRANSFER_SAME_OWNER'
+    CREDIT_TO_INVESTOR = 'CREDIT_TO_INVESTOR'
+    DEBIT_FROM_INVESTOR = 'DEBIT_FROM_INVESTOR'
+    CREDIT_OPERATIONS_CLIENT = 'CREDIT_OPERATIONS_CLIENT'
+    FINANCIAL_REDEMPTION_CLIENT = 'FINANCIAL_REDEMPTION_CLIENT'
+    FINANCIAL_INVESTMENT_SENDER = 'FINANCIAL_INVESTMENT_SENDER'
+    PAYMENT_BANK_SLIP_REGISTRY = 'PAYMENT_BANK_SLIP_REGISTRY'
+    TIR_PAYMENT_PIX = 'TIR_PAYMENT_PIX'
+    CREDIT_ASSIGNMENT_REPURCHASE_CLIENT = 'CREDIT_ASSIGNMENT_REPURCHASE_CLIENT'
+    CREDIT_ASSIGNMENT_REPURCHASE_FIDC = 'CREDIT_ASSIGNMENT_REPURCHASE_FIDC'
+    SERVICE_FEE_PAYMENT = 'SERVICE_FEE_PAYMENT'
+    FGCOOP_FUND_COLLECTION = 'FGCOOP_FUND_COLLECTION'
+    FGCOOP_REFUND = 'FGCOOP_REFUND'
+    FGTS_EMERGENCY_WITHDRAWAL = 'FGTS_EMERGENCY_WITHDRAWAL'
+    CONSUMER_CREDIT_INCENTIVE = 'CONSUMER_CREDIT_INCENTIVE'
+    REPAYMENT_REGISTRY_LIQUIDATION = 'REPAYMENT_REGISTRY_LIQUIDATION'
+    EMERGENCY_AID = 'EMERGENCY_AID'
+    FINANCIAL_SETTLEMENT_CARD = 'FINANCIAL_SETTLEMENT_CARD'
+    BEM_EMPLOYMENT_BENEFIT = 'BEM_EMPLOYMENT_BENEFIT'
+    MUNICIPAL_TAXES_ISS_LCP157 = 'MUNICIPAL_TAXES_ISS_LCP157'
+    MUNICIPAL_TAXES_ISS_THIRD = 'MUNICIPAL_TAXES_ISS_THIRD'
+    OPERATION_CANCELLATION = 'OPERATION_CANCELLATION'
+    FINANCIAL_AGENT_FEE = 'FINANCIAL_AGENT_FEE'
+    OPERATOR_SETTLEMENT_CREDITOR = 'OPERATOR_SETTLEMENT_CREDITOR'
+    HOUSING_INSURANCE_SFH = 'HOUSING_INSURANCE_SFH'
+    SPVAT_COLLECTION_TRANSFER = 'SPVAT_COLLECTION_TRANSFER'
+    FDS_OPERATIONS = 'FDS_OPERATIONS'
+    PUBLIC_SERVICE_PAYMENT = 'PUBLIC_SERVICE_PAYMENT'
+    INTERNATIONAL_TRANSFER_REAIS = 'INTERNATIONAL_TRANSFER_REAIS'
+    FUTURES_MARKET_ADJUSTMENT = 'FUTURES_MARKET_ADJUSTMENT'
+    BNDES_VALUE_TRANSFER = 'BNDES_VALUE_TRANSFER'
+    BNDES_COMMITMENT_SETTLEMENT = 'BNDES_COMMITMENT_SETTLEMENT'
+    STOCK_MARKET_OPERATIONS = 'STOCK_MARKET_OPERATIONS'
+    STOCK_INDEX_CONTRACTS = 'STOCK_INDEX_CONTRACTS'
+    NON_INTERBANK_FOREX = 'NON_INTERBANK_FOREX'
+    FIXED_VARIABLE_OPERATIONS = 'FIXED_VARIABLE_OPERATIONS'
+    INTERBANK_FOREX_NO_RESERVE = 'INTERBANK_FOREX_NO_RESERVE'
+    PAYMENT_FINAL_RECIPIENT = 'PAYMENT_FINAL_RECIPIENT'
+    ADMINISTRATION_FEE = 'ADMINISTRATION_FEE'
+    JUDICIAL_AGREEMENT_PAYMENT = 'JUDICIAL_AGREEMENT_PAYMENT'
+    CONSIGNED_LOAN_SETTLEMENT = 'CONSIGNED_LOAN_SETTLEMENT'
+    SCHOLARSHIP_PAYMENT = 'SCHOLARSHIP_PAYMENT'
+    DIVIDEND_PAYMENT = 'DIVIDEND_PAYMENT'
+    COOPERATIVE_REMUNERATION = 'COOPERATIVE_REMUNERATION'
+    INCOME_TAX_REFUND = 'INCOME_TAX_REFUND'
+    TREASURY_BANK_ORDER = 'TREASURY_BANK_ORDER'
+    BACEN_FINES_PAYMENT = 'BACEN_FINES_PAYMENT'
+    TAX_REFUND_RFB = 'TAX_REFUND_RFB'
+    CLERICAL_REMUNERATION = 'CLERICAL_REMUNERATION'
+    INTEREST_ON_EQUITY = 'INTEREST_ON_EQUITY'
+    YIELD_AMORTIZATION = 'YIELD_AMORTIZATION'
+    SERVICE_FEE = 'SERVICE_FEE'
+    CHECK_PAYMENT_NON_ACCOUNT_HOLDER = 'CHECK_PAYMENT_NON_ACCOUNT_HOLDER'
+    GUARANTEED_SECURITIES_INTEREST = 'GUARANTEED_SECURITIES_INTEREST'
+    REVERSAL_OR_REFUND = 'REVERSAL_OR_REFUND'
+    TRANSPORT_VOUCHER_PAYMENT = 'TRANSPORT_VOUCHER_PAYMENT'
+    SALARY_PAYMENT = 'SALARY_PAYMENT'
+    SIMPLES_NACIONAL = 'SIMPLES_NACIONAL'
+    FUNDEB_TRANSFER = 'FUNDEB_TRANSFER'
+    CENTRALIZED_AGREEMENT_TRANSFER = 'CENTRALIZED_AGREEMENT_TRANSFER'
+    SPONSORSHIP_TAX_INCENTIVE = 'SPONSORSHIP_TAX_INCENTIVE'
+    DONATION_TAX_INCENTIVE = 'DONATION_TAX_INCENTIVE'
+    NONBANK_TO_LIQUIDATION_TRANSFER = 'NONBANK_TO_LIQUIDATION_TRANSFER'
+    TERMINATION_PAYMENT = 'TERMINATION_PAYMENT'
+    SUPPLIER_PAYMENT = 'SUPPLIER_PAYMENT'
+    FIXED_VARIABLE_EXPENSE_REIMBURSEMENT = 'FIXED_VARIABLE_EXPENSE_REIMBURSEMENT'
+    INSURANCE_PRIZE_REFUND = 'INSURANCE_PRIZE_REFUND'
+    INSURANCE_CLAIM_PAYMENT = 'INSURANCE_CLAIM_PAYMENT'
+    CO_INSURANCE_PREMIUM = 'CO_INSURANCE_PREMIUM'
+    CO_INSURANCE_CLAIM_PAYMENT = 'CO_INSURANCE_CLAIM_PAYMENT'
+    REINSURANCE_PREMIUM = 'REINSURANCE_PREMIUM'
+    REINSURANCE_CLAIM_PAYMENT = 'REINSURANCE_CLAIM_PAYMENT'
+    REINSURANCE_CLAIM_REFUND = 'REINSURANCE_CLAIM_REFUND'
+    CLAIM_EXPENSE_PAYMENT = 'CLAIM_EXPENSE_PAYMENT'
+    INSPECTION_PAYMENT = 'INSPECTION_PAYMENT'
+    CAPITALIZATION_REDEMPTION = 'CAPITALIZATION_REDEMPTION'
+    CAPITALIZATION_DRAW = 'CAPITALIZATION_DRAW'
+    CAPITALIZATION_MONTHLY_REFUND = 'CAPITALIZATION_MONTHLY_REFUND'
+    PENSION_CONTRIBUTION_REFUND = 'PENSION_CONTRIBUTION_REFUND'
+    PENSION_PECCULUM_BENEFIT = 'PENSION_PECCULUM_BENEFIT'
+    PENSION_PENSION_BENEFIT = 'PENSION_PENSION_BENEFIT'
+    PENSION_RETIREMENT_BENEFIT = 'PENSION_RETIREMENT_BENEFIT'
+    PENSION_REDEMPTION = 'PENSION_REDEMPTION'
+    BROKERAGE_COMMISSION = 'BROKERAGE_COMMISSION'
+    INSURANCE_PENSION_TRANSFER = 'INSURANCE_PENSION_TRANSFER'
+    FEES_PAYMENT = 'FEES_PAYMENT'
+    RENT_CONDOMINIUM = 'RENT_CONDOMINIUM'
+    INVOICE_BILLS_PAYMENT = 'INVOICE_BILLS_PAYMENT'
+    SCHOOL_FEE_PAYMENT = 'SCHOOL_FEE_PAYMENT'
+    FOREIGN_CURRENCY_PURCHASE = 'FOREIGN_CURRENCY_PURCHASE'
+    OTHERS = 'OTHERS'
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[CustomerPurpose, str]:
+        return {
+            cls.TAX_PAYMENT: '1',
+            cls.CREDIT_IN_ACCOUNT: '10',
+            cls.JUDICIAL_DEPOSIT: '100',
+            cls.ALIMONY: '101',
+            cls.CREDIT_ASSIGNMENT_CLIENT: '103',
+            cls.CREDIT_ASSIGNMENT_FIDC: '104',
+            cls.CONTRACTUAL_CASHFLOW_CLIENT: '107',
+            cls.ADVANCE_CASHFLOW_CLIENT: '108',
+            cls.CREDIT_ADJUSTMENTS: '109',
+            cls.PAYMENT_BROKERS: '11',
+            cls.TRANSFER_SAME_OWNER: '110',
+            cls.CREDIT_TO_INVESTOR: '111',
+            cls.DEBIT_FROM_INVESTOR: '112',
+            cls.CREDIT_OPERATIONS_CLIENT: '113',
+            cls.FINANCIAL_REDEMPTION_CLIENT: '114',
+            cls.FINANCIAL_INVESTMENT_SENDER: '117',
+            cls.PAYMENT_BANK_SLIP_REGISTRY: '12',
+            cls.TIR_PAYMENT_PIX: '121',
+            cls.CREDIT_ASSIGNMENT_REPURCHASE_CLIENT: '123',
+            cls.CREDIT_ASSIGNMENT_REPURCHASE_FIDC: '124',
+            cls.SERVICE_FEE_PAYMENT: '13',
+            cls.FGCOOP_FUND_COLLECTION: '131',
+            cls.FGCOOP_REFUND: '132',
+            cls.FGTS_EMERGENCY_WITHDRAWAL: '136',
+            cls.CONSUMER_CREDIT_INCENTIVE: '139',
+            cls.REPAYMENT_REGISTRY_LIQUIDATION: '14',
+            cls.EMERGENCY_AID: '149',
+            cls.FINANCIAL_SETTLEMENT_CARD: '15',
+            cls.BEM_EMPLOYMENT_BENEFIT: '150',
+            cls.MUNICIPAL_TAXES_ISS_LCP157: '157',
+            cls.MUNICIPAL_TAXES_ISS_THIRD: '175',
+            cls.OPERATION_CANCELLATION: '177',
+            cls.FINANCIAL_AGENT_FEE: '178',
+            cls.OPERATOR_SETTLEMENT_CREDITOR: '179',
+            cls.HOUSING_INSURANCE_SFH: '18',
+            cls.SPVAT_COLLECTION_TRANSFER: '180',
+            cls.FDS_OPERATIONS: '19',
+            cls.PUBLIC_SERVICE_PAYMENT: '2',
+            cls.INTERNATIONAL_TRANSFER_REAIS: '200',
+            cls.FUTURES_MARKET_ADJUSTMENT: '201',
+            cls.BNDES_VALUE_TRANSFER: '202',
+            cls.BNDES_COMMITMENT_SETTLEMENT: '203',
+            cls.STOCK_MARKET_OPERATIONS: '204',
+            cls.STOCK_INDEX_CONTRACTS: '205',
+            cls.NON_INTERBANK_FOREX: '206',
+            cls.FIXED_VARIABLE_OPERATIONS: '207',
+            cls.INTERBANK_FOREX_NO_RESERVE: '208',
+            cls.PAYMENT_FINAL_RECIPIENT: '209',
+            cls.ADMINISTRATION_FEE: '23',
+            cls.JUDICIAL_AGREEMENT_PAYMENT: '27',
+            cls.CONSIGNED_LOAN_SETTLEMENT: '28',
+            cls.SCHOLARSHIP_PAYMENT: '29',
+            cls.DIVIDEND_PAYMENT: '3',
+            cls.COOPERATIVE_REMUNERATION: '30',
+            cls.INCOME_TAX_REFUND: '300',
+            cls.TREASURY_BANK_ORDER: '301',
+            cls.BACEN_FINES_PAYMENT: '302',
+            cls.TAX_REFUND_RFB: '303',
+            cls.CLERICAL_REMUNERATION: '31',
+            cls.INTEREST_ON_EQUITY: '33',
+            cls.YIELD_AMORTIZATION: '34',
+            cls.SERVICE_FEE: '35',
+            cls.CHECK_PAYMENT_NON_ACCOUNT_HOLDER: '36',
+            cls.GUARANTEED_SECURITIES_INTEREST: '37',
+            cls.REVERSAL_OR_REFUND: '38',
+            cls.TRANSPORT_VOUCHER_PAYMENT: '39',
+            cls.SALARY_PAYMENT: '4',
+            cls.SIMPLES_NACIONAL: '40',
+            cls.FUNDEB_TRANSFER: '41',
+            cls.CENTRALIZED_AGREEMENT_TRANSFER: '42',
+            cls.SPONSORSHIP_TAX_INCENTIVE: '43',
+            cls.DONATION_TAX_INCENTIVE: '44',
+            cls.NONBANK_TO_LIQUIDATION_TRANSFER: '45',
+            cls.TERMINATION_PAYMENT: '47',
+            cls.SUPPLIER_PAYMENT: '5',
+            cls.FIXED_VARIABLE_EXPENSE_REIMBURSEMENT: '50',
+            cls.INSURANCE_PRIZE_REFUND: '500',
+            cls.INSURANCE_CLAIM_PAYMENT: '501',
+            cls.CO_INSURANCE_PREMIUM: '502',
+            cls.CO_INSURANCE_CLAIM_PAYMENT: '504',
+            cls.REINSURANCE_PREMIUM: '505',
+            cls.REINSURANCE_CLAIM_PAYMENT: '507',
+            cls.REINSURANCE_CLAIM_REFUND: '508',
+            cls.CLAIM_EXPENSE_PAYMENT: '509',
+            cls.INSPECTION_PAYMENT: '510',
+            cls.CAPITALIZATION_REDEMPTION: '511',
+            cls.CAPITALIZATION_DRAW: '512',
+            cls.CAPITALIZATION_MONTHLY_REFUND: '513',
+            cls.PENSION_CONTRIBUTION_REFUND: '514',
+            cls.PENSION_PECCULUM_BENEFIT: '515',
+            cls.PENSION_PENSION_BENEFIT: '516',
+            cls.PENSION_RETIREMENT_BENEFIT: '517',
+            cls.PENSION_REDEMPTION: '518',
+            cls.BROKERAGE_COMMISSION: '519',
+            cls.INSURANCE_PENSION_TRANSFER: '520',
+            cls.FEES_PAYMENT: '6',
+            cls.RENT_CONDOMINIUM: '7',
+            cls.INVOICE_BILLS_PAYMENT: '8',
+            cls.SCHOOL_FEE_PAYMENT: '9',
+            cls.FOREIGN_CURRENCY_PURCHASE: '97',
+            cls.OTHERS: '99999',
+        }
+
+
 class SystemDomain(EnumMixin, StrEnum):
     SPB01 = 'SPB01'
     SPB02 = 'SPB02'
@@ -55,11 +310,67 @@ class SystemDomain(EnumMixin, StrEnum):
     MES03 = 'MES03'
 
 
+class Priority(EnumMixin, StrEnum):
+    HIGH = 'HIGH'
+    HIGHEST = 'HIGHEST'
+    LOW = 'LOW'
+    MEDIUM = 'MEDIUM'
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[Priority, str]:
+        return {
+            cls.HIGH: 'B',
+            cls.HIGHEST: 'A',
+            cls.LOW: 'D',
+            cls.MEDIUM: 'C',
+        }
+
+
+type AccountNumber = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            pattern=r'^[1-9][0-9]{0,12}$',
+            strip_whitespace=True,
+        )
+    ),
+]
+
+type Branch = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            pattern=r'^[0-9]{1,4}$',
+            strip_whitespace=True,
+        )
+    ),
+]
+
 type Description = Annotated[
     str,
     GetPydanticSchema(
         lambda _tp, _handler: core_schema.str_schema(
             max_length=200,
+            strip_whitespace=True,
+        )
+    ),
+]
+
+type DebtorName = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            max_length=80,
+            strip_whitespace=True,
+        )
+    ),
+]
+
+type CreditorName = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            max_length=80,
             strip_whitespace=True,
         )
     ),
@@ -91,5 +402,38 @@ type OperationNumber = Annotated[
             strip_whitespace=True,
             to_upper=True,
         )
+    ),
+]
+
+type Cnpj = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.no_info_after_validator_function(
+            cnpj_validator,
+            core_schema.str_schema(
+                pattern=r'^[0-9A-Z]{12}[0-9]{2}$',
+                strip_whitespace=True,
+            ),
+        )
+    ),
+]
+
+type Cpf = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.no_info_after_validator_function(
+            cpf_validator,
+            core_schema.str_schema(
+                pattern=r'^[0-9]{11}$',
+                strip_whitespace=True,
+            ),
+        )
+    ),
+]
+
+type TransactionId = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(min_length=1, max_length=25, strip_whitespace=True)
     ),
 ]
