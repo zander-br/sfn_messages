@@ -1,7 +1,7 @@
 import pytest
 from pydantic import BaseModel, ValidationError
 
-from sfn_messages.gen.types import CertificateIssue, CertificateSerialNumber, Message
+from sfn_messages.gen.types import CertificateIssue, CertificateSerialNumber, LastOperationNumber, Message
 
 
 class CertificateSerialNumberModel(BaseModel):
@@ -10,6 +10,10 @@ class CertificateSerialNumberModel(BaseModel):
 
 class MessageModel(BaseModel):
     message: Message
+
+
+class LastOperationNumberModel(BaseModel):
+    last_operation_number: LastOperationNumber
 
 
 @pytest.mark.parametrize(
@@ -123,3 +127,35 @@ def test_message_rejects_invalid_values(message: str) -> None:
     with pytest.raises(ValidationError) as exc:
         MessageModel(message=message)
     assert 'String should have at most 50 characters' in str(exc.value)
+
+
+@pytest.mark.parametrize(
+    'last_operation_number',
+    ['ABCDEFGH123456789012345', 'HGFEDCBA987654321012345'],
+)
+def test_last_operation_number_accepts_valid_values(last_operation_number: str) -> None:
+    model = LastOperationNumberModel(last_operation_number=last_operation_number)
+    assert model.last_operation_number == last_operation_number
+
+
+def test_last_operation_number_accepts_whitespace() -> None:
+    model = LastOperationNumberModel(last_operation_number='  ABCDEFGH123456789012345  ')
+    assert model.last_operation_number == 'ABCDEFGH123456789012345'
+
+
+@pytest.mark.parametrize(
+    'last_operation_number',
+    [
+        'ABCDEFGH123456789012',  # Too short
+        'ABCDEFGH123456789012345678',  # Too long
+        'ABCDEFGH123 456789012345',  # Contains space
+        'ABCDEFGH-123456789012345',  # Contains special character
+        'ABCDEFGH12345!6789012345',  # Contains special character
+        'ABCDEFGH1234@6789012345',  # Contains special character
+        'ABCDEFGH1234\n6789012345',  # Contains newline
+    ],
+)
+def test_last_operation_number_rejects_invalid_values(last_operation_number: str) -> None:
+    with pytest.raises(ValidationError) as exc:
+        LastOperationNumberModel(last_operation_number=last_operation_number)
+    assert "String should match pattern '^[0-9A-Z]{8}[0-9]{15}$'" in str(exc.value)

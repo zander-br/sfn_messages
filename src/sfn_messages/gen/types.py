@@ -38,12 +38,25 @@ type CertificateSerialNumber = Annotated[
     ),
 ]
 
+
 type Message = Annotated[
     str,
     GetPydanticSchema(
         lambda _tp, _handler: core_schema.str_schema(
             max_length=50,
             strip_whitespace=True,
+        )
+    ),
+]
+
+
+type LastOperationNumber = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            pattern=r'^[0-9A-Z]{8}[0-9]{15}$',
+            strip_whitespace=True,
+            to_upper=True,
         )
     ),
 ]
