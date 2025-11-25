@@ -18,6 +18,7 @@ from .types import InstitutionPurpose
 
 PATH = 'DOC/SISMSG/STR0004'
 PATH_R1 = 'DOC/SISMSG/STR0004R1'
+PATH_R2 = 'DOC/SISMSG/STR0004R2'
 
 
 class STR0004(BaseMessage):
@@ -44,3 +45,17 @@ class STR0004R1(BaseMessage):
     str_settlement_status: Annotated[StrSettlementStatus, XmlPath(f'{PATH_R1}/SitLancSTR/text()')]
     provider_timestamp: Annotated[datetime, XmlPath(f'{PATH_R1}/DtHrSit/text()')]
     settlement_date: Annotated[date, XmlPath(f'{PATH_R1}/DtMovto/text()')]
+
+
+class STR0004R2(BaseMessage):
+    message_code: Annotated[Literal['STR0004R2'], XmlPath(f'{PATH_R2}/CodMsg/text()')] = 'STR0004R2'
+    str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_R2}/NumCtrlSTR/text()')]
+    provider_timestamp: Annotated[datetime, XmlPath(f'{PATH_R2}/DtHrBC/text()')]
+    debtor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R2}/ISPBIFDebtd/text()')]
+    creditor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R2}/ISPBIFCredtd/text()')]
+    creditor_branch: Annotated[Branch | None, XmlPath(f'{PATH_R2}/AgCredtd/text()')] = None
+    amount: Annotated[Decimal, XmlPath(f'{PATH_R2}/VlrLanc/text()')]
+    transaction_id: Annotated[TransactionId | None, XmlPath(f'{PATH_R2}/CodIdentdTransf/text()')] = None
+    purpose: Annotated[InstitutionPurpose, XmlPath(f'{PATH_R2}/FinlddIF/text()')]
+    description: Annotated[Description, XmlPath(f'{PATH_R2}/Hist/text()')]
+    settlement_date: Annotated[date, XmlPath(f'{PATH_R2}/DtMovto/text()')]
