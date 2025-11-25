@@ -7,6 +7,7 @@ from sfn_messages.gen.types import CertificateIssue, CertificateSerialNumber, Me
 class CertificateSerialNumberModel(BaseModel):
     serial_number: CertificateSerialNumber
 
+
 class MessageModel(BaseModel):
     message: Message
 
