@@ -37,3 +37,13 @@ type CertificateSerialNumber = Annotated[
         )
     ),
 ]
+
+type Message = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            max_length=50,
+            strip_whitespace=True,
+        )
+    ),
+]

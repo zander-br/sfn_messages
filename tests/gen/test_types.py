@@ -1,11 +1,14 @@
 import pytest
 from pydantic import BaseModel, ValidationError
 
-from sfn_messages.gen.types import CertificateIssue, CertificateSerialNumber
+from sfn_messages.gen.types import CertificateIssue, CertificateSerialNumber, Message
 
 
 class CertificateSerialNumberModel(BaseModel):
     serial_number: CertificateSerialNumber
+
+class MessageModel(BaseModel):
+    message: Message
 
 
 @pytest.mark.parametrize(
@@ -89,3 +92,33 @@ def test_certificate_serial_number_rejects_invalid_values(serial_number: str) ->
     with pytest.raises(ValidationError) as exc:
         CertificateSerialNumberModel(serial_number=serial_number)
     assert "String should match pattern '^[0-9A-Fa-f]{32}$'" in str(exc.value)
+
+
+@pytest.mark.parametrize(
+    'message',
+    [
+        'A' * 1,
+        'This is a valid message.',
+        'A' * 50,
+    ],
+)
+def test_message_accepts_valid_values(message: str) -> None:
+    model = MessageModel(message=message)
+    assert model.message == message
+
+
+def test_message_accepts_whitespace() -> None:
+    model = MessageModel(message='  Valid message.  ')
+    assert model.message == 'Valid message.'
+
+
+@pytest.mark.parametrize(
+    'message',
+    [
+        'A' * 51,  # Too long
+    ],
+)
+def test_message_rejects_invalid_values(message: str) -> None:
+    with pytest.raises(ValidationError) as exc:
+        MessageModel(message=message)
+    assert 'String should have at most 50 characters' in str(exc.value)
