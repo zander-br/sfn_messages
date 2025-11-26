@@ -6,7 +6,7 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.core.types import Priority, StrSettlementStatus
-from sfn_messages.str.str0048 import STR0048, STR0048R1
+from sfn_messages.str.str0048 import STR0048, STR0048R1, STR0048R2
 from sfn_messages.str.types import PortabilityReturnReason
 from tests.conftest import extract_missing_fields, normalize_xml
 
@@ -44,6 +44,25 @@ def make_valid_str0048r1_params() -> dict[str, Any]:
         'operation_number': '316801512509080000001',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
+    }
+
+
+def make_valid_str0048r2_params() -> dict[str, Any]:
+    return {
+        'from_ispb': '31680151',
+        'operation_number': '316801512509080000001',
+        'system_domain': 'SPB01',
+        'to_ispb': '00038166',
+        'str_control_number': 'STR20250101000000002',
+        'str_timestamp': '2025-11-20T15:30:00+00:00',
+        'debtor_institution_ispb': '31680151',
+        'creditor_institution_ispb': '00038166',
+        'amount': 100.00,
+        'portability_return_reason': 'DESTINATION_ACCOUNT_CLOSED',
+        'original_str_control_number': 'STR20250101000000001',
+        'provider_ispb': '31680151',
+        'description': 'Payment for services',
+        'settlement_date': '2025-09-08',
     }
 
 
@@ -428,4 +447,234 @@ def test_str0048r1_from_xml_missing_required_fields() -> None:
         'institution_control_number',
         'str_timestamp',
         'settlement_date',
+    }
+
+
+def test_str0048r2_valid_params() -> None:
+    params = make_valid_str0048r2_params()
+    str0048r2 = STR0048R2.model_validate(params)
+    assert isinstance(str0048r2, STR0048R2)
+    assert str0048r2.str_control_number == 'STR20250101000000002'
+    assert str0048r2.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0048r2.debtor_institution_ispb == '31680151'
+    assert str0048r2.creditor_institution_ispb == '00038166'
+    assert str0048r2.amount == Decimal('100.00')
+    assert str0048r2.portability_return_reason == PortabilityReturnReason.DESTINATION_ACCOUNT_CLOSED
+    assert str0048r2.original_str_control_number == 'STR20250101000000001'
+    assert str0048r2.provider_ispb == '31680151'
+    assert str0048r2.description == 'Payment for services'
+    assert str0048r2.settlement_date == date(2025, 9, 8)
+
+
+def test_str0048r2_missing_required_fields() -> None:
+    with pytest.raises(ValidationError) as exc:
+        STR0048R2.model_validate({})
+
+    missing_fields = extract_missing_fields(exc.value)
+    assert missing_fields == {
+        'from_ispb',
+        'to_ispb',
+        'str_control_number',
+        'str_timestamp',
+        'debtor_institution_ispb',
+        'creditor_institution_ispb',
+        'amount',
+        'portability_return_reason',
+        'original_str_control_number',
+        'provider_ispb',
+        'settlement_date',
+        'operation_number',
+        'system_domain',
+    }
+
+
+def test_str0048r2_to_xml() -> None:
+    params = make_valid_str0048r2_params()
+    str0048r2 = STR0048R2.model_validate(params)
+    xml = str0048r2.to_xml()
+
+    expected_xml = """
+    <DOC>
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0008R2>
+                <CodMsg>STR0048R2</CodMsg>
+                <NumCtrlSTR>STR20250101000000002</NumCtrlSTR>
+                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <ISPBIFCredtd>00038166</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <CodDevPortdd>1</CodDevPortdd>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
+                <ISPBPrestd>31680151</ISPBPrestd>
+                <Hist>Payment for services</Hist>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0008R2>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_str0048r2_to_xml_omit_optional_fields() -> None:
+    params = make_valid_str0048r2_params()
+    del params['description']
+
+    str0048r2 = STR0048R2.model_validate(params)
+    xml = str0048r2.to_xml()
+
+    expected_xml = """
+    <DOC>
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0008R2>
+                <CodMsg>STR0048R2</CodMsg>
+                <NumCtrlSTR>STR20250101000000002</NumCtrlSTR>
+                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <ISPBIFCredtd>00038166</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <CodDevPortdd>1</CodDevPortdd>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
+                <ISPBPrestd>31680151</ISPBPrestd>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0008R2>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_str0048r2_from_xml() -> None:
+    xml = """
+    <DOC>
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0008R2>
+                <CodMsg>STR0048R2</CodMsg>
+                <NumCtrlSTR>STR20250101000000002</NumCtrlSTR>
+                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <ISPBIFCredtd>00038166</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <CodDevPortdd>1</CodDevPortdd>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
+                <ISPBPrestd>31680151</ISPBPrestd>
+                <Hist>Payment for services</Hist>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0008R2>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0048r2 = STR0048R2.from_xml(xml)
+    assert isinstance(str0048r2, STR0048R2)
+    assert str0048r2.str_control_number == 'STR20250101000000002'
+    assert str0048r2.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0048r2.debtor_institution_ispb == '31680151'
+    assert str0048r2.creditor_institution_ispb == '00038166'
+    assert str0048r2.amount == Decimal('100.00')
+    assert str0048r2.portability_return_reason == PortabilityReturnReason.DESTINATION_ACCOUNT_CLOSED
+    assert str0048r2.original_str_control_number == 'STR20250101000000001'
+    assert str0048r2.provider_ispb == '31680151'
+    assert str0048r2.description == 'Payment for services'
+    assert str0048r2.settlement_date == date(2025, 9, 8)
+
+
+def test_str0048r2_from_xml_missing_optional_fields() -> None:
+    xml = """
+    <DOC>
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0008R2>
+                <CodMsg>STR0048R2</CodMsg>
+                <NumCtrlSTR>STR20250101000000002</NumCtrlSTR>
+                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <ISPBIFCredtd>00038166</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <CodDevPortdd>1</CodDevPortdd>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
+                <ISPBPrestd>31680151</ISPBPrestd>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0008R2>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0048r2 = STR0048R2.from_xml(xml)
+    assert isinstance(str0048r2, STR0048R2)
+    assert str0048r2.str_control_number == 'STR20250101000000002'
+    assert str0048r2.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0048r2.debtor_institution_ispb == '31680151'
+    assert str0048r2.creditor_institution_ispb == '00038166'
+    assert str0048r2.amount == Decimal('100.00')
+    assert str0048r2.portability_return_reason == PortabilityReturnReason.DESTINATION_ACCOUNT_CLOSED
+    assert str0048r2.original_str_control_number == 'STR20250101000000001'
+    assert str0048r2.provider_ispb == '31680151'
+    assert str0048r2.description is None
+    assert str0048r2.settlement_date == date(2025, 9, 8)
+
+
+def test_str0048r2_roundtrip() -> None:
+    params = make_valid_str0048r2_params()
+    str0048r2 = STR0048R2.model_validate(params)
+    xml = str0048r2.to_xml()
+    str0048r2_from_xml = STR0048R2.from_xml(xml)
+    assert str0048r2 == str0048r2_from_xml
+
+
+def test_str0048r2_from_xml_missing_required_fields() -> None:
+    xml = """
+    <DOC>
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0008R2>
+                <CodMsg>STR0048R2</CodMsg>
+            </STR0008R2>
+        </SISMSG>
+    </DOC>
+    """
+
+    with pytest.raises(ValidationError) as exc:
+        STR0048R2.from_xml(xml)
+
+    missing_fields = extract_missing_fields(exc.value)
+    assert missing_fields == {
+        'settlement_date',
+        'debtor_institution_ispb',
+        'creditor_institution_ispb',
+        'portability_return_reason',
+        'str_timestamp',
+        'amount',
+        'str_control_number',
+        'original_str_control_number',
+        'provider_ispb',
     }

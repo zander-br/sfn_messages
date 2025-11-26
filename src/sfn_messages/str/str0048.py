@@ -16,6 +16,7 @@ from .types import PortabilityReturnReason
 
 PATH = 'DOC/SISMSG/STR0008'
 PATH_R1 = 'DOC/SISMSG/STR0008R1'
+PATH_R2 = 'DOC/SISMSG/STR0008R2'
 
 
 class STR0048(BaseMessage):
@@ -42,3 +43,17 @@ class STR0048R1(BaseMessage):
     str_settlement_status: Annotated[StrSettlementStatus, XmlPath(f'{PATH_R1}/SitLancSTR/text()')]
     str_timestamp: Annotated[datetime, XmlPath(f'{PATH_R1}/DtHrSit/text()')]
     settlement_date: Annotated[date, XmlPath(f'{PATH_R1}/DtMovto/text()')]
+
+
+class STR0048R2(BaseMessage):
+    message_code: Annotated[Literal['STR0048R2'], XmlPath(f'{PATH_R2}/CodMsg/text()')] = 'STR0048R2'
+    str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_R2}/NumCtrlSTR/text()')]
+    str_timestamp: Annotated[datetime, XmlPath(f'{PATH_R2}/DtHrBC/text()')]
+    debtor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R2}/ISPBIFDebtd/text()')]
+    creditor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R2}/ISPBIFCredtd/text()')]
+    amount: Annotated[Decimal, XmlPath(f'{PATH_R2}/VlrLanc/text()')]
+    portability_return_reason: Annotated[PortabilityReturnReason, XmlPath(f'{PATH_R2}/CodDevPortdd/text()')]
+    original_str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_R2}/NumCtrlSTROr/text()')]
+    provider_ispb: Annotated[Ispb, XmlPath(f'{PATH_R2}/ISPBPrestd/text()')]
+    description: Annotated[Description | None, XmlPath(f'{PATH_R2}/Hist/text()')] = None
+    settlement_date: Annotated[date, XmlPath(f'{PATH_R2}/DtMovto/text()')]
