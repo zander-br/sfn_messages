@@ -1,4 +1,4 @@
-from datetime import date, time
+from datetime import date, datetime, time
 from decimal import Decimal
 from typing import Annotated, Literal
 
@@ -20,12 +20,15 @@ from sfn_messages.core.types import (
     PersonType,
     Priority,
     SenderName,
+    StrControlNumber,
+    StrSettlementStatus,
     TransactionId,
 )
 
 from .types import InstitutionPurpose
 
 PATH = 'DOC/SISMSG/STR0007'
+PATH_R1 = 'DOC/SISMSG/STR0007R1'
 
 
 class STR0007(BaseMessage):
@@ -97,3 +100,13 @@ class STR0007(BaseMessage):
 
         if account_number is None:
             errors.append(f'{party}_account_number is required when {party}_account_type is not PAYMENT')
+
+
+class STR0007R1(BaseMessage):
+    message_code: Annotated[Literal['STR0007R1'], XmlPath(f'{PATH_R1}/CodMsg/text()')] = 'STR0007R1'
+    institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_R1}/NumCtrlIF/text()')]
+    debtor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R1}/ISPBIFDebtd/text()')]
+    str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_R1}/NumCtrlSTR/text()')]
+    str_settlement_status: Annotated[StrSettlementStatus, XmlPath(f'{PATH_R1}/SitLancSTR/text()')]
+    str_timestamp: Annotated[datetime, XmlPath(f'{PATH_R1}/DtHrSit/text()')]
+    settlement_date: Annotated[date, XmlPath(f'{PATH_R1}/DtMovto/text()')]
