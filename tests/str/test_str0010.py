@@ -125,7 +125,7 @@ def test_str0010_to_xml() -> None:
                 <ISPBIFCredtd>60701190</ISPBIFCredtd>
                 <VlrLanc>100.0</VlrLanc>
                 <CodDevTransf>1</CodDevTransf>
-                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <Hist>Return Payment for services</Hist>
                 <DtAgendt>2025-09-09</DtAgendt>
                 <HrAgendt>15:30:00</HrAgendt>
@@ -164,7 +164,7 @@ def test_str0010_to_xml_omit_optional_fields() -> None:
                 <ISPBIFCredtd>60701190</ISPBIFCredtd>
                 <VlrLanc>100.0</VlrLanc>
                 <CodDevTransf>1</CodDevTransf>
-                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <DtMovto>2025-09-08</DtMovto>
             </STR0010>
         </SISMSG>
@@ -191,7 +191,7 @@ def test_str0010_from_xml() -> None:
                 <ISPBIFCredtd>60701190</ISPBIFCredtd>
                 <VlrLanc>100.0</VlrLanc>
                 <CodDevTransf>1</CodDevTransf>
-                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <Hist>Return Payment for services</Hist>
                 <DtAgendt>2025-09-09</DtAgendt>
                 <HrAgendt>15:30:00</HrAgendt>
@@ -238,7 +238,7 @@ def test_str0010_from_xml_omit_optional_fields() -> None:
                 <ISPBIFCredtd>60701190</ISPBIFCredtd>
                 <VlrLanc>100.0</VlrLanc>
                 <CodDevTransf>1</CodDevTransf>
-                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <DtMovto>2025-09-08</DtMovto>
             </STR0010>
         </SISMSG>

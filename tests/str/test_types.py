@@ -1,6 +1,6 @@
 import pytest
 
-from sfn_messages.str.types import InstitutionPurpose
+from sfn_messages.str.types import InstitutionPurpose, PortabilityReturnReason
 
 
 @pytest.mark.parametrize(
@@ -728,3 +728,104 @@ def test_institution_purpose_accepts_case_insensitive_values(
 def test_institution_purpose_rejects_invalid_values(invalid_value: str) -> None:
     with pytest.raises(ValueError, match=invalid_value):
         InstitutionPurpose(invalid_value)
+
+
+@pytest.mark.parametrize(
+    ('input_value', 'expected_enum'),
+    [
+        ('DESTINATION_ACCOUNT_CLOSED', PortabilityReturnReason.DESTINATION_ACCOUNT_CLOSED),
+        ('INVALID_DESTINATION_AGENCY_OR_ACCOUNT', PortabilityReturnReason.INVALID_DESTINATION_AGENCY_OR_ACCOUNT),
+        ('PORTABILITY_NOT_FOUND', PortabilityReturnReason.PORTABILITY_NOT_FOUND),
+        ('PORTABILITY_REFUSED_AMOUNT_MISMATCH', PortabilityReturnReason.PORTABILITY_REFUSED_AMOUNT_MISMATCH),
+        ('PORTABILITY_HELD_BY_ORIGINAL_CREDITOR', PortabilityReturnReason.PORTABILITY_HELD_BY_ORIGINAL_CREDITOR),
+        (
+            'PORTABILITY_SETTLED_MORE_THAN_ONCE_STR0047',
+            PortabilityReturnReason.PORTABILITY_SETTLED_MORE_THAN_ONCE_STR0047,
+        ),
+        ('PAYMENT_ON_INVALID_DATE', PortabilityReturnReason.PAYMENT_ON_INVALID_DATE),
+        (
+            'PORTABILITY_ALREADY_SETTLED_BY_ORIGINAL_CREDITOR',
+            PortabilityReturnReason.PORTABILITY_ALREADY_SETTLED_BY_ORIGINAL_CREDITOR,
+        ),
+    ],
+)
+def test_portability_return_reason_accepts_exact_values(
+    input_value: str, expected_enum: PortabilityReturnReason
+) -> None:
+    assert PortabilityReturnReason(input_value) == expected_enum
+
+
+@pytest.mark.parametrize(
+    ('input_value', 'expected_enum'),
+    [
+        (PortabilityReturnReason.DESTINATION_ACCOUNT_CLOSED, '1'),
+        (PortabilityReturnReason.INVALID_DESTINATION_AGENCY_OR_ACCOUNT, '2'),
+        (PortabilityReturnReason.PORTABILITY_NOT_FOUND, '78'),
+        (PortabilityReturnReason.PORTABILITY_REFUSED_AMOUNT_MISMATCH, '79'),
+        (PortabilityReturnReason.PORTABILITY_HELD_BY_ORIGINAL_CREDITOR, '81'),
+        (PortabilityReturnReason.PORTABILITY_SETTLED_MORE_THAN_ONCE_STR0047, '82'),
+        (PortabilityReturnReason.PAYMENT_ON_INVALID_DATE, '83'),
+        (PortabilityReturnReason.PORTABILITY_ALREADY_SETTLED_BY_ORIGINAL_CREDITOR, '84'),
+    ],
+)
+def test_portability_return_reason_values_to_xml_value(
+    input_value: PortabilityReturnReason, expected_enum: str
+) -> None:
+    assert input_value.to_xml_value() == expected_enum
+
+
+@pytest.mark.parametrize(
+    ('input_value', 'expected_enum'),
+    [
+        ('1', PortabilityReturnReason.DESTINATION_ACCOUNT_CLOSED),
+        ('2', PortabilityReturnReason.INVALID_DESTINATION_AGENCY_OR_ACCOUNT),
+        ('78', PortabilityReturnReason.PORTABILITY_NOT_FOUND),
+        ('79', PortabilityReturnReason.PORTABILITY_REFUSED_AMOUNT_MISMATCH),
+        ('81', PortabilityReturnReason.PORTABILITY_HELD_BY_ORIGINAL_CREDITOR),
+        ('82', PortabilityReturnReason.PORTABILITY_SETTLED_MORE_THAN_ONCE_STR0047),
+        ('83', PortabilityReturnReason.PAYMENT_ON_INVALID_DATE),
+        ('84', PortabilityReturnReason.PORTABILITY_ALREADY_SETTLED_BY_ORIGINAL_CREDITOR),
+    ],
+)
+def test_portability_return_reason_values_from_xml_value(
+    input_value: str, expected_enum: PortabilityReturnReason
+) -> None:
+    assert PortabilityReturnReason.from_xml_value(input_value) == expected_enum
+
+
+@pytest.mark.parametrize(
+    ('input_value', 'expected_enum'),
+    [
+        ('destination_account_closed', PortabilityReturnReason.DESTINATION_ACCOUNT_CLOSED),
+        ('invalid_destination_agency_or_account', PortabilityReturnReason.INVALID_DESTINATION_AGENCY_OR_ACCOUNT),
+        ('portability_not_found', PortabilityReturnReason.PORTABILITY_NOT_FOUND),
+        ('portability_refused_amount_mismatch', PortabilityReturnReason.PORTABILITY_REFUSED_AMOUNT_MISMATCH),
+        ('portability_held_by_original_creditor', PortabilityReturnReason.PORTABILITY_HELD_BY_ORIGINAL_CREDITOR),
+        (
+            'portability_settled_more_than_once_str0047',
+            PortabilityReturnReason.PORTABILITY_SETTLED_MORE_THAN_ONCE_STR0047,
+        ),
+        ('payment_on_invalid_date', PortabilityReturnReason.PAYMENT_ON_INVALID_DATE),
+        (
+            'portability_already_settled_by_original_creditor',
+            PortabilityReturnReason.PORTABILITY_ALREADY_SETTLED_BY_ORIGINAL_CREDITOR,
+        ),
+    ],
+)
+def test_portability_return_reason_accepts_case_insensitive_values(
+    input_value: str, expected_enum: PortabilityReturnReason
+) -> None:
+    assert PortabilityReturnReason(input_value) == expected_enum
+
+
+@pytest.mark.parametrize(
+    'input_value',
+    [
+        'invalid_reason',  # Completely invalid string
+        '123',  # Numeric string
+        'destination-account-closed',  # Invalid abbreviation
+    ],
+)
+def test_portability_return_reason_rejects_invalid_values(input_value: str) -> None:
+    with pytest.raises(ValueError, match=input_value):
+        PortabilityReturnReason(input_value)

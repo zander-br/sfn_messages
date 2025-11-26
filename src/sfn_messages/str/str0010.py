@@ -25,7 +25,7 @@ class STR0010(BaseMessage):
     creditor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBIFCredtd/text()')]
     amount: Annotated[Decimal, XmlPath(f'{PATH}/VlrLanc/text()')]
     transfer_return_reason: Annotated[TransferReturnReason, XmlPath(f'{PATH}/CodDevTransf/text()')]
-    original_str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH}/NumCtrlSTR/text()')]
+    original_str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH}/NumCtrlSTROr/text()')]
     description: Annotated[Description | None, XmlPath(f'{PATH}/Hist/text()')] = None
     scheduled_date: Annotated[date | None, XmlPath(f'{PATH}/DtAgendt/text()')] = None
     scheduled_time: Annotated[time | None, XmlPath(f'{PATH}/HrAgendt/text()')] = None
