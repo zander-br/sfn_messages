@@ -67,7 +67,7 @@ class STR0008(BaseMessage):
         self._validate_account_requirements(party='creditor', errors=errors)
 
         if self.purpose == CustomerPurpose.OTHERS and not self.description:
-            errors.append('description is required when purpose is OTHER')
+            errors.append('description is required when purpose is OTHERS')
 
         if errors:
             raise ValueError('; '.join(errors))
@@ -150,7 +150,7 @@ class STR0008R2(BaseMessage):
         self._validate_account_requirements(party='creditor', errors=errors)
 
         if self.purpose == CustomerPurpose.OTHERS and not self.description:
-            errors.append('description is required when purpose is OTHER')
+            errors.append('description is required when purpose is OTHERS')
 
         if errors:
             raise ValueError('; '.join(errors))

@@ -195,7 +195,7 @@ from sfn_messages.str.types import InstitutionPurpose, PortabilityReturnReason
         ),
         ('FX_SALE_BY_FSB_SOVEREIGN_FUND', InstitutionPurpose.FX_SALE_BY_FSB_SOVEREIGN_FUND),
         ('EMPLOYMENT_TERMINATION_PAYMENT', InstitutionPurpose.EMPLOYMENT_TERMINATION_PAYMENT),
-        ('OTHER', InstitutionPurpose.OTHER),
+        ('OTHERS', InstitutionPurpose.OTHERS),
     ],
 )
 def test_institution_purpose_enum(input_value: str, expected_enum: InstitutionPurpose) -> None:
@@ -352,7 +352,7 @@ def test_institution_purpose_enum(input_value: str, expected_enum: InstitutionPu
         (InstitutionPurpose.SETTLEMENT_ACCOUNT_TO_CURRENT_ACCOUNT_TRANSFER, '96'),
         (InstitutionPurpose.FX_SALE_BY_FSB_SOVEREIGN_FUND, '98'),
         (InstitutionPurpose.EMPLOYMENT_TERMINATION_PAYMENT, '99'),
-        (InstitutionPurpose.OTHER, '99999'),
+        (InstitutionPurpose.OTHERS, '99999'),
     ],
 )
 def test_institution_purpose_values_to_xml_value(input_value: InstitutionPurpose, expected_enum: str) -> None:
@@ -509,7 +509,7 @@ def test_institution_purpose_values_to_xml_value(input_value: InstitutionPurpose
         ('96', InstitutionPurpose.SETTLEMENT_ACCOUNT_TO_CURRENT_ACCOUNT_TRANSFER),
         ('98', InstitutionPurpose.FX_SALE_BY_FSB_SOVEREIGN_FUND),
         ('99', InstitutionPurpose.EMPLOYMENT_TERMINATION_PAYMENT),
-        ('99999', InstitutionPurpose.OTHER),
+        ('99999', InstitutionPurpose.OTHERS),
     ],
 )
 def test_institution_purpose_values_from_xml_value(input_value: str, expected_enum: InstitutionPurpose) -> None:
@@ -708,7 +708,7 @@ def test_institution_purpose_values_from_xml_value(input_value: str, expected_en
         ),
         ('fx_sale_by_fsb_sovereign_fund', InstitutionPurpose.FX_SALE_BY_FSB_SOVEREIGN_FUND),
         ('employment_termination_payment', InstitutionPurpose.EMPLOYMENT_TERMINATION_PAYMENT),
-        ('other', InstitutionPurpose.OTHER),
+        ('others', InstitutionPurpose.OTHERS),
     ],
 )
 def test_institution_purpose_accepts_case_insensitive_values(

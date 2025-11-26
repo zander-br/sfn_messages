@@ -170,7 +170,7 @@ def test_str0008_business_rules_missing_description_for_other_purpose() -> None:
     with pytest.raises(ValidationError) as exc:
         STR0008.model_validate(params)
     error_message = str(exc.value)
-    assert 'description is required when purpose is OTHER' in error_message
+    assert 'description is required when purpose is OTHERS' in error_message
 
 
 def test_str0008_business_rules_missing_debtor_branch_for_debtor_account_type_is_not_payment() -> None:
@@ -742,7 +742,7 @@ def test_str0008r2_business_rules_missing_description_for_other_purpose() -> Non
     with pytest.raises(ValidationError) as exc:
         STR0008R2.model_validate(params)
     error_message = str(exc.value)
-    assert 'description is required when purpose is OTHER' in error_message
+    assert 'description is required when purpose is OTHERS' in error_message
 
 
 def test_str0008r2_business_rules_missing_debtor_branch_for_debtor_account_type_is_not_payment() -> None:

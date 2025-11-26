@@ -7,6 +7,7 @@ from sfn_messages.core.types import (
     Branch,
     Cnpj,
     Cpf,
+    CreditContractNumber,
     CreditorName,
     CustomerPurpose,
     DebtorName,
@@ -16,6 +17,7 @@ from sfn_messages.core.types import (
     OperationNumber,
     PersonType,
     Priority,
+    SenderName,
     StrControlNumber,
     StrSettlementStatus,
     SystemDomain,
@@ -44,12 +46,20 @@ class DescriptionModel(BaseModel):
     description: Description
 
 
+class SenderNameModel(BaseModel):
+    sender_name: SenderName
+
+
 class DebtorNameModel(BaseModel):
     debtor_name: DebtorName
 
 
 class CreditorNameModel(BaseModel):
     creditor_name: CreditorName
+
+
+class CreditContractNumberModel(BaseModel):
+    credit_contract_number: CreditContractNumber
 
 
 class InstitutionControlNumberModel(BaseModel):
@@ -238,6 +248,36 @@ def test_debtor_name_accepts_whitespace() -> None:
 def test_debtor_name_rejects_invalid_values(debtor_name: str) -> None:
     with pytest.raises(ValidationError) as exc:
         DebtorNameModel(debtor_name=debtor_name)
+    assert 'String should have at most 80 characters' in str(exc.value)
+
+
+@pytest.mark.parametrize(
+    'sender_name',
+    [
+        'A' * 1,
+        'John Doe',
+        'A' * 80,
+    ],
+)
+def test_sender_name_accepts_valid_values(sender_name: str) -> None:
+    model = SenderNameModel(sender_name=sender_name)
+    assert model.sender_name == sender_name
+
+
+def test_sender_name_accepts_whitespace() -> None:
+    model = SenderNameModel(sender_name='  Jane Smith  ')
+    assert model.sender_name == 'Jane Smith'
+
+
+@pytest.mark.parametrize(
+    'sender_name',
+    [
+        'A' * 81,  # Too long
+    ],
+)
+def test_sender_name_rejects_invalid_values(sender_name: str) -> None:
+    with pytest.raises(ValidationError) as exc:
+        SenderNameModel(sender_name=sender_name)
     assert 'String should have at most 80 characters' in str(exc.value)
 
 
@@ -1481,3 +1521,35 @@ def test_transfer_return_reason_accepts_case_insensitive_values(
 def test_transfer_return_reason_rejects_invalid_value(invalid_value: str) -> None:
     with pytest.raises(ValueError, match=invalid_value):
         TransferReturnReason(invalid_value)
+
+
+@pytest.mark.parametrize(
+    'credit_contract_number',
+    [
+        'A' * 20 + '1' * 20,
+        'a' * 20 + '1' * 20,
+        'A' * 1,
+    ],
+)
+def test_credit_contract_number_accepts_valid_values(credit_contract_number: str) -> None:
+    model = CreditContractNumberModel(credit_contract_number=credit_contract_number)
+    assert model.credit_contract_number == credit_contract_number
+
+
+def test_credit_contract_number_accepts_whitespace() -> None:
+    model = CreditContractNumberModel(credit_contract_number='  AAAAAAAAAAAAAAAAAAAA11111111111111111111  ')
+    assert model.credit_contract_number == 'AAAAAAAAAAAAAAAAAAAA11111111111111111111'
+
+
+@pytest.mark.parametrize(
+    'credit_contract_number',
+    [
+        'A' * 41,  # Too long
+        'A' * 20 + '!' * 20,  # Special character
+    ],
+)
+def test_credit_contract_number_rejects_invalid_formats(credit_contract_number: str) -> None:
+    with pytest.raises(ValidationError) as exc:
+        CreditContractNumberModel(credit_contract_number=credit_contract_number)
+    msg = str(exc.value)
+    assert 'String should have at most 40 characters' in msg or "String should match pattern '^[A-Za-z0-9]+$'" in msg

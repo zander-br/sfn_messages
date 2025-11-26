@@ -153,7 +153,7 @@ class InstitutionPurpose(EnumMixin, StrEnum):
     SETTLEMENT_ACCOUNT_TO_CURRENT_ACCOUNT_TRANSFER = 'SETTLEMENT_ACCOUNT_TO_CURRENT_ACCOUNT_TRANSFER'
     FX_SALE_BY_FSB_SOVEREIGN_FUND = 'FX_SALE_BY_FSB_SOVEREIGN_FUND'
     EMPLOYMENT_TERMINATION_PAYMENT = 'EMPLOYMENT_TERMINATION_PAYMENT'
-    OTHER = 'OTHER'
+    OTHERS = 'OTHERS'
 
     @classmethod
     def _value_to_xml(cls) -> dict[InstitutionPurpose, str]:
@@ -305,7 +305,7 @@ class InstitutionPurpose(EnumMixin, StrEnum):
             cls.SETTLEMENT_ACCOUNT_TO_CURRENT_ACCOUNT_TRANSFER: '96',
             cls.FX_SALE_BY_FSB_SOVEREIGN_FUND: '98',
             cls.EMPLOYMENT_TERMINATION_PAYMENT: '99',
-            cls.OTHER: '99999',
+            cls.OTHERS: '99999',
         }
 
 

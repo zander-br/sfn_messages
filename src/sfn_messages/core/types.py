@@ -506,6 +506,16 @@ type DebtorName = Annotated[
     ),
 ]
 
+type SenderName = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            max_length=80,
+            strip_whitespace=True,
+        )
+    ),
+]
+
 type CreditorName = Annotated[
     str,
     GetPydanticSchema(
@@ -585,6 +595,17 @@ type StrControlNumber = Annotated[
             pattern=r'^STR\d{4}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{9}$',
             strip_whitespace=True,
             to_upper=True,
+        )
+    ),
+]
+
+type CreditContractNumber = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            max_length=40,
+            strip_whitespace=True,
+            pattern=r'^[A-Za-z0-9]+$',
         )
     ),
 ]
