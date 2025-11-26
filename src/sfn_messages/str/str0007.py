@@ -29,6 +29,7 @@ from .types import InstitutionPurpose
 
 PATH = 'DOC/SISMSG/STR0007'
 PATH_R1 = 'DOC/SISMSG/STR0007R1'
+PATH_R2 = 'DOC/SISMSG/STR0007R2'
 
 
 class STR0007(BaseMessage):
@@ -110,3 +111,72 @@ class STR0007R1(BaseMessage):
     str_settlement_status: Annotated[StrSettlementStatus, XmlPath(f'{PATH_R1}/SitLancSTR/text()')]
     settlement_timestamp: Annotated[datetime, XmlPath(f'{PATH_R1}/DtHrSit/text()')]
     settlement_date: Annotated[date, XmlPath(f'{PATH_R1}/DtMovto/text()')]
+
+
+class STR0007R2(BaseMessage):
+    message_code: Annotated[Literal['STR0007R2'], XmlPath(f'{PATH_R2}/CodMsg/text()')] = 'STR0007R2'
+    str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_R2}/NumCtrlSTR/text()')]
+    vendor_timestamp: Annotated[datetime, XmlPath(f'{PATH_R2}/DtHrBC/text()')]
+    debtor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R2}/ISPBIFDebtd/text()')]
+    sender_type: Annotated[PersonType | None, XmlPath(f'{PATH_R2}/TpPessoaRemet/text()')] = None
+    sender_document: Annotated[Cnpj | Cpf | None, XmlPath(f'{PATH_R2}/CNPJ_CPFRemet/text()')] = None
+    sender_name: Annotated[SenderName | None, XmlPath(f'{PATH_R2}/NomRemet/text()')] = None
+    creditor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R2}/ISPBIFCredtd/text()')]
+    creditor_branch: Annotated[Branch | None, XmlPath(f'{PATH_R2}/AgCredtd/text()')] = None
+    creditor_account_type: Annotated[AccountType, XmlPath(f'{PATH_R2}/TpCtCredtd/text()')]
+    creditor_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_R2}/CtCredtd/text()')] = None
+    creditor_payment_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_R2}/CtPgtoCredtd/text()')] = None
+    creditor_type: Annotated[PersonType, XmlPath(f'{PATH_R2}/TpPessoaCredtd/text()')]
+    creditor_document: Annotated[Cnpj | Cpf, XmlPath(f'{PATH_R2}/CNPJ_CPFCliCredtd/text()')]
+    creditor_name: Annotated[CreditorName, XmlPath(f'{PATH_R2}/NomCliCredtd/text()')]
+    credit_contract_number: Annotated[CreditContractNumber | None, XmlPath(f'{PATH_R2}/NumCtrdCredtd/text()')] = None
+    amount: Annotated[Decimal, XmlPath(f'{PATH_R2}/VlrLanc/text()')]
+    purpose: Annotated[InstitutionPurpose, XmlPath(f'{PATH_R2}/FinlddIF/text()')]
+    transaction_id: Annotated[TransactionId | None, XmlPath(f'{PATH_R2}/CodIdentdTransf/text()')] = None
+    description: Annotated[Description | None, XmlPath(f'{PATH_R2}/Hist/text()')] = None
+    settlement_date: Annotated[date, XmlPath(f'{PATH_R2}/DtMovto/text()')]
+
+    @model_validator(mode='after')
+    def validate_business_rules(self) -> STR0007R2:
+        errors: list[str] = []
+        self._validate_party_document(party='sender', errors=errors)
+        self._validate_party_document(party='creditor', errors=errors)
+        self._validate_account_requirements(party='creditor', errors=errors)
+
+        if self.purpose == InstitutionPurpose.OTHERS and not self.description:
+            errors.append('description is required when purpose is OTHERS')
+
+        if errors:
+            raise ValueError('; '.join(errors))
+
+        return self
+
+    def _validate_party_document(self, party: str, errors: list[str]) -> None:
+        prefix = f'{party}_'
+
+        person_type = getattr(self, prefix + 'type')
+        document = getattr(self, prefix + 'document')
+
+        if person_type == PersonType.BUSINESS and not CNPJ().validate(document):
+            errors.append(f'Invalid CNPJ for {party}_type BUSINESS')
+        if person_type == PersonType.INDIVIDUAL and not CPF().validate(document):
+            errors.append(f'Invalid CPF for {party}_type INDIVIDUAL')
+
+    def _validate_account_requirements(self, party: str, errors: list[str]) -> None:
+        prefix = f'{party}_'
+
+        account_type = getattr(self, prefix + 'account_type')
+        branch = getattr(self, prefix + 'branch')
+        account_number = getattr(self, prefix + 'account_number')
+        payment_account_number = getattr(self, prefix + 'payment_account_number')
+
+        if account_type == AccountType.PAYMENT:
+            if payment_account_number is None:
+                errors.append(f'{party}_payment_account_number is required when {party}_account_type is PAYMENT')
+            return
+
+        if branch is None:
+            errors.append(f'{party}_branch is required when {party}_account_type is not PAYMENT')
+
+        if account_number is None:
+            errors.append(f'{party}_account_number is required when {party}_account_type is not PAYMENT')
