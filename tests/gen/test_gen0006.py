@@ -31,7 +31,7 @@ def make_valid_gen0006r1_params() -> dict[str, Any]:
         'institution_control_number': '123',
         'institution_ispb': '31680151',
         'operation_number': '316801512509080000001',
-        'str_timestamp': '2025-11-20T15:30:00+00:00',
+        'vendor_timestamp': '2025-11-20T15:30:00+00:00',
         'settlement_date': '2025-11-20',
         'system_domain': 'SPB01',
         'to_ispb': '31680151',
@@ -251,7 +251,7 @@ def test_gen0006r1_valid_model() -> None:
     assert gen0006r1.institution_ispb == '31680151'
     assert gen0006r1.message_code == 'GEN0006R1'
     assert gen0006r1.operation_number == '316801512509080000001'
-    assert gen0006r1.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert gen0006r1.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert gen0006r1.settlement_date == date(2025, 11, 20)
     assert gen0006r1.system_domain == SystemDomain.SPB01
     assert gen0006r1.to_ispb == '31680151'
@@ -267,7 +267,7 @@ def test_gen0006r1_missing_required_fields() -> None:
         'institution_ispb',
         'operation_number',
         'to_ispb',
-        'str_timestamp',
+        'vendor_timestamp',
         'from_ispb',
         'institution_control_number',
         'settlement_date',
@@ -331,7 +331,7 @@ def test_gen0006r1_from_xml() -> None:
     assert gen0006r1.institution_ispb == '31680151'
     assert gen0006r1.message_code == 'GEN0006R1'
     assert gen0006r1.operation_number == '316801512509080000001'
-    assert gen0006r1.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert gen0006r1.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert gen0006r1.settlement_date == date(2025, 11, 20)
     assert gen0006r1.system_domain == SystemDomain.SPB01
     assert gen0006r1.to_ispb == '31680151'
@@ -371,6 +371,6 @@ def test_gen0006r1_from_xml_missing_required_fields() -> None:
 
     missing_fields = extract_missing_fields(exc.value)
     assert missing_fields == {
-        'str_timestamp',
+        'vendor_timestamp',
         'institution_ispb',
     }

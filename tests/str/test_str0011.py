@@ -29,7 +29,7 @@ def make_valid_str0011r1_params() -> dict[str, Any]:
         'to_ispb': '00038166',
         'institution_control_number': '31680151202509090425',
         'institution_ispb': '31680151',
-        'str_timestamp': '2025-11-20T15:30:00+00:00',
+        'vendor_timestamp': '2025-11-20T15:30:00+00:00',
         'settlement_date': '2025-09-08',
     }
 
@@ -174,7 +174,7 @@ def test_str0011r1_valid_params() -> None:
     assert str0011r1.institution_control_number == '31680151202509090425'
     assert str0011r1.institution_ispb == '31680151'
     assert str0011r1.settlement_date == date(2025, 9, 8)
-    assert str0011r1.str_timestamp == datetime(2025, 11, 20, 15, 30, 0, tzinfo=UTC)
+    assert str0011r1.vendor_timestamp == datetime(2025, 11, 20, 15, 30, 0, tzinfo=UTC)
 
 
 def test_str0011r1_missing_required_fields() -> None:
@@ -188,7 +188,7 @@ def test_str0011r1_missing_required_fields() -> None:
         'operation_number',
         'from_ispb',
         'institution_control_number',
-        'str_timestamp',
+        'vendor_timestamp',
         'to_ispb',
         'system_domain',
     }
@@ -251,7 +251,7 @@ def test_str0011r1_from_xml() -> None:
     assert str0011r1.institution_control_number == '31680151202509090425'
     assert str0011r1.institution_ispb == '31680151'
     assert str0011r1.settlement_date == date(2025, 9, 8)
-    assert str0011r1.str_timestamp == datetime(2025, 11, 20, 15, 30, 0, tzinfo=UTC)
+    assert str0011r1.vendor_timestamp == datetime(2025, 11, 20, 15, 30, 0, tzinfo=UTC)
 
 
 def test_str0011r1_roundtrip() -> None:
@@ -287,5 +287,5 @@ def test_str0011r1_from_xml_missing_required_fields() -> None:
         'institution_ispb',
         'settlement_date',
         'institution_control_number',
-        'str_timestamp',
+        'vendor_timestamp',
     }

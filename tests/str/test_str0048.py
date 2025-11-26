@@ -39,7 +39,7 @@ def make_valid_str0048r1_params() -> dict[str, Any]:
         'debtor_institution_ispb': '31680151',
         'str_control_number': 'STR20250101000000001',
         'str_settlement_status': 'EFFECTIVE',
-        'str_timestamp': '2025-11-20T15:30:00+00:00',
+        'settlement_timestamp': '2025-11-20T15:30:00+00:00',
         'settlement_date': '2025-09-08',
         'operation_number': '316801512509080000001',
         'to_ispb': '00038166',
@@ -54,7 +54,7 @@ def make_valid_str0048r2_params() -> dict[str, Any]:
         'system_domain': 'SPB01',
         'to_ispb': '00038166',
         'str_control_number': 'STR20250101000000002',
-        'str_timestamp': '2025-11-20T15:30:00+00:00',
+        'vendor_timestamp': '2025-11-20T15:30:00+00:00',
         'debtor_institution_ispb': '31680151',
         'creditor_institution_ispb': '00038166',
         'amount': 100.00,
@@ -325,7 +325,7 @@ def test_str0048r1_valid_params() -> None:
     assert str0048r1.debtor_institution_ispb == '31680151'
     assert str0048r1.str_control_number == 'STR20250101000000001'
     assert str0048r1.str_settlement_status == 'EFFECTIVE'
-    assert str0048r1.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0048r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0048r1.settlement_date == date(2025, 9, 8)
 
 
@@ -340,7 +340,7 @@ def test_str0048r1_missing_required_fields() -> None:
         'debtor_institution_ispb',
         'str_control_number',
         'str_settlement_status',
-        'str_timestamp',
+        'settlement_timestamp',
         'settlement_date',
         'to_ispb',
         'system_domain',
@@ -407,7 +407,7 @@ def test_str0048r1_from_xml() -> None:
     assert str0048r1.debtor_institution_ispb == '31680151'
     assert str0048r1.str_control_number == 'STR20250101000000001'
     assert str0048r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
-    assert str0048r1.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0048r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0048r1.settlement_date == date(2025, 9, 8)
 
 
@@ -445,7 +445,7 @@ def test_str0048r1_from_xml_missing_required_fields() -> None:
         'str_control_number',
         'str_settlement_status',
         'institution_control_number',
-        'str_timestamp',
+        'settlement_timestamp',
         'settlement_date',
     }
 
@@ -455,7 +455,7 @@ def test_str0048r2_valid_params() -> None:
     str0048r2 = STR0048R2.model_validate(params)
     assert isinstance(str0048r2, STR0048R2)
     assert str0048r2.str_control_number == 'STR20250101000000002'
-    assert str0048r2.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0048r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0048r2.debtor_institution_ispb == '31680151'
     assert str0048r2.creditor_institution_ispb == '00038166'
     assert str0048r2.amount == Decimal('100.00')
@@ -475,7 +475,7 @@ def test_str0048r2_missing_required_fields() -> None:
         'from_ispb',
         'to_ispb',
         'str_control_number',
-        'str_timestamp',
+        'vendor_timestamp',
         'debtor_institution_ispb',
         'creditor_institution_ispb',
         'amount',
@@ -587,7 +587,7 @@ def test_str0048r2_from_xml() -> None:
     str0048r2 = STR0048R2.from_xml(xml)
     assert isinstance(str0048r2, STR0048R2)
     assert str0048r2.str_control_number == 'STR20250101000000002'
-    assert str0048r2.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0048r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0048r2.debtor_institution_ispb == '31680151'
     assert str0048r2.creditor_institution_ispb == '00038166'
     assert str0048r2.amount == Decimal('100.00')
@@ -627,7 +627,7 @@ def test_str0048r2_from_xml_missing_optional_fields() -> None:
     str0048r2 = STR0048R2.from_xml(xml)
     assert isinstance(str0048r2, STR0048R2)
     assert str0048r2.str_control_number == 'STR20250101000000002'
-    assert str0048r2.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0048r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0048r2.debtor_institution_ispb == '31680151'
     assert str0048r2.creditor_institution_ispb == '00038166'
     assert str0048r2.amount == Decimal('100.00')
@@ -672,7 +672,7 @@ def test_str0048r2_from_xml_missing_required_fields() -> None:
         'debtor_institution_ispb',
         'creditor_institution_ispb',
         'portability_return_reason',
-        'str_timestamp',
+        'vendor_timestamp',
         'amount',
         'str_control_number',
         'original_str_control_number',

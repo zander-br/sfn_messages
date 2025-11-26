@@ -48,7 +48,7 @@ def make_valid_str0007r1_params() -> dict[str, Any]:
         'debtor_institution_ispb': '31680151',
         'str_control_number': 'STR20250101000000001',
         'str_settlement_status': 'EFFECTIVE',
-        'str_timestamp': '2025-11-20T15:30:00+00:00',
+        'settlement_timestamp': '2025-11-20T15:30:00+00:00',
         'settlement_date': '2025-09-08',
         'operation_number': '316801512509080000001',
         'to_ispb': '00038166',
@@ -422,7 +422,7 @@ def test_str0007r1_valid_model() -> None:
     assert str0007r1.message_code == 'STR0007R1'
     assert str0007r1.operation_number == '316801512509080000001'
     assert str0007r1.settlement_date == date(2025, 9, 8)
-    assert str0007r1.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0007r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0007r1.str_control_number == 'STR20250101000000001'
     assert str0007r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
     assert str0007r1.to_ispb == '00038166'
@@ -436,7 +436,7 @@ def test_str0007r1_missing_required_fields() -> None:
     assert missing_fields == {
         'to_ispb',
         'str_control_number',
-        'str_timestamp',
+        'settlement_timestamp',
         'str_settlement_status',
         'institution_control_number',
         'debtor_institution_ispb',
@@ -507,7 +507,7 @@ def test_str0007r1_from_xml() -> None:
     assert str0007r1.message_code == 'STR0007R1'
     assert str0007r1.operation_number == '316801512509080000001'
     assert str0007r1.settlement_date == date(2025, 9, 8)
-    assert str0007r1.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0007r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0007r1.str_control_number == 'STR20250101000000001'
     assert str0007r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
     assert str0007r1.to_ispb == '00038166'
@@ -548,5 +548,5 @@ def test_str0007r1_from_xml_missing_required_fields() -> None:
         'str_settlement_status',
         'str_control_number',
         'institution_control_number',
-        'str_timestamp',
+        'settlement_timestamp',
     }

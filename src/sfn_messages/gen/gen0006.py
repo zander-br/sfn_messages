@@ -21,5 +21,5 @@ class GEN0006R1(BaseMessage):
     message_code: Annotated[Literal['GEN0006R1'], XmlPath('DOC/SISMSG/GEN0006R1/CodMsg/text()')] = 'GEN0006R1'
     institution_control_number: Annotated[InstitutionControlNumber, XmlPath('DOC/SISMSG/GEN0006R1/NumCtrlIF/text()')]
     institution_ispb: Annotated[Ispb, XmlPath('DOC/SISMSG/GEN0006R1/ISPBIF/text()')]
-    str_timestamp: Annotated[datetime, XmlPath('DOC/SISMSG/GEN0006R1/DtHrBC/text()')]
+    vendor_timestamp: Annotated[datetime, XmlPath('DOC/SISMSG/GEN0006R1/DtHrBC/text()')]
     settlement_date: Annotated[date, XmlPath('DOC/SISMSG/GEN0006R1/DtMovto/text()')]

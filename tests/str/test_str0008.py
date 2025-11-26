@@ -49,7 +49,7 @@ def make_valid_str0008r1_params() -> dict[str, Any]:
         'debtor_institution_ispb': '31680151',
         'str_control_number': 'STR20250101000000001',
         'str_settlement_status': 'EFFECTIVE',
-        'str_timestamp': '2025-11-20T15:30:00+00:00',
+        'settlement_timestamp': '2025-11-20T15:30:00+00:00',
         'settlement_date': '2025-09-08',
         'operation_number': '316801512509080000001',
         'to_ispb': '00038166',
@@ -82,7 +82,7 @@ def make_valid_str0008r2_params() -> dict[str, Any]:
         'system_domain': 'SPB01',
         'to_ispb': '00038166',
         'transaction_id': '0000000000000000000000001',
-        'str_timestamp': '2025-11-20T15:30:00+00:00',
+        'vendor_timestamp': '2025-11-20T15:30:00+00:00',
         'str_control_number': 'STR20250101000000001',
     }
 
@@ -530,7 +530,7 @@ def test_str0008r1_valid_model() -> None:
     assert str0008r1.message_code == 'STR0008R1'
     assert str0008r1.operation_number == '316801512509080000001'
     assert str0008r1.settlement_date == date(2025, 9, 8)
-    assert str0008r1.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0008r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0008r1.str_control_number == 'STR20250101000000001'
     assert str0008r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
     assert str0008r1.to_ispb == '00038166'
@@ -544,7 +544,7 @@ def test_str0008r1_missing_required_fields() -> None:
     assert missing_fields == {
         'to_ispb',
         'str_control_number',
-        'str_timestamp',
+        'settlement_timestamp',
         'str_settlement_status',
         'institution_control_number',
         'debtor_institution_ispb',
@@ -615,7 +615,7 @@ def test_str0008r1_from_xml() -> None:
     assert str0008r1.message_code == 'STR0008R1'
     assert str0008r1.operation_number == '316801512509080000001'
     assert str0008r1.settlement_date == date(2025, 9, 8)
-    assert str0008r1.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0008r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0008r1.str_control_number == 'STR20250101000000001'
     assert str0008r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
     assert str0008r1.to_ispb == '00038166'
@@ -656,7 +656,7 @@ def test_str0008r1_from_xml_missing_required_fields() -> None:
         'str_settlement_status',
         'str_control_number',
         'institution_control_number',
-        'str_timestamp',
+        'settlement_timestamp',
     }
 
 
@@ -689,7 +689,7 @@ def test_str0008r2_valid_model() -> None:
     assert str0008r2.system_domain == 'SPB01'
     assert str0008r2.to_ispb == '00038166'
     assert str0008r2.transaction_id == '0000000000000000000000001'
-    assert str0008r2.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0008r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0008r2.str_control_number == 'STR20250101000000001'
 
 
@@ -715,7 +715,7 @@ def test_str0008r2_missing_required_fields() -> None:
         'creditor_name',
         'purpose',
         'debtor_account_type',
-        'str_timestamp',
+        'vendor_timestamp',
         'debtor_type',
     }
 
@@ -967,7 +967,7 @@ def test_str0008r2_from_xml() -> None:
     assert str0008r2.system_domain == 'SPB01'
     assert str0008r2.to_ispb == '00038166'
     assert str0008r2.transaction_id == '0000000000000000000000001'
-    assert str0008r2.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0008r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
 
 
 def test_str0008r2_from_xml_omit_optional_fields() -> None:
@@ -1033,7 +1033,7 @@ def test_str0008r2_from_xml_omit_optional_fields() -> None:
     assert str0008r2.system_domain == 'SPB01'
     assert str0008r2.to_ispb == '00038166'
     assert str0008r2.transaction_id is None
-    assert str0008r2.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0008r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
 
 
 def test_str0008r2_roundtrip() -> None:
@@ -1073,7 +1073,7 @@ def test_str0008r2_from_xml_missing_required_fields() -> None:
         'creditor_institution_ispb',
         'creditor_account_type',
         'settlement_date',
-        'str_timestamp',
+        'vendor_timestamp',
         'purpose',
         'debtor_account_type',
         'amount',
