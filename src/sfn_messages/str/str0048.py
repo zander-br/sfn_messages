@@ -1,4 +1,4 @@
-from datetime import date, time
+from datetime import date, datetime, time
 from decimal import Decimal
 from typing import Annotated, Literal
 
@@ -9,11 +9,13 @@ from sfn_messages.core.types import (
     Ispb,
     Priority,
     StrControlNumber,
+    StrSettlementStatus,
 )
 
 from .types import PortabilityReturnReason
 
 PATH = 'DOC/SISMSG/STR0008'
+PATH_R1 = 'DOC/SISMSG/STR0008R1'
 
 
 class STR0048(BaseMessage):
@@ -30,3 +32,13 @@ class STR0048(BaseMessage):
     scheduled_time: Annotated[time | None, XmlPath(f'{PATH}/HrAgendt/text()')] = None
     priority: Annotated[Priority | None, XmlPath(f'{PATH}/NivelPref/text()')] = None
     settlement_date: Annotated[date, XmlPath(f'{PATH}/DtMovto/text()')]
+
+
+class STR0048R1(BaseMessage):
+    message_code: Annotated[Literal['STR0048R1'], XmlPath(f'{PATH_R1}/CodMsg/text()')] = 'STR0048R1'
+    institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_R1}/NumCtrlIF/text()')]
+    debtor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R1}/ISPBIFDebtd/text()')]
+    str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_R1}/NumCtrlSTR/text()')]
+    str_settlement_status: Annotated[StrSettlementStatus, XmlPath(f'{PATH_R1}/SitLancSTR/text()')]
+    str_timestamp: Annotated[datetime, XmlPath(f'{PATH_R1}/DtHrSit/text()')]
+    settlement_date: Annotated[date, XmlPath(f'{PATH_R1}/DtMovto/text()')]
