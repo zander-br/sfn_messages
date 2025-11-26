@@ -314,7 +314,7 @@ def test_str0004_from_xml_missing_required_fields() -> None:
     }
 
 
-def test_str0008r1_valid_model() -> None:
+def test_str0004r1_valid_model() -> None:
     params = make_valid_str0004r1_params()
     str0004r1 = STR0004R1.model_validate(params)
     assert isinstance(str0004r1, STR0004R1)
@@ -379,7 +379,7 @@ def test_str0004r1_to_xml() -> None:
     assert normalize_xml(expected_xml) == normalize_xml(xml)
 
 
-def test_str0008r1_from_xml() -> None:
+def test_str0004r1_from_xml() -> None:
     xml = """<?xml version="1.0"?>
     <DOC>
         <BCMSG>

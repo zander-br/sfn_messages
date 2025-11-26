@@ -1,12 +1,12 @@
-from datetime import date, time
+from datetime import UTC, date, datetime, time
 from decimal import Decimal
 from typing import Any
 
 import pytest
 from pydantic import ValidationError
 
-from sfn_messages.core.types import TransferReturnReason
-from sfn_messages.str.str0010 import STR0010
+from sfn_messages.core.types import StrSettlementStatus, TransferReturnReason
+from sfn_messages.str.str0010 import STR0010, STR0010R1
 from tests.conftest import extract_missing_fields, normalize_xml
 
 
@@ -27,6 +27,21 @@ def make_valid_str0010_params() -> dict[str, Any]:
         'scheduled_time': '15:30:00',
         'priority': 'MEDIUM',
         'settlement_date': '2025-09-08',
+    }
+
+
+def make_valid_str0010r1_params() -> dict[str, Any]:
+    return {
+        'institution_control_number': '31680151202509090425',
+        'from_ispb': '31680151',
+        'debtor_institution_ispb': '31680151',
+        'str_control_number': 'STR20250101000000001',
+        'str_settlement_status': 'EFFECTIVE',
+        'provider_timestamp': '2025-11-20T15:30:00+00:00',
+        'settlement_date': '2025-09-08',
+        'operation_number': '316801512509080000001',
+        'to_ispb': '00038166',
+        'system_domain': 'SPB01',
     }
 
 
@@ -268,4 +283,145 @@ def test_str0010_from_xml_missing_required_fields() -> None:
         'amount',
         'transfer_return_reason',
         'original_str_control_number',
+    }
+
+
+def test_str0010r1_valid_model() -> None:
+    params = make_valid_str0010r1_params()
+    str0010r1 = STR0010R1.model_validate(params)
+    assert isinstance(str0010r1, STR0010R1)
+    assert str0010r1.debtor_institution_ispb == '31680151'
+    assert str0010r1.from_ispb == '31680151'
+    assert str0010r1.institution_control_number == '31680151202509090425'
+    assert str0010r1.message_code == 'STR0010R1'
+    assert str0010r1.operation_number == '316801512509080000001'
+    assert str0010r1.settlement_date == date(2025, 9, 8)
+    assert str0010r1.provider_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0010r1.str_control_number == 'STR20250101000000001'
+    assert str0010r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
+    assert str0010r1.to_ispb == '00038166'
+    assert str0010r1.system_domain == 'SPB01'
+
+
+def test_str0010r1_missing_required_fields() -> None:
+    with pytest.raises(ValidationError) as exc:
+        STR0010R1.model_validate({})
+    missing_fields = extract_missing_fields(exc.value)
+    assert missing_fields == {
+        'to_ispb',
+        'str_control_number',
+        'provider_timestamp',
+        'str_settlement_status',
+        'institution_control_number',
+        'debtor_institution_ispb',
+        'system_domain',
+        'operation_number',
+        'from_ispb',
+        'settlement_date',
+    }
+
+
+def test_str0010r1_to_xml() -> None:
+    params = make_valid_str0010r1_params()
+    str0010r1 = STR0010R1.model_validate(params)
+    xml = str0010r1.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC>
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0010R1>
+                <CodMsg>STR0010R1</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
+                <SitLancSTR>1</SitLancSTR>
+                <DtHrSit>2025-11-20 15:30:00+00:00</DtHrSit>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0010R1>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_str0010r1_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC>
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0010R1>
+                <CodMsg>STR0010R1</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
+                <SitLancSTR>1</SitLancSTR>
+                <DtHrSit>2025-11-20 15:30:00+00:00</DtHrSit>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0010R1>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0010r1 = STR0010R1.from_xml(xml)
+    assert isinstance(str0010r1, STR0010R1)
+    assert str0010r1.debtor_institution_ispb == '31680151'
+    assert str0010r1.from_ispb == '31680151'
+    assert str0010r1.institution_control_number == '31680151202509090425'
+    assert str0010r1.message_code == 'STR0010R1'
+    assert str0010r1.operation_number == '316801512509080000001'
+    assert str0010r1.settlement_date == date(2025, 9, 8)
+    assert str0010r1.provider_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0010r1.str_control_number == 'STR20250101000000001'
+    assert str0010r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
+    assert str0010r1.to_ispb == '00038166'
+    assert str0010r1.system_domain == 'SPB01'
+
+
+def test_str0010r1_roundtrip() -> None:
+    params = make_valid_str0010r1_params()
+    str0010r1 = STR0010R1.model_validate(params)
+    xml = str0010r1.to_xml()
+    str0010r1_from_xml = STR0010R1.from_xml(xml)
+    assert str0010r1 == str0010r1_from_xml
+
+
+def test_str0010r1_from_xml_missing_required_fields() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC>
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0010R1>
+                <CodMsg>STR0010R1</CodMsg>
+            </STR0010R1>
+        </SISMSG>
+    </DOC>
+    """
+
+    with pytest.raises(ValidationError) as exc:
+        STR0010R1.from_xml(xml)
+    missing_fields = extract_missing_fields(exc.value)
+    assert missing_fields == {
+        'settlement_date',
+        'debtor_institution_ispb',
+        'str_settlement_status',
+        'str_control_number',
+        'institution_control_number',
+        'provider_timestamp',
     }
