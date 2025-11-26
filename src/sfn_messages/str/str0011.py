@@ -20,5 +20,5 @@ class STR0011R1(BaseMessage):
     message_code: Annotated[Literal['STR0011'], XmlPath(f'{PATH_R1}/CodMsg/text()')] = 'STR0011'
     institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_R1}/NumCtrlIF/text()')]
     institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R1}/ISPBIF/text()')]
-    provider_timestamp: Annotated[datetime, XmlPath(f'{PATH_R1}/DtHrBC/text()')]
+    str_timestamp: Annotated[datetime, XmlPath(f'{PATH_R1}/DtHrBC/text()')]
     settlement_date: Annotated[date, XmlPath(f'{PATH_R1}/DtMovto/text()')]

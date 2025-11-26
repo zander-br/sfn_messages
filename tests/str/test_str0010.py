@@ -37,7 +37,7 @@ def make_valid_str0010r1_params() -> dict[str, Any]:
         'debtor_institution_ispb': '31680151',
         'str_control_number': 'STR20250101000000001',
         'str_settlement_status': 'EFFECTIVE',
-        'provider_timestamp': '2025-11-20T15:30:00+00:00',
+        'str_timestamp': '2025-11-20T15:30:00+00:00',
         'settlement_date': '2025-09-08',
         'operation_number': '316801512509080000001',
         'to_ispb': '00038166',
@@ -59,7 +59,7 @@ def make_valid_str0010r2_params() -> dict[str, Any]:
         'str_control_number': 'STR20250101000000002',
         'description': 'Return Payment for services',
         'settlement_date': '2025-09-08',
-        'provider_timestamp': '2025-11-20T15:30:00+00:00',
+        'str_timestamp': '2025-11-20T15:30:00+00:00',
     }
 
 
@@ -314,7 +314,7 @@ def test_str0010r1_valid_model() -> None:
     assert str0010r1.message_code == 'STR0010R1'
     assert str0010r1.operation_number == '316801512509080000001'
     assert str0010r1.settlement_date == date(2025, 9, 8)
-    assert str0010r1.provider_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0010r1.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0010r1.str_control_number == 'STR20250101000000001'
     assert str0010r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
     assert str0010r1.to_ispb == '00038166'
@@ -328,7 +328,7 @@ def test_str0010r1_missing_required_fields() -> None:
     assert missing_fields == {
         'to_ispb',
         'str_control_number',
-        'provider_timestamp',
+        'str_timestamp',
         'str_settlement_status',
         'institution_control_number',
         'debtor_institution_ispb',
@@ -400,7 +400,7 @@ def test_str0010r1_from_xml() -> None:
     assert str0010r1.message_code == 'STR0010R1'
     assert str0010r1.operation_number == '316801512509080000001'
     assert str0010r1.settlement_date == date(2025, 9, 8)
-    assert str0010r1.provider_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0010r1.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0010r1.str_control_number == 'STR20250101000000001'
     assert str0010r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
     assert str0010r1.to_ispb == '00038166'
@@ -441,7 +441,7 @@ def test_str0010r1_from_xml_missing_required_fields() -> None:
         'str_settlement_status',
         'str_control_number',
         'institution_control_number',
-        'provider_timestamp',
+        'str_timestamp',
     }
 
 
@@ -459,7 +459,7 @@ def test_str0010r2_valid_params() -> None:
     assert str0010r2.transfer_return_reason == TransferReturnReason.DESTINATION_ACCOUNT_CLOSED
     assert str0010r2.original_str_control_number == 'STR20250101000000001'
     assert str0010r2.str_control_number == 'STR20250101000000002'
-    assert str0010r2.provider_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0010r2.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0010r2.description == 'Return Payment for services'
     assert str0010r2.settlement_date == date(2025, 9, 8)
 
@@ -471,7 +471,7 @@ def test_str0010r2_missing_required_fields() -> None:
     assert missing_fields == {
         'to_ispb',
         'str_control_number',
-        'provider_timestamp',
+        'str_timestamp',
         'debtor_institution_ispb',
         'system_domain',
         'operation_number',
@@ -588,7 +588,7 @@ def test_str0010r2_from_xml() -> None:
     assert str0010r2.transfer_return_reason == TransferReturnReason.DESTINATION_ACCOUNT_CLOSED
     assert str0010r2.original_str_control_number == 'STR20250101000000001'
     assert str0010r2.str_control_number == 'STR20250101000000002'
-    assert str0010r2.provider_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0010r2.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0010r2.description == 'Return Payment for services'
     assert str0010r2.settlement_date == date(2025, 9, 8)
 
@@ -629,7 +629,7 @@ def test_str0010r2_from_xml_omit_optional_fields() -> None:
     assert str0010r2.transfer_return_reason == TransferReturnReason.DESTINATION_ACCOUNT_CLOSED
     assert str0010r2.original_str_control_number == 'STR20250101000000001'
     assert str0010r2.str_control_number == 'STR20250101000000002'
-    assert str0010r2.provider_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0010r2.str_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0010r2.description is None
     assert str0010r2.settlement_date == date(2025, 9, 8)
 
@@ -666,7 +666,7 @@ def test_str0010r2_from_xml_missing_required_fields() -> None:
     assert missing_fields == {
         'creditor_institution_ispb',
         'transfer_return_reason',
-        'provider_timestamp',
+        'str_timestamp',
         'original_str_control_number',
         'amount',
         'debtor_institution_ispb',
