@@ -20,6 +20,7 @@ from sfn_messages.core.types import (
     StrSettlementStatus,
     SystemDomain,
     TransactionId,
+    TransferReturnReason,
 )
 
 
@@ -1236,3 +1237,247 @@ def test_str_settlement_status_accepts_case_insensitive_values(
 def test_str_settlement_status_rejects_invalid_value(invalid_value: str) -> None:
     with pytest.raises(ValueError, match=invalid_value):
         StrSettlementStatus(invalid_value)
+
+
+@pytest.mark.parametrize(
+    ('input_value', 'expected_enum'),
+    [
+        ('DESTINATION_ACCOUNT_CLOSED', TransferReturnReason.DESTINATION_ACCOUNT_CLOSED),
+        ('INVALID_JUDICIAL_DEPOSIT_ID', TransferReturnReason.INVALID_JUDICIAL_DEPOSIT_ID),
+        ('OUT_OF_BUSINESS_HOURS', TransferReturnReason.OUT_OF_BUSINESS_HOURS),
+        ('INVALID_CONTRACT_NUMBER', TransferReturnReason.INVALID_CONTRACT_NUMBER),
+        ('DUPLICATE_VALUE', TransferReturnReason.DUPLICATE_VALUE),
+        ('TERRORISM_FINANCING_ACTIVITY', TransferReturnReason.TERRORISM_FINANCING_ACTIVITY),
+        ('INVALID_DESTINATION_AGENCY_OR_ACCOUNT', TransferReturnReason.INVALID_DESTINATION_AGENCY_OR_ACCOUNT),
+        ('FGTS_DOCUMENT_NOT_PRESENTED', TransferReturnReason.FGTS_DOCUMENT_NOT_PRESENTED),
+        ('TREASURY_PAYMENT_RETURN', TransferReturnReason.TREASURY_PAYMENT_RETURN),
+        ('TREASURY_BANK_ORDER_RETURN', TransferReturnReason.TREASURY_BANK_ORDER_RETURN),
+        ('RETURN_FILLING_ERROR', TransferReturnReason.RETURN_FILLING_ERROR),
+        ('WITHHOLDING_DOCUMENT_FILLING_ERROR', TransferReturnReason.WITHHOLDING_DOCUMENT_FILLING_ERROR),
+        ('DIRECT_DEPOSIT_FILLING_ERROR', TransferReturnReason.DIRECT_DEPOSIT_FILLING_ERROR),
+        ('TAX_PAYMENT_RETURN_AT_BANK_REQUEST', TransferReturnReason.TAX_PAYMENT_RETURN_AT_BANK_REQUEST),
+        ('OVERPAID_TAX_RETURN_AUTHORIZED_BY_RFB', TransferReturnReason.OVERPAID_TAX_RETURN_AUTHORIZED_BY_RFB),
+        ('UNWITHDRAWN_CREDIT_EXPIRED', TransferReturnReason.UNWITHDRAWN_CREDIT_EXPIRED),
+        ('MISSING_OR_MISMATCHED_TAX_ID', TransferReturnReason.MISSING_OR_MISMATCHED_TAX_ID),
+        ('INAPT_TAX_ID_AT_RFB', TransferReturnReason.INAPT_TAX_ID_AT_RFB),
+        ('INVALID_MESSAGE_FOR_TRANSACTION_TYPE', TransferReturnReason.INVALID_MESSAGE_FOR_TRANSACTION_TYPE),
+        ('INVALID_CURRENCY_CODE_BARCODE', TransferReturnReason.INVALID_CURRENCY_CODE_BARCODE),
+        ('TITLE_MISMATCH', TransferReturnReason.TITLE_MISMATCH),
+        ('OVER_OR_UNDERPAID_BARCODE_BOLETO', TransferReturnReason.OVER_OR_UNDERPAID_BARCODE_BOLETO),
+        ('LATE_BARCODE_BOLETO_WITHOUT_CHARGES', TransferReturnReason.LATE_BARCODE_BOLETO_WITHOUT_CHARGES),
+        ('IMPROPER_PRESENTATION_BARCODE', TransferReturnReason.IMPROPER_PRESENTATION_BARCODE),
+        ('INSUFFICIENT_AMOUNT_FOR_PURPOSE', TransferReturnReason.INSUFFICIENT_AMOUNT_FOR_PURPOSE),
+        ('TRANSFER_ABOVE_DESTINATION_ACCOUNT_LIMIT', TransferReturnReason.TRANSFER_ABOVE_DESTINATION_ACCOUNT_LIMIT),
+        ('BARCODE_NOT_COMPLIANT_WITH_SPECS', TransferReturnReason.BARCODE_NOT_COMPLIANT_WITH_SPECS),
+        ('BOLETO_ALREADY_PAID', TransferReturnReason.BOLETO_ALREADY_PAID),
+        ('BOLETO_DUPLICATE_PAYMENT_SAME_DAY', TransferReturnReason.BOLETO_DUPLICATE_PAYMENT_SAME_DAY),
+        ('OVERPAYMENT_DIFFERENCE', TransferReturnReason.OVERPAYMENT_DIFFERENCE),
+        ('CUSTOMER_REQUEST_RETURN', TransferReturnReason.CUSTOMER_REQUEST_RETURN),
+        ('BARCODE_BOLETO_UNPLANNED_DISCOUNT', TransferReturnReason.BARCODE_BOLETO_UNPLANNED_DISCOUNT),
+        ('NON_COMPLIANT_PAYMENT', TransferReturnReason.NON_COMPLIANT_PAYMENT),
+        ('BENEFICIARY_NOT_IDENTIFIED_BARCODE', TransferReturnReason.BENEFICIARY_NOT_IDENTIFIED_BARCODE),
+        ('INVALID_OR_MISMATCHED_BENEFICIARY_TAX_ID', TransferReturnReason.INVALID_OR_MISMATCHED_BENEFICIARY_TAX_ID),
+        ('INVALID_OR_MISMATCHED_PAYER_TAX_ID', TransferReturnReason.INVALID_OR_MISMATCHED_PAYER_TAX_ID),
+        ('COPY_NOT_SENT_BY_RECEIVING_BANK', TransferReturnReason.COPY_NOT_SENT_BY_RECEIVING_BANK),
+        ('BOLETO_IN_COLLECTION_OR_PROTEST', TransferReturnReason.BOLETO_IN_COLLECTION_OR_PROTEST),
+        ('INVALID_TRANSFER_IDENTIFIER', TransferReturnReason.INVALID_TRANSFER_IDENTIFIER),
+        ('PORTABILITY_NOT_REGISTERED_CREDIT_CENTER', TransferReturnReason.PORTABILITY_NOT_REGISTERED_CREDIT_CENTER),
+        (
+            'BARCODE_BOLETO_DIVERGENT_FROM_CENTRAL_BASE',
+            TransferReturnReason.BARCODE_BOLETO_DIVERGENT_FROM_CENTRAL_BASE,
+        ),
+        ('BARCODE_BOLETO_NOT_FOUND_IN_CENTRAL_BASE', TransferReturnReason.BARCODE_BOLETO_NOT_FOUND_IN_CENTRAL_BASE),
+        (
+            'INVALID_DESTINATION_ACCOUNT_FOR_TYPE_OR_PURPOSE',
+            TransferReturnReason.INVALID_DESTINATION_ACCOUNT_FOR_TYPE_OR_PURPOSE,
+        ),
+        ('OPEN_FINANCE_PORTABILITY_NOT_COMPLETED', TransferReturnReason.OPEN_FINANCE_PORTABILITY_NOT_COMPLETED),
+        ('FRAUD_RETURN', TransferReturnReason.FRAUD_RETURN),
+    ],
+)
+def test_transfer_return_reason_accepts_exact_values(input_value: str, expected_enum: TransferReturnReason) -> None:
+    assert TransferReturnReason(input_value) is expected_enum
+
+
+@pytest.mark.parametrize(
+    ('input_value', 'expected_enum'),
+    [
+        (TransferReturnReason.DESTINATION_ACCOUNT_CLOSED, '1'),
+        (TransferReturnReason.INVALID_JUDICIAL_DEPOSIT_ID, '15'),
+        (TransferReturnReason.OUT_OF_BUSINESS_HOURS, '16'),
+        (TransferReturnReason.INVALID_CONTRACT_NUMBER, '17'),
+        (TransferReturnReason.DUPLICATE_VALUE, '18'),
+        (TransferReturnReason.TERRORISM_FINANCING_ACTIVITY, '19'),
+        (TransferReturnReason.INVALID_DESTINATION_AGENCY_OR_ACCOUNT, '2'),
+        (TransferReturnReason.FGTS_DOCUMENT_NOT_PRESENTED, '20'),
+        (TransferReturnReason.TREASURY_PAYMENT_RETURN, '21'),
+        (TransferReturnReason.TREASURY_BANK_ORDER_RETURN, '22'),
+        (TransferReturnReason.RETURN_FILLING_ERROR, '23'),
+        (TransferReturnReason.WITHHOLDING_DOCUMENT_FILLING_ERROR, '24'),
+        (TransferReturnReason.DIRECT_DEPOSIT_FILLING_ERROR, '25'),
+        (TransferReturnReason.TAX_PAYMENT_RETURN_AT_BANK_REQUEST, '26'),
+        (TransferReturnReason.OVERPAID_TAX_RETURN_AUTHORIZED_BY_RFB, '27'),
+        (TransferReturnReason.UNWITHDRAWN_CREDIT_EXPIRED, '28'),
+        (TransferReturnReason.MISSING_OR_MISMATCHED_TAX_ID, '3'),
+        (TransferReturnReason.INAPT_TAX_ID_AT_RFB, '31'),
+        (TransferReturnReason.INVALID_MESSAGE_FOR_TRANSACTION_TYPE, '4'),
+        (TransferReturnReason.INVALID_CURRENCY_CODE_BARCODE, '40'),
+        (TransferReturnReason.TITLE_MISMATCH, '5'),
+        (TransferReturnReason.OVER_OR_UNDERPAID_BARCODE_BOLETO, '51'),
+        (TransferReturnReason.LATE_BARCODE_BOLETO_WITHOUT_CHARGES, '52'),
+        (TransferReturnReason.IMPROPER_PRESENTATION_BARCODE, '53'),
+        (TransferReturnReason.INSUFFICIENT_AMOUNT_FOR_PURPOSE, '6'),
+        (TransferReturnReason.TRANSFER_ABOVE_DESTINATION_ACCOUNT_LIMIT, '61'),
+        (TransferReturnReason.BARCODE_NOT_COMPLIANT_WITH_SPECS, '63'),
+        (TransferReturnReason.BOLETO_ALREADY_PAID, '68'),
+        (TransferReturnReason.BOLETO_DUPLICATE_PAYMENT_SAME_DAY, '69'),
+        (TransferReturnReason.OVERPAYMENT_DIFFERENCE, '7'),
+        (TransferReturnReason.CUSTOMER_REQUEST_RETURN, '70'),
+        (TransferReturnReason.BARCODE_BOLETO_UNPLANNED_DISCOUNT, '71'),
+        (TransferReturnReason.NON_COMPLIANT_PAYMENT, '72'),
+        (TransferReturnReason.BENEFICIARY_NOT_IDENTIFIED_BARCODE, '73'),
+        (TransferReturnReason.INVALID_OR_MISMATCHED_BENEFICIARY_TAX_ID, '74'),
+        (TransferReturnReason.INVALID_OR_MISMATCHED_PAYER_TAX_ID, '75'),
+        (TransferReturnReason.COPY_NOT_SENT_BY_RECEIVING_BANK, '76'),
+        (TransferReturnReason.BOLETO_IN_COLLECTION_OR_PROTEST, '77'),
+        (TransferReturnReason.INVALID_TRANSFER_IDENTIFIER, '8'),
+        (TransferReturnReason.PORTABILITY_NOT_REGISTERED_CREDIT_CENTER, '80'),
+        (TransferReturnReason.BARCODE_BOLETO_DIVERGENT_FROM_CENTRAL_BASE, '82'),
+        (TransferReturnReason.BARCODE_BOLETO_NOT_FOUND_IN_CENTRAL_BASE, '83'),
+        (TransferReturnReason.INVALID_DESTINATION_ACCOUNT_FOR_TYPE_OR_PURPOSE, '84'),
+        (TransferReturnReason.OPEN_FINANCE_PORTABILITY_NOT_COMPLETED, '85'),
+        (TransferReturnReason.FRAUD_RETURN, '9'),
+    ],
+)
+def test_transfer_return_reason_values_to_xml_value(input_value: TransferReturnReason, expected_enum: str) -> None:
+    assert input_value.to_xml_value() == expected_enum
+
+
+@pytest.mark.parametrize(
+    ('input_value', 'expected_enum'),
+    [
+        ('1', TransferReturnReason.DESTINATION_ACCOUNT_CLOSED),
+        ('15', TransferReturnReason.INVALID_JUDICIAL_DEPOSIT_ID),
+        ('16', TransferReturnReason.OUT_OF_BUSINESS_HOURS),
+        ('17', TransferReturnReason.INVALID_CONTRACT_NUMBER),
+        ('18', TransferReturnReason.DUPLICATE_VALUE),
+        ('19', TransferReturnReason.TERRORISM_FINANCING_ACTIVITY),
+        ('2', TransferReturnReason.INVALID_DESTINATION_AGENCY_OR_ACCOUNT),
+        ('20', TransferReturnReason.FGTS_DOCUMENT_NOT_PRESENTED),
+        ('21', TransferReturnReason.TREASURY_PAYMENT_RETURN),
+        ('22', TransferReturnReason.TREASURY_BANK_ORDER_RETURN),
+        ('23', TransferReturnReason.RETURN_FILLING_ERROR),
+        ('24', TransferReturnReason.WITHHOLDING_DOCUMENT_FILLING_ERROR),
+        ('25', TransferReturnReason.DIRECT_DEPOSIT_FILLING_ERROR),
+        ('26', TransferReturnReason.TAX_PAYMENT_RETURN_AT_BANK_REQUEST),
+        ('27', TransferReturnReason.OVERPAID_TAX_RETURN_AUTHORIZED_BY_RFB),
+        ('28', TransferReturnReason.UNWITHDRAWN_CREDIT_EXPIRED),
+        ('3', TransferReturnReason.MISSING_OR_MISMATCHED_TAX_ID),
+        ('31', TransferReturnReason.INAPT_TAX_ID_AT_RFB),
+        ('4', TransferReturnReason.INVALID_MESSAGE_FOR_TRANSACTION_TYPE),
+        ('40', TransferReturnReason.INVALID_CURRENCY_CODE_BARCODE),
+        ('5', TransferReturnReason.TITLE_MISMATCH),
+        ('51', TransferReturnReason.OVER_OR_UNDERPAID_BARCODE_BOLETO),
+        ('52', TransferReturnReason.LATE_BARCODE_BOLETO_WITHOUT_CHARGES),
+        ('53', TransferReturnReason.IMPROPER_PRESENTATION_BARCODE),
+        ('6', TransferReturnReason.INSUFFICIENT_AMOUNT_FOR_PURPOSE),
+        ('61', TransferReturnReason.TRANSFER_ABOVE_DESTINATION_ACCOUNT_LIMIT),
+        ('63', TransferReturnReason.BARCODE_NOT_COMPLIANT_WITH_SPECS),
+        ('68', TransferReturnReason.BOLETO_ALREADY_PAID),
+        ('69', TransferReturnReason.BOLETO_DUPLICATE_PAYMENT_SAME_DAY),
+        ('7', TransferReturnReason.OVERPAYMENT_DIFFERENCE),
+        ('70', TransferReturnReason.CUSTOMER_REQUEST_RETURN),
+        ('71', TransferReturnReason.BARCODE_BOLETO_UNPLANNED_DISCOUNT),
+        ('72', TransferReturnReason.NON_COMPLIANT_PAYMENT),
+        ('73', TransferReturnReason.BENEFICIARY_NOT_IDENTIFIED_BARCODE),
+        ('74', TransferReturnReason.INVALID_OR_MISMATCHED_BENEFICIARY_TAX_ID),
+        ('75', TransferReturnReason.INVALID_OR_MISMATCHED_PAYER_TAX_ID),
+        ('76', TransferReturnReason.COPY_NOT_SENT_BY_RECEIVING_BANK),
+        ('77', TransferReturnReason.BOLETO_IN_COLLECTION_OR_PROTEST),
+        ('8', TransferReturnReason.INVALID_TRANSFER_IDENTIFIER),
+        ('80', TransferReturnReason.PORTABILITY_NOT_REGISTERED_CREDIT_CENTER),
+        ('82', TransferReturnReason.BARCODE_BOLETO_DIVERGENT_FROM_CENTRAL_BASE),
+        ('83', TransferReturnReason.BARCODE_BOLETO_NOT_FOUND_IN_CENTRAL_BASE),
+        ('84', TransferReturnReason.INVALID_DESTINATION_ACCOUNT_FOR_TYPE_OR_PURPOSE),
+        ('85', TransferReturnReason.OPEN_FINANCE_PORTABILITY_NOT_COMPLETED),
+        ('9', TransferReturnReason.FRAUD_RETURN),
+    ],
+)
+def test_transfer_return_reason_values_from_xml_value(input_value: str, expected_enum: TransferReturnReason) -> None:
+    assert TransferReturnReason.from_xml_value(input_value) == expected_enum
+
+
+@pytest.mark.parametrize(
+    ('input_value', 'expected_enum'),
+    [
+        ('destination_account_closed', TransferReturnReason.DESTINATION_ACCOUNT_CLOSED),
+        ('invalid_judicial_deposit_id', TransferReturnReason.INVALID_JUDICIAL_DEPOSIT_ID),
+        ('out_of_business_hours', TransferReturnReason.OUT_OF_BUSINESS_HOURS),
+        ('invalid_contract_number', TransferReturnReason.INVALID_CONTRACT_NUMBER),
+        ('duplicate_value', TransferReturnReason.DUPLICATE_VALUE),
+        ('terrorism_financing_activity', TransferReturnReason.TERRORISM_FINANCING_ACTIVITY),
+        ('invalid_destination_agency_or_account', TransferReturnReason.INVALID_DESTINATION_AGENCY_OR_ACCOUNT),
+        ('fgts_document_not_presented', TransferReturnReason.FGTS_DOCUMENT_NOT_PRESENTED),
+        ('treasury_payment_return', TransferReturnReason.TREASURY_PAYMENT_RETURN),
+        ('treasury_bank_order_return', TransferReturnReason.TREASURY_BANK_ORDER_RETURN),
+        ('return_filling_error', TransferReturnReason.RETURN_FILLING_ERROR),
+        ('withholding_document_filling_error', TransferReturnReason.WITHHOLDING_DOCUMENT_FILLING_ERROR),
+        ('direct_deposit_filling_error', TransferReturnReason.DIRECT_DEPOSIT_FILLING_ERROR),
+        ('tax_payment_return_at_bank_request', TransferReturnReason.TAX_PAYMENT_RETURN_AT_BANK_REQUEST),
+        ('overpaid_tax_return_authorized_by_rfb', TransferReturnReason.OVERPAID_TAX_RETURN_AUTHORIZED_BY_RFB),
+        ('unwithdrawn_credit_expired', TransferReturnReason.UNWITHDRAWN_CREDIT_EXPIRED),
+        ('missing_or_mismatched_tax_id', TransferReturnReason.MISSING_OR_MISMATCHED_TAX_ID),
+        ('inapt_tax_id_at_rfb', TransferReturnReason.INAPT_TAX_ID_AT_RFB),
+        ('invalid_message_for_transaction_type', TransferReturnReason.INVALID_MESSAGE_FOR_TRANSACTION_TYPE),
+        ('invalid_currency_code_barcode', TransferReturnReason.INVALID_CURRENCY_CODE_BARCODE),
+        ('title_mismatch', TransferReturnReason.TITLE_MISMATCH),
+        ('over_or_underpaid_barcode_boleto', TransferReturnReason.OVER_OR_UNDERPAID_BARCODE_BOLETO),
+        ('late_barcode_boleto_without_charges', TransferReturnReason.LATE_BARCODE_BOLETO_WITHOUT_CHARGES),
+        ('improper_presentation_barcode', TransferReturnReason.IMPROPER_PRESENTATION_BARCODE),
+        ('insufficient_amount_for_purpose', TransferReturnReason.INSUFFICIENT_AMOUNT_FOR_PURPOSE),
+        ('transfer_above_destination_account_limit', TransferReturnReason.TRANSFER_ABOVE_DESTINATION_ACCOUNT_LIMIT),
+        ('barcode_not_compliant_with_specs', TransferReturnReason.BARCODE_NOT_COMPLIANT_WITH_SPECS),
+        ('boleto_already_paid', TransferReturnReason.BOLETO_ALREADY_PAID),
+        ('boleto_duplicate_payment_same_day', TransferReturnReason.BOLETO_DUPLICATE_PAYMENT_SAME_DAY),
+        ('overpayment_difference', TransferReturnReason.OVERPAYMENT_DIFFERENCE),
+        ('customer_request_return', TransferReturnReason.CUSTOMER_REQUEST_RETURN),
+        ('barcode_boleto_unplanned_discount', TransferReturnReason.BARCODE_BOLETO_UNPLANNED_DISCOUNT),
+        ('non_compliant_payment', TransferReturnReason.NON_COMPLIANT_PAYMENT),
+        ('beneficiary_not_identified_barcode', TransferReturnReason.BENEFICIARY_NOT_IDENTIFIED_BARCODE),
+        ('invalid_or_mismatched_beneficiary_tax_id', TransferReturnReason.INVALID_OR_MISMATCHED_BENEFICIARY_TAX_ID),
+        ('invalid_or_mismatched_payer_tax_id', TransferReturnReason.INVALID_OR_MISMATCHED_PAYER_TAX_ID),
+        ('copy_not_sent_by_receiving_bank', TransferReturnReason.COPY_NOT_SENT_BY_RECEIVING_BANK),
+        ('boleto_in_collection_or_protest', TransferReturnReason.BOLETO_IN_COLLECTION_OR_PROTEST),
+        ('invalid_transfer_identifier', TransferReturnReason.INVALID_TRANSFER_IDENTIFIER),
+        ('portability_not_registered_credit_center', TransferReturnReason.PORTABILITY_NOT_REGISTERED_CREDIT_CENTER),
+        (
+            'barcode_boleto_divergent_from_central_base',
+            TransferReturnReason.BARCODE_BOLETO_DIVERGENT_FROM_CENTRAL_BASE,
+        ),
+        ('barcode_boleto_not_found_in_central_base', TransferReturnReason.BARCODE_BOLETO_NOT_FOUND_IN_CENTRAL_BASE),
+        (
+            'invalid_destination_account_for_type_or_purpose',
+            TransferReturnReason.INVALID_DESTINATION_ACCOUNT_FOR_TYPE_OR_PURPOSE,
+        ),
+        ('open_finance_portability_not_completed', TransferReturnReason.OPEN_FINANCE_PORTABILITY_NOT_COMPLETED),
+        ('fraud_return', TransferReturnReason.FRAUD_RETURN),
+    ],
+)
+def test_transfer_return_reason_accepts_case_insensitive_values(
+    input_value: str, expected_enum: TransferReturnReason
+) -> None:
+    assert TransferReturnReason(input_value) is expected_enum
+
+
+@pytest.mark.parametrize(
+    'invalid_value',
+    [
+        'ACCOUNT_CLOSED',  # Invalid abbreviation
+        'INVALID_ID',  # Invalid abbreviation
+        '123',  # Numeric string
+        'INVALID_REASON',  # Completely invalid
+    ],
+)
+def test_transfer_return_reason_rejects_invalid_value(invalid_value: str) -> None:
+    with pytest.raises(ValueError, match=invalid_value):
+        TransferReturnReason(invalid_value)
