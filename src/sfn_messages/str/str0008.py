@@ -2,9 +2,6 @@ from datetime import date, datetime, time
 from decimal import Decimal
 from typing import Annotated, Literal
 
-from pydantic import model_validator
-from validate_docbr import CNPJ, CPF
-
 from sfn_messages.core.models import BaseMessage, XmlPath
 from sfn_messages.core.types import (
     AccountNumber,
@@ -25,12 +22,20 @@ from sfn_messages.core.types import (
     TransactionId,
 )
 
+from .validation import StrPartyValidation
+
 PATH = 'DOC/SISMSG/STR0008'
 PATH_R1 = 'DOC/SISMSG/STR0008R1'
 PATH_R2 = 'DOC/SISMSG/STR0008R2'
 
 
-class STR0008(BaseMessage):
+class STR0008(StrPartyValidation, BaseMessage):
+    _document_parties = ('debtor', 'creditor')
+    _account_parties = ('debtor', 'creditor')
+    _others_enum_value = CustomerPurpose.OTHERS
+    _purpose_attr = 'purpose'
+    _description_attr = 'description'
+
     message_code: Annotated[Literal['STR0008'], XmlPath(f'{PATH}/CodMsg/text()')] = 'STR0008'
     institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH}/NumCtrlIF/text()')]
     debtor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBIFDebtd/text()')]
@@ -58,52 +63,6 @@ class STR0008(BaseMessage):
     priority: Annotated[Priority | None, XmlPath(f'{PATH}/NivelPref/text()')] = None
     settlement_date: Annotated[date, XmlPath(f'{PATH}/DtMovto/text()')]
 
-    @model_validator(mode='after')
-    def validate_business_rules(self) -> STR0008:
-        errors: list[str] = []
-        self._validate_party_document(party='debtor', errors=errors)
-        self._validate_party_document(party='creditor', errors=errors)
-        self._validate_account_requirements(party='debtor', errors=errors)
-        self._validate_account_requirements(party='creditor', errors=errors)
-
-        if self.purpose == CustomerPurpose.OTHERS and not self.description:
-            errors.append('description is required when purpose is OTHERS')
-
-        if errors:
-            raise ValueError('; '.join(errors))
-
-        return self
-
-    def _validate_party_document(self, party: str, errors: list[str]) -> None:
-        prefix = f'{party}_'
-
-        person_type = getattr(self, prefix + 'type')
-        document = getattr(self, prefix + 'document')
-
-        if person_type == PersonType.BUSINESS and not CNPJ().validate(document):
-            errors.append(f'Invalid CNPJ for {party}_type BUSINESS')
-        if person_type == PersonType.INDIVIDUAL and not CPF().validate(document):
-            errors.append(f'Invalid CPF for {party}_type INDIVIDUAL')
-
-    def _validate_account_requirements(self, party: str, errors: list[str]) -> None:
-        prefix = f'{party}_'
-
-        account_type = getattr(self, prefix + 'account_type')
-        branch = getattr(self, prefix + 'branch')
-        account_number = getattr(self, prefix + 'account_number')
-        payment_account_number = getattr(self, prefix + 'payment_account_number')
-
-        if account_type == AccountType.PAYMENT:
-            if payment_account_number is None:
-                errors.append(f'{party}_payment_account_number is required when {party}_account_type is PAYMENT')
-            return
-
-        if branch is None:
-            errors.append(f'{party}_branch is required when {party}_account_type is not PAYMENT')
-
-        if account_number is None:
-            errors.append(f'{party}_account_number is required when {party}_account_type is not PAYMENT')
-
 
 class STR0008R1(BaseMessage):
     message_code: Annotated[Literal['STR0008R1'], XmlPath(f'{PATH_R1}/CodMsg/text()')] = 'STR0008R1'
@@ -115,7 +74,13 @@ class STR0008R1(BaseMessage):
     settlement_date: Annotated[date, XmlPath(f'{PATH_R1}/DtMovto/text()')]
 
 
-class STR0008R2(BaseMessage):
+class STR0008R2(StrPartyValidation, BaseMessage):
+    _document_parties = ('debtor', 'creditor')
+    _account_parties = ('debtor', 'creditor')
+    _others_enum_value = CustomerPurpose.OTHERS
+    _purpose_attr = 'purpose'
+    _description_attr = 'description'
+
     message_code: Annotated[Literal['STR0008R2'], XmlPath(f'{PATH_R2}/CodMsg/text()')] = 'STR0008R2'
     str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_R2}/NumCtrlSTR/text()')]
     vendor_timestamp: Annotated[datetime, XmlPath(f'{PATH_R2}/DtHrBC/text()')]
@@ -140,49 +105,3 @@ class STR0008R2(BaseMessage):
     transaction_id: Annotated[TransactionId | None, XmlPath(f'{PATH_R2}/CodIdentdTransf/text()')] = None
     description: Annotated[Description | None, XmlPath(f'{PATH_R2}/Hist/text()')] = None
     settlement_date: Annotated[date, XmlPath(f'{PATH_R2}/DtMovto/text()')]
-
-    @model_validator(mode='after')
-    def validate_business_rules(self) -> STR0008R2:
-        errors: list[str] = []
-        self._validate_party_document(party='debtor', errors=errors)
-        self._validate_party_document(party='creditor', errors=errors)
-        self._validate_account_requirements(party='debtor', errors=errors)
-        self._validate_account_requirements(party='creditor', errors=errors)
-
-        if self.purpose == CustomerPurpose.OTHERS and not self.description:
-            errors.append('description is required when purpose is OTHERS')
-
-        if errors:
-            raise ValueError('; '.join(errors))
-
-        return self
-
-    def _validate_party_document(self, party: str, errors: list[str]) -> None:
-        prefix = f'{party}_'
-
-        person_type = getattr(self, prefix + 'type')
-        document = getattr(self, prefix + 'document')
-
-        if person_type == PersonType.BUSINESS and not CNPJ().validate(document):
-            errors.append(f'Invalid CNPJ for {party}_type BUSINESS')
-        if person_type == PersonType.INDIVIDUAL and not CPF().validate(document):
-            errors.append(f'Invalid CPF for {party}_type INDIVIDUAL')
-
-    def _validate_account_requirements(self, party: str, errors: list[str]) -> None:
-        prefix = f'{party}_'
-
-        account_type = getattr(self, prefix + 'account_type')
-        branch = getattr(self, prefix + 'branch')
-        account_number = getattr(self, prefix + 'account_number')
-        payment_account_number = getattr(self, prefix + 'payment_account_number')
-
-        if account_type == AccountType.PAYMENT:
-            if payment_account_number is None:
-                errors.append(f'{party}_payment_account_number is required when {party}_account_type is PAYMENT')
-            return
-
-        if branch is None:
-            errors.append(f'{party}_branch is required when {party}_account_type is not PAYMENT')
-
-        if account_number is None:
-            errors.append(f'{party}_account_number is required when {party}_account_type is not PAYMENT')
