@@ -80,3 +80,11 @@ type SelectionCriteria = Annotated[
         lambda _tp, _handler: core_schema.str_schema(min_length=0, max_length=10240, strip_whitespace=True)
     ),
 ]
+
+
+type Certificate = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(min_length=0, max_length=10240, strip_whitespace=True)
+    ),
+]
