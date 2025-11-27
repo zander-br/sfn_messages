@@ -23,6 +23,7 @@ from .validations import PartyValidations
 
 PATH = 'DOC/SISMSG/STR0025'
 PATH_R1 = 'DOC/SISMSG/STR0025R1'
+PATH_R2 = 'DOC/SISMSG/STR0025R2'
 
 
 class STR0025(PartyValidations, BaseMessage):
@@ -56,3 +57,24 @@ class STR0025R1(BaseMessage):
     str_settlement_status: Annotated[StrSettlementStatus, XmlPath(f'{PATH_R1}/SitLancSTR/text()')]
     settlement_timestamp: Annotated[datetime, XmlPath(f'{PATH_R1}/DtHrSit/text()')]
     settlement_date: Annotated[date, XmlPath(f'{PATH_R1}/DtMovto/text()')]
+
+
+class STR0025R2(PartyValidations, BaseMessage):
+    document_parties: ClassVar[list[str]] = ['creditor']
+    account_parties: ClassVar[list[str]] = ['debtor']
+
+    message_code: Annotated[Literal['STR0025R2'], XmlPath(f'{PATH_R2}/CodMsg/text()')] = 'STR0025R2'
+    str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_R2}/NumCtrlSTR/text()')]
+    vendor_timestamp: Annotated[datetime, XmlPath(f'{PATH_R2}/DtHrBC/text()')]
+    debtor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R2}/ISPBIFDebtd/text()')]
+    debtor_branch: Annotated[Branch | None, XmlPath(f'{PATH_R2}/AgDebtd/text()')] = None
+    debtor_account_type: Annotated[AccountType | None, XmlPath(f'{PATH_R2}/TpCtDebtd/text()')] = None
+    debtor_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_R2}/CtDebtd/text()')] = None
+    debtor_payment_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_R2}/CtPgtoDebtd/text()')] = None
+    creditor_name: Annotated[Name, XmlPath(f'{PATH_R2}/NomCliCredtd/text()')]
+    creditor_type: Annotated[PersonType, XmlPath(f'{PATH_R2}/TpPessoaCredtd/text()')]
+    creditor_document: Annotated[Cnpj | Cpf, XmlPath(f'{PATH_R2}/CNPJ_CPFCliCredtd/text()')]
+    creditor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R2}/ISPBIFCredtd/text()')]
+    amount: Annotated[Decimal, XmlPath(f'{PATH_R2}/VlrLanc/text()')]
+    deposit_identifier: Annotated[DepositIdentifier, XmlPath(f'{PATH_R2}/IdentcDep/text()')]
+    settlement_date: Annotated[date, XmlPath(f'{PATH_R2}/DtMovto/text()')]
