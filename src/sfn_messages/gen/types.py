@@ -60,3 +60,15 @@ type LastOperationNumber = Annotated[
         )
     ),
 ]
+
+
+type TransmissionType = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            min_length=1,
+            max_length=1,
+            strip_whitespace=True,
+        )
+    ),
+]
