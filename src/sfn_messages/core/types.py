@@ -1,4 +1,5 @@
 from contextlib import suppress
+from decimal import Decimal
 from enum import Enum, StrEnum
 from functools import cache
 from typing import Annotated, Any, Self
@@ -606,6 +607,18 @@ type CreditContractNumber = Annotated[
             max_length=40,
             strip_whitespace=True,
             pattern=r'^[A-Za-z0-9]+$',
+        )
+    ),
+]
+
+type Amount = Annotated[
+    Decimal,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.decimal_schema(
+            max_digits=19,
+            decimal_places=2,
+            gt=Decimal('-1e17'),
+            lt=Decimal('1e17'),
         )
     ),
 ]

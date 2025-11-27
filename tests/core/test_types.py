@@ -1,9 +1,12 @@
+from decimal import Decimal
+
 import pytest
 from pydantic import BaseModel, ValidationError
 
 from sfn_messages.core.types import (
     AccountNumber,
     AccountType,
+    Amount,
     Branch,
     Cnpj,
     Cpf,
@@ -28,6 +31,10 @@ from sfn_messages.core.types import (
 
 class AccountNumberModel(BaseModel):
     account_number: AccountNumber
+
+
+class AmountModel(BaseModel):
+    amount: Amount
 
 
 class BranchModel(BaseModel):
@@ -1553,3 +1560,42 @@ def test_credit_contract_number_rejects_invalid_formats(credit_contract_number: 
         CreditContractNumberModel(credit_contract_number=credit_contract_number)
     msg = str(exc.value)
     assert 'String should have at most 40 characters' in msg or "String should match pattern '^[A-Za-z0-9]+$'" in msg
+
+
+@pytest.mark.parametrize(
+    'amount',
+    [
+        '0',
+        '100',
+        '100.0',
+        '100.10',
+        '100.11',
+        '-100.11',
+        '99999999999999999.99',  # Maximum valid (< 1e17)
+        '-99999999999999999.99',  # Minimum valid (> -1e17)
+    ],
+)
+def test_amount_accepts_valid_values(amount: str) -> None:
+    model = AmountModel(amount=amount)
+    assert model.amount == Decimal(amount)
+
+
+def test_amount_accepts_whitespace() -> None:
+    model = AmountModel(amount='   100.10   ')
+    assert model.amount == Decimal('100.10')
+
+
+@pytest.mark.parametrize(
+    'amount',
+    [
+        '100.111',  # Too many decimal places
+        '100.1.1',  # Invalid format
+        'abc',  # Not numeric
+        '999999999999999999.99',  # Too many digits (20 integers)
+        '100000000000000000.00',  # == 1e17 (should be < 1e17)
+        '-100000000000000000.00',  # == -1e17 (should be > -1e17)
+    ],
+)
+def test_amount_rejects_invalid_values(amount: str) -> None:
+    with pytest.raises(ValidationError):
+        AmountModel(amount=amount)
