@@ -1,6 +1,6 @@
 from datetime import date, datetime, time
 from decimal import Decimal
-from typing import Annotated, Literal
+from typing import Annotated, ClassVar, Literal
 
 from sfn_messages.core.models import BaseMessage, XmlPath
 from sfn_messages.core.types import (
@@ -22,19 +22,19 @@ from sfn_messages.core.types import (
     TransactionId,
 )
 
-from .validation import StrPartyValidation
+from .validations import PartyValidations
 
 PATH = 'DOC/SISMSG/STR0008'
 PATH_R1 = 'DOC/SISMSG/STR0008R1'
 PATH_R2 = 'DOC/SISMSG/STR0008R2'
 
 
-class STR0008(StrPartyValidation, BaseMessage):
-    _document_parties = ('debtor', 'creditor')
-    _account_parties = ('debtor', 'creditor')
-    _others_enum_value = CustomerPurpose.OTHERS
-    _purpose_attr = 'purpose'
-    _description_attr = 'description'
+class STR0008(PartyValidations, BaseMessage):
+    document_parties: ClassVar[list[str]] = ['debtor', 'creditor']
+    account_parties: ClassVar[list[str]] = ['debtor', 'creditor']
+    others_enum_value: ClassVar[CustomerPurpose | None] = CustomerPurpose.OTHERS
+    purpose_attr: ClassVar[str] = 'purpose'
+    description_attr: ClassVar[str] = 'description'
 
     message_code: Annotated[Literal['STR0008'], XmlPath(f'{PATH}/CodMsg/text()')] = 'STR0008'
     institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH}/NumCtrlIF/text()')]
@@ -74,12 +74,12 @@ class STR0008R1(BaseMessage):
     settlement_date: Annotated[date, XmlPath(f'{PATH_R1}/DtMovto/text()')]
 
 
-class STR0008R2(StrPartyValidation, BaseMessage):
-    _document_parties = ('debtor', 'creditor')
-    _account_parties = ('debtor', 'creditor')
-    _others_enum_value = CustomerPurpose.OTHERS
-    _purpose_attr = 'purpose'
-    _description_attr = 'description'
+class STR0008R2(PartyValidations, BaseMessage):
+    document_parties: ClassVar[list[str]] = ['debtor', 'creditor']
+    account_parties: ClassVar[list[str]] = ['debtor', 'creditor']
+    others_enum_value: ClassVar[CustomerPurpose | None] = CustomerPurpose.OTHERS
+    purpose_attr: ClassVar[str] = 'purpose'
+    description_attr: ClassVar[str] = 'description'
 
     message_code: Annotated[Literal['STR0008R2'], XmlPath(f'{PATH_R2}/CodMsg/text()')] = 'STR0008R2'
     str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_R2}/NumCtrlSTR/text()')]

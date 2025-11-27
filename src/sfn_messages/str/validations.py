@@ -1,42 +1,52 @@
-from collections.abc import Sequence
-from typing import Any, ClassVar
+from collections.abc import Iterable
+from typing import Any, ClassVar, Self
 
 from pydantic import model_validator
 from validate_docbr import CNPJ, CPF
 
-from sfn_messages.core.types import (
-    AccountNumber,
-    AccountType,
-    Branch,
-    PersonType,
-)
+from sfn_messages.core.types import AccountNumber, AccountType, Branch, PersonType
 
 
-class StrPartyValidation:
-    _document_parties: ClassVar[Sequence[str]] = ()
-    _account_parties: ClassVar[Sequence[str]] = ()
-    _others_enum_value: ClassVar[Any | None] = None
-    _purpose_attr: ClassVar[str] = 'purpose'
-    _description_attr: ClassVar[str] = 'description'
+class PartyValidations:
+    document_parties: ClassVar[list[str]] = []
+    account_parties: ClassVar[list[str]] = []
+    others_enum_value: ClassVar[Any | None] = None
+    purpose_attr: ClassVar[str] = 'purpose'
+    description_attr: ClassVar[str] = 'description'
+
+    @classmethod
+    def normalize_parties(cls, value: object) -> list[str]:
+        if value is None:
+            return []
+        if isinstance(value, str):
+            return [value]
+        if isinstance(value, Iterable):
+            return [str(v) for v in value]
+        msg = 'Parties must be a string or iterable of strings.'
+        raise TypeError(msg)
 
     @model_validator(mode='after')
-    def _validate_business_rules_mixin(self) -> StrPartyValidation:
+    def validate_business_rules_mixin(self) -> Self:
         errors: list[str] = []
 
-        for party in self._document_parties:
+        doc_parties = self.normalize_parties(self.document_parties)
+        acc_parties = self.normalize_parties(self.account_parties)
+
+        for party in doc_parties:
             self._validate_party_document(party=party, errors=errors)
 
-        for party in self._account_parties:
+        for party in acc_parties:
             self._validate_account_requirements(party=party, errors=errors)
 
-        if self._others_enum_value is not None:
-            purpose = getattr(self, self._purpose_attr, None)
-            description = getattr(self, self._description_attr, None)
-            if purpose == self._others_enum_value and not description:
-                errors.append(f'{self._description_attr} is required when {self._purpose_attr} is OTHERS')
+        if self.others_enum_value is not None:
+            purpose = getattr(self, self.purpose_attr, None)
+            description = getattr(self, self.description_attr, None)
+            if purpose == self.others_enum_value and not description:
+                errors.append(f'{self.description_attr} is required when {self.purpose_attr} is OTHERS')
 
         if errors:
-            raise ValueError('; '.join(errors))
+            msg = '; '.join(errors)
+            raise ValueError(msg)
 
         return self
 
