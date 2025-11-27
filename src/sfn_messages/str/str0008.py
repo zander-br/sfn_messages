@@ -9,12 +9,11 @@ from sfn_messages.core.types import (
     Branch,
     Cnpj,
     Cpf,
-    CreditorName,
     CustomerPurpose,
-    DebtorName,
     Description,
     InstitutionControlNumber,
     Ispb,
+    Name,
     PersonType,
     Priority,
     StrControlNumber,
@@ -45,7 +44,7 @@ class STR0008(PartyValidations, BaseMessage):
     debtor_payment_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH}/CtPgtoDebtd/text()')] = None
     debtor_type: Annotated[PersonType, XmlPath(f'{PATH}/TpPessoaDebtd/text()')]
     debtor_document: Annotated[Cnpj | Cpf, XmlPath(f'{PATH}/CNPJ_CPFCliDebtd/text()')]
-    debtor_name: Annotated[DebtorName, XmlPath(f'{PATH}/NomCliDebtd/text()')]
+    debtor_name: Annotated[Name, XmlPath(f'{PATH}/NomCliDebtd/text()')]
     creditor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBIFCredtd/text()')]
     creditor_branch: Annotated[Branch | None, XmlPath(f'{PATH}/AgCredtd/text()')] = None
     creditor_account_type: Annotated[AccountType, XmlPath(f'{PATH}/TpCtCredtd/text()')]
@@ -53,7 +52,7 @@ class STR0008(PartyValidations, BaseMessage):
     creditor_payment_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH}/CtPgtoCredtd/text()')] = None
     creditor_type: Annotated[PersonType, XmlPath(f'{PATH}/TpPessoaCredtd/text()')]
     creditor_document: Annotated[Cnpj | Cpf, XmlPath(f'{PATH}/CNPJ_CPFCliCredtd/text()')]
-    creditor_name: Annotated[CreditorName, XmlPath(f'{PATH}/NomCliCredtd/text()')]
+    creditor_name: Annotated[Name, XmlPath(f'{PATH}/NomCliCredtd/text()')]
     amount: Annotated[Decimal, XmlPath(f'{PATH}/VlrLanc/text()')]
     purpose: Annotated[CustomerPurpose, XmlPath(f'{PATH}/FinlddCli/text()')]
     transaction_id: Annotated[TransactionId | None, XmlPath(f'{PATH}/CodIdentdTransf/text()')] = None
@@ -91,7 +90,7 @@ class STR0008R2(PartyValidations, BaseMessage):
     debtor_payment_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_R2}/CtPgtoDebtd/text()')] = None
     debtor_type: Annotated[PersonType, XmlPath(f'{PATH_R2}/TpPessoaDebtd/text()')]
     debtor_document: Annotated[Cnpj | Cpf, XmlPath(f'{PATH_R2}/CNPJ_CPFCliDebtd/text()')]
-    debtor_name: Annotated[DebtorName, XmlPath(f'{PATH_R2}/NomCliDebtd/text()')]
+    debtor_name: Annotated[Name, XmlPath(f'{PATH_R2}/NomCliDebtd/text()')]
     creditor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R2}/ISPBIFCredtd/text()')]
     creditor_branch: Annotated[Branch | None, XmlPath(f'{PATH_R2}/AgCredtd/text()')] = None
     creditor_account_type: Annotated[AccountType, XmlPath(f'{PATH_R2}/TpCtCredtd/text()')]
@@ -99,7 +98,7 @@ class STR0008R2(PartyValidations, BaseMessage):
     creditor_payment_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_R2}/CtPgtoCredtd/text()')] = None
     creditor_type: Annotated[PersonType, XmlPath(f'{PATH_R2}/TpPessoaCredtd/text()')]
     creditor_document: Annotated[Cnpj | Cpf, XmlPath(f'{PATH_R2}/CNPJ_CPFCliCredtd/text()')]
-    creditor_name: Annotated[CreditorName, XmlPath(f'{PATH_R2}/NomCliCredtd/text()')]
+    creditor_name: Annotated[Name, XmlPath(f'{PATH_R2}/NomCliCredtd/text()')]
     amount: Annotated[Decimal, XmlPath(f'{PATH_R2}/VlrLanc/text()')]
     purpose: Annotated[CustomerPurpose, XmlPath(f'{PATH_R2}/FinlddCli/text()')]
     transaction_id: Annotated[TransactionId | None, XmlPath(f'{PATH_R2}/CodIdentdTransf/text()')] = None

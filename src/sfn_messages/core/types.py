@@ -497,7 +497,7 @@ type Description = Annotated[
     ),
 ]
 
-type DebtorName = Annotated[
+type Name = Annotated[
     str,
     GetPydanticSchema(
         lambda _tp, _handler: core_schema.str_schema(
@@ -507,25 +507,6 @@ type DebtorName = Annotated[
     ),
 ]
 
-type SenderName = Annotated[
-    str,
-    GetPydanticSchema(
-        lambda _tp, _handler: core_schema.str_schema(
-            max_length=80,
-            strip_whitespace=True,
-        )
-    ),
-]
-
-type CreditorName = Annotated[
-    str,
-    GetPydanticSchema(
-        lambda _tp, _handler: core_schema.str_schema(
-            max_length=80,
-            strip_whitespace=True,
-        )
-    ),
-]
 
 type InstitutionControlNumber = Annotated[
     str,
@@ -631,10 +612,14 @@ type FileIdentifier = Annotated[
     ),
 ]
 
-
-type Name = Annotated[
+type DepositIdentifier = Annotated[
     str,
     GetPydanticSchema(
-        lambda _tp, _handler: core_schema.str_schema(min_length=1, max_length=80, strip_whitespace=True)
+        lambda _tp, _handler: core_schema.str_schema(
+            min_length=18,
+            max_length=18,
+            strip_whitespace=True,
+            pattern=r'^[01][0-9]{17}$',
+        )
     ),
 ]

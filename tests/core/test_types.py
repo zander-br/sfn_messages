@@ -11,16 +11,15 @@ from sfn_messages.core.types import (
     Cnpj,
     Cpf,
     CreditContractNumber,
-    CreditorName,
     CustomerPurpose,
-    DebtorName,
+    DepositIdentifier,
     Description,
     InstitutionControlNumber,
     Ispb,
+    Name,
     OperationNumber,
     PersonType,
     Priority,
-    SenderName,
     StrControlNumber,
     StrSettlementStatus,
     SystemDomain,
@@ -53,16 +52,12 @@ class DescriptionModel(BaseModel):
     description: Description
 
 
-class SenderNameModel(BaseModel):
-    sender_name: SenderName
+class DepositIdentifierModel(BaseModel):
+    deposit_identifier: DepositIdentifier
 
 
-class DebtorNameModel(BaseModel):
-    debtor_name: DebtorName
-
-
-class CreditorNameModel(BaseModel):
-    creditor_name: CreditorName
+class NameModel(BaseModel):
+    name: Name
 
 
 class CreditContractNumberModel(BaseModel):
@@ -169,36 +164,6 @@ def test_branch_rejects_invalid_values(branch: str) -> None:
 
 
 @pytest.mark.parametrize(
-    'creditor_name',
-    [
-        'A' * 1,
-        'John Doe',
-        'A' * 80,
-    ],
-)
-def test_creditor_name_accepts_valid_values(creditor_name: str) -> None:
-    model = CreditorNameModel(creditor_name=creditor_name)
-    assert model.creditor_name == creditor_name
-
-
-def test_creditor_name_accepts_whitespace() -> None:
-    model = CreditorNameModel(creditor_name='  Jane Smith  ')
-    assert model.creditor_name == 'Jane Smith'
-
-
-@pytest.mark.parametrize(
-    'creditor_name',
-    [
-        'A' * 81,  # Too long
-    ],
-)
-def test_creditor_name_rejects_invalid_values(creditor_name: str) -> None:
-    with pytest.raises(ValidationError) as exc:
-        CreditorNameModel(creditor_name=creditor_name)
-    assert 'String should have at most 80 characters' in str(exc.value)
-
-
-@pytest.mark.parametrize(
     'description',
     [
         'A' * 1,
@@ -229,62 +194,32 @@ def test_description_rejects_invalid_values(description: str) -> None:
 
 
 @pytest.mark.parametrize(
-    'debtor_name',
+    'name',
     [
         'A' * 1,
         'John Doe',
         'A' * 80,
     ],
 )
-def test_debtor_name_accepts_valid_values(debtor_name: str) -> None:
-    model = DebtorNameModel(debtor_name=debtor_name)
-    assert model.debtor_name == debtor_name
+def test_name_accepts_valid_values(name: str) -> None:
+    model = NameModel(name=name)
+    assert model.name == name
 
 
-def test_debtor_name_accepts_whitespace() -> None:
-    model = DebtorNameModel(debtor_name='  Jane Smith  ')
-    assert model.debtor_name == 'Jane Smith'
+def test_name_accepts_whitespace() -> None:
+    model = NameModel(name='  Jane Smith  ')
+    assert model.name == 'Jane Smith'
 
 
 @pytest.mark.parametrize(
-    'debtor_name',
+    'name',
     [
         'A' * 81,  # Too long
     ],
 )
-def test_debtor_name_rejects_invalid_values(debtor_name: str) -> None:
+def test_name_rejects_invalid_values(name: str) -> None:
     with pytest.raises(ValidationError) as exc:
-        DebtorNameModel(debtor_name=debtor_name)
-    assert 'String should have at most 80 characters' in str(exc.value)
-
-
-@pytest.mark.parametrize(
-    'sender_name',
-    [
-        'A' * 1,
-        'John Doe',
-        'A' * 80,
-    ],
-)
-def test_sender_name_accepts_valid_values(sender_name: str) -> None:
-    model = SenderNameModel(sender_name=sender_name)
-    assert model.sender_name == sender_name
-
-
-def test_sender_name_accepts_whitespace() -> None:
-    model = SenderNameModel(sender_name='  Jane Smith  ')
-    assert model.sender_name == 'Jane Smith'
-
-
-@pytest.mark.parametrize(
-    'sender_name',
-    [
-        'A' * 81,  # Too long
-    ],
-)
-def test_sender_name_rejects_invalid_values(sender_name: str) -> None:
-    with pytest.raises(ValidationError) as exc:
-        SenderNameModel(sender_name=sender_name)
+        NameModel(name=name)
     assert 'String should have at most 80 characters' in str(exc.value)
 
 
@@ -1599,3 +1534,37 @@ def test_amount_accepts_whitespace() -> None:
 def test_amount_rejects_invalid_values(amount: str) -> None:
     with pytest.raises(ValidationError):
         AmountModel(amount=amount)
+
+
+@pytest.mark.parametrize(
+    'deposit_identifier',
+    [
+        '0' + '1' * 17,
+        '1' + '0' * 17,
+        '0' + '12345678901234567',
+    ],
+)
+def test_deposit_identifier_accepts_valid_values(deposit_identifier: str) -> None:
+    model = DepositIdentifierModel(deposit_identifier=deposit_identifier)
+    assert model.deposit_identifier == deposit_identifier
+
+
+def test_deposit_identifier_accepts_whitespace() -> None:
+    model = DepositIdentifierModel(deposit_identifier='   0' + '1' * 17 + '   ')
+    assert model.deposit_identifier == '0' + '1' * 17
+
+
+@pytest.mark.parametrize(
+    'deposit_identifier',
+    [
+        '0' * 17,  # Too short
+        '0' * 19,  # Too long
+        '2' + '0' * 17,  # First char not 0 or 1
+        '0' + '1234567890123456a',  # Non-digit
+        '0 12345678901234567',  # Space
+        '',  # Empty
+    ],
+)
+def test_deposit_identifier_rejects_invalid_values(deposit_identifier: str) -> None:
+    with pytest.raises(ValidationError):
+        DepositIdentifierModel(deposit_identifier=deposit_identifier)
