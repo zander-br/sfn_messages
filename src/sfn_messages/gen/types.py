@@ -72,3 +72,11 @@ type TransmissionType = Annotated[
         )
     ),
 ]
+
+
+type SelectionCriteria = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(min_length=0, max_length=10240, strip_whitespace=True)
+    ),
+]
