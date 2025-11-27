@@ -5,6 +5,7 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.gen.gen0012 import GEN0012, GEN0012R1
+from sfn_messages.gen.types import TransmissionType
 from tests.conftest import extract_missing_fields, normalize_xml
 
 
@@ -18,7 +19,7 @@ def make_valid_gen0012_params() -> dict[str, Any]:
         'institution_control_number': '123',
         'institution_ispb': '31680151',
         'recipient_ispb': '31680151',
-        'transmission_type': '1',
+        'transmission_type': 'EXTERNAL',
         'institution_origin_control_number': '123',
         'original_operation_number': '316801512509080000001',
         'settlement_date': '2025-11-26',
@@ -51,7 +52,7 @@ def test_gen0012_valid_model() -> None:
     assert gen0012.institution_control_number == '123'
     assert gen0012.institution_ispb == '31680151'
     assert gen0012.recipient_ispb == '31680151'
-    assert gen0012.transmission_type == '1'
+    assert gen0012.transmission_type == TransmissionType.EXTERNAL
     assert gen0012.institution_origin_control_number == '123'
     assert gen0012.original_operation_number == '316801512509080000001'
     assert gen0012.settlement_date == date(2025, 11, 26)
@@ -130,7 +131,7 @@ def test_gen0012_to_xml() -> None:
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBDestinatario>31680151</ISPBDestinatario>
-                <TpTransm>1</TpTransm>
+                <TpTransm>E</TpTransm>
                 <NumCtrlSistOr>123</NumCtrlSistOr>
                 <NUOpOr>316801512509080000001</NUOpOr>
                 <DtMovto>2025-11-26</DtMovto>
@@ -185,7 +186,7 @@ def test_gen0012_from_xml() -> None:
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBDestinatario>31680151</ISPBDestinatario>
-                <TpTransm>1</TpTransm>
+                <TpTransm>E</TpTransm>
                 <NumCtrlSistOr>123</NumCtrlSistOr>
                 <NUOpOr>316801512509080000001</NUOpOr>
                 <DtMovto>2025-11-26</DtMovto>
@@ -203,7 +204,7 @@ def test_gen0012_from_xml() -> None:
     assert gen0012.institution_control_number == '123'
     assert gen0012.institution_ispb == '31680151'
     assert gen0012.recipient_ispb == '31680151'
-    assert gen0012.transmission_type == '1'
+    assert gen0012.transmission_type == TransmissionType.EXTERNAL
     assert gen0012.institution_origin_control_number == '123'
     assert gen0012.original_operation_number == '316801512509080000001'
     assert gen0012.settlement_date == date(2025, 11, 26)

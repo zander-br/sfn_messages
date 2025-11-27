@@ -62,16 +62,18 @@ type LastOperationNumber = Annotated[
 ]
 
 
-type TransmissionType = Annotated[
-    str,
-    GetPydanticSchema(
-        lambda _tp, _handler: core_schema.str_schema(
-            min_length=1,
-            max_length=1,
-            strip_whitespace=True,
-        )
-    ),
-]
+class TransmissionType(EnumMixin, StrEnum):
+    EXTERNAL_AND_USERMSG_ATTACHED = 'EXTERNAL_AND_USERMSG_ATTACHED'
+    EXTERNAL = 'EXTERNAL'
+    USERMSG_ATTACHED = 'USERMSG_ATTACHED'
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[TransmissionType, str]:
+        return {
+            cls.EXTERNAL_AND_USERMSG_ATTACHED: 'A',
+            cls.EXTERNAL: 'E',
+            cls.USERMSG_ATTACHED: 'U',
+        }
 
 
 type SelectionCriteria = Annotated[

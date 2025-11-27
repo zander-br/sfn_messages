@@ -5,6 +5,7 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.gen.gen0014 import GEN0014, GEN0014R1
+from sfn_messages.gen.types import TransmissionType
 from tests.conftest import extract_missing_fields, normalize_xml
 
 
@@ -20,7 +21,7 @@ def make_valid_gen0014_params() -> dict[str, Any]:
         'recipient_ispb': '31680151',
         'file_name': 'Test file name',
         'selection_criteria': 'Criteria message',
-        'transmission_type': '1',
+        'transmission_type': 'USERMSG_ATTACHED',
         'settlement_date': '2025-11-27',
     }
 
@@ -53,7 +54,7 @@ def test_gen0014_valid_model() -> None:
     assert gen0014.recipient_ispb == '31680151'
     assert gen0014.file_name == 'Test file name'
     assert gen0014.selection_criteria == 'Criteria message'
-    assert gen0014.transmission_type == '1'
+    assert gen0014.transmission_type == TransmissionType.USERMSG_ATTACHED
     assert gen0014.settlement_date == date(2025, 11, 27)
 
 
@@ -132,7 +133,7 @@ def test_gen0014_to_xml() -> None:
                 <ISPBDestinatario>31680151</ISPBDestinatario>
                 <NomArq>Test file name</NomArq>
                 <CritSelec>Criteria message</CritSelec>
-                <TpTransm>1</TpTransm>
+                <TpTransm>U</TpTransm>
                 <DtMovto>2025-11-27</DtMovto>
             </GEN0014>
         </SISMSG>
@@ -187,7 +188,7 @@ def test_gen0014_from_xml() -> None:
                 <ISPBDestinatario>31680151</ISPBDestinatario>
                 <NomArq>Test file name</NomArq>
                 <CritSelec>Criteria message</CritSelec>
-                <TpTransm>1</TpTransm>
+                <TpTransm>U</TpTransm>
                 <DtMovto>2025-11-27</DtMovto>
             </GEN0014>
         </SISMSG>
@@ -205,7 +206,7 @@ def test_gen0014_from_xml() -> None:
     assert gen0014.recipient_ispb == '31680151'
     assert gen0014.file_name == 'Test file name'
     assert gen0014.selection_criteria == 'Criteria message'
-    assert gen0014.transmission_type == '1'
+    assert gen0014.transmission_type == TransmissionType.USERMSG_ATTACHED
     assert gen0014.settlement_date == date(2025, 11, 27)
 
 
