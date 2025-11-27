@@ -277,6 +277,41 @@ class TestBaseSubMessage:
 
         assert normalize_xml(ET.tostring(returned, encoding='unicode')) == normalize_xml(expected)
 
+    def test_to_xml_value_with_sub_list(self) -> None:
+        expected = """
+        <base>
+            <field1>value1</field1>
+            <others>
+                <f1>v1</f1>
+                <f2>v2</f2>
+            </others>
+            <others>
+                <f1>v3</f1>
+                <f2>v4</f2>
+            </others>
+            <others>
+                <f1>v5</f1>
+                <f2>v6</f2>
+            </others>
+        </base>
+        """
+
+        class SubSut(BaseSubMessage):
+            f1: Annotated[str, XmlPath('others/f1/text()')]
+            f2: Annotated[str, XmlPath('others/f2/text()')]
+
+        class Sut(BaseSubMessage):
+            field1: Annotated[str, XmlPath('base/field1/text()')]
+            field2: Annotated[list[SubSut], XmlPath('base')]
+
+        sut = Sut(
+            field1='value1',
+            field2=[SubSut(f1='v1', f2='v2'), SubSut(f1='v3', f2='v4'), SubSut(f1='v5', f2='v6')],
+        )
+        returned = sut.to_xml_value()
+
+        assert normalize_xml(ET.tostring(returned, encoding='unicode')) == normalize_xml(expected)
+
     def test_from_xml_value(self) -> None:
         xml = """
         <base>
@@ -316,6 +351,40 @@ class TestBaseSubMessage:
         returned = Sut.from_xml_value(ET.fromstring(xml))
 
         assert returned == Sut(field1='value1', field2=SubSut(f1='v1', f2='v2'))
+
+    def test_from_xml_value_with_sub_list(self) -> None:
+        xml = """
+        <base>
+            <field1>value1</field1>
+            <others>
+                <f1>v1</f1>
+                <f2>v2</f2>
+            </others>
+            <others>
+                <f1>v3</f1>
+                <f2>v4</f2>
+            </others>
+            <others>
+                <f1>v5</f1>
+                <f2>v6</f2>
+            </others>
+        </base>
+        """
+
+        class SubSut(BaseSubMessage):
+            f1: Annotated[str, XmlPath('others/f1/text()')]
+            f2: Annotated[str, XmlPath('others/f2/text()')]
+
+        class Sut(BaseSubMessage):
+            field1: Annotated[str, XmlPath('base/field1/text()')]
+            field2: Annotated[list[SubSut], XmlPath('base')]
+
+        returned = Sut.from_xml_value(ET.fromstring(xml))
+
+        assert returned == Sut(
+            field1='value1',
+            field2=[SubSut(f1='v1', f2='v2'), SubSut(f1='v3', f2='v4'), SubSut(f1='v5', f2='v6')],
+        )
 
 
 class TestBaseMessage:

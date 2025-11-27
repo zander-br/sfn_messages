@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from contextlib import suppress
 from dataclasses import dataclass
+from types import GenericAlias
 from typing import Annotated, Any, Self, Union
 from xml.etree import ElementTree as ET
 
@@ -35,7 +36,7 @@ class XmlSerializerMixin(ABC, BaseModel):
     def get_base_tag_name(cls) -> str:
         raise NotImplementedError
 
-    def to_xml_value(self) -> ET.Element:
+    def to_xml_value(self) -> ET.Element:  # noqa: C901, PLR0912
         fields = (
             (field_name, getattr(self, field_name), metadata)
             for field_name, field_info in self.__class__.model_fields.items()
@@ -64,13 +65,18 @@ class XmlSerializerMixin(ABC, BaseModel):
                 else:
                     raise InvalidLocalNameInFieldError(cls=self.__class__, field_name=field_name)
             elif local_name is None:
-                pointer.append(value)
+                if not isinstance(value, list):
+                    value = [value]
+                for element in value:
+                    pointer.append(element)
             else:
                 raise LocalNameSetInFieldError(cls=self.__class__, field_name=field_name)
         return root
 
     @staticmethod
-    def _format_field_value(field_value: object, /) -> str | ET.Element:
+    def _format_field_value(field_value: object, /) -> str | ET.Element | list[ET.Element]:
+        if isinstance(field_value, list):
+            return [value.to_xml_value() for value in field_value]
         if isinstance(field_value, MappableToXmlValue):
             return field_value.to_xml_value()
         return str(field_value)
@@ -90,7 +96,7 @@ class XmlSerializerMixin(ABC, BaseModel):
             [root_name, *path_names], local_name = xml_path.parts()
             if xml_value.tag != root_name:
                 raise InvalidBaseTagNameError(document_tag=xml_value.tag, expected=root_name)
-            pointer = xml_value.find('/'.join(path_names))
+            pointer = xml_value.find('/'.join(path_names)) if path_names else xml_value
             if pointer is not None:
                 if local_name is None:
                     kwargs[field_name] = pointer
@@ -118,6 +124,15 @@ class XmlSerializerMixin(ABC, BaseModel):
                         if isinstance(element, ET.Element):
                             value = element
                     return klass.from_xml_value(value)
+            elif (
+                isinstance(klass, GenericAlias)
+                and isinstance(klass.__origin__, type)
+                and issubclass(klass.__origin__, list)
+                and issubclass(t := klass.__args__[0], XmlSerializerMixin)
+            ):
+                if isinstance(xml_value, str):
+                    raise TypeError
+                return [t.from_xml_value(element) for element in xml_value.findall(t.get_base_tag_name())]
         return str(xml_value)
 
 
