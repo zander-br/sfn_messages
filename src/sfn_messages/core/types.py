@@ -2,7 +2,8 @@ from contextlib import suppress
 from decimal import Decimal
 from enum import Enum, StrEnum
 from functools import cache
-from typing import Annotated, Any, Self
+from typing import Annotated, Any, Protocol, Self, runtime_checkable
+from xml.etree import ElementTree as ET
 
 from pydantic import GetPydanticSchema
 from pydantic_core import core_schema
@@ -21,6 +22,14 @@ def cpf_validator(value: str) -> str:
         msg = 'Invalid CPF format'
         raise ValueError(msg)
     return value
+
+
+@runtime_checkable
+class MappableToXmlValue(Protocol):
+    def to_xml_value(self) -> str | ET.Element: ...
+
+    @classmethod
+    def from_xml_value(cls, xml_value: str | ET.Element) -> Self: ...
 
 
 class EnumMixin(Enum):
