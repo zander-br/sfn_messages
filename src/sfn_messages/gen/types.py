@@ -90,3 +90,31 @@ type Certificate = Annotated[
         lambda _tp, _handler: core_schema.str_schema(min_length=0, max_length=10240, strip_whitespace=True)
     ),
 ]
+
+
+type IndividualIdentificationNumber = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(min_length=1, max_length=20, strip_whitespace=True)
+    ),
+]
+
+
+class ResponsibleType(EnumMixin, StrEnum):
+    CONTINGENCY_STR = 'CONTINGENCY_STR'
+    SPB_DIRECTOR = 'SPB_DIRECTOR'
+    INFRASTRUCTURE = 'INFRASTRUCTURE'
+    MONITOR = 'MONITOR'
+    HOLDER = 'HOLDER'
+    ISSUER = 'ISSUER'
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[ResponsibleType, str]:
+        return {
+            cls.CONTINGENCY_STR: 'C',
+            cls.SPB_DIRECTOR: 'D',
+            cls.INFRASTRUCTURE: 'I',
+            cls.MONITOR: 'M',
+            cls.HOLDER: 'PD',
+            cls.ISSUER: 'PE',
+        }
