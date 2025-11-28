@@ -26,5 +26,5 @@ class GEN0008R1(BaseMessage):
     institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_R1}/NumCtrlIF/text()')]
     institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R1}/ISPBIF/text()')]
     instituition_certificate: Annotated[Ispb, XmlPath(f'{PATH_R1}/ISPBIFCertif/text()')]
-    settlement_date: Annotated[date, XmlPath(f'{PATH_R1}/DtMovto/text()')]
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_R1}/DtMovto/text()')] = None
     vendor_timestamp: Annotated[datetime, XmlPath(f'{PATH_R1}/DtHrBC/text()')]

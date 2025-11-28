@@ -19,7 +19,7 @@ class GEN0014(BaseMessage):
     issuing_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBEmissor/text()')]
     recipient_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBDestinatario/text()')]
     file_name: Annotated[Name, XmlPath(f'{PATH}/NomArq/text()')]
-    selection_criteria: Annotated[SelectionCriteria, XmlPath(f'{PATH}/CritSelec/text()')]
+    selection_criteria: Annotated[SelectionCriteria | None, XmlPath(f'{PATH}/CritSelec/text()')] = None
     transmission_type: Annotated[TransmissionType, XmlPath(f'{PATH}/TpTransm/text()')]
     settlement_date: Annotated[date, XmlPath(f'{PATH}/DtMovto/text()')]
 

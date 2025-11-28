@@ -19,8 +19,10 @@ class GEN0012(BaseMessage):
     institution_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBIF/text()')]
     recipient_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBDestinatario/text()')]
     transmission_type: Annotated[TransmissionType, XmlPath(f'{PATH}/TpTransm/text()')]
-    institution_origin_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH}/NumCtrlSistOr/text()')]
-    original_operation_number: Annotated[OperationNumber, XmlPath(f'{PATH}/NUOpOr/text()')]
+    institution_origin_control_number: Annotated[
+        InstitutionControlNumber | None, XmlPath(f'{PATH}/NumCtrlSistOr/text()')
+    ] = None
+    original_operation_number: Annotated[OperationNumber | None, XmlPath(f'{PATH}/NUOpOr/text()')] = None
     settlement_date: Annotated[date, XmlPath(f'{PATH}/DtMovto/text()')]
 
 
@@ -30,6 +32,6 @@ class GEN0012R1(BaseMessage):
     message_code: Annotated[Literal['GEN0012R1'], XmlPath(f'{PATH_R1}/CodMsg/text()')] = 'GEN0012R1'
     institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_R1}/NumCtrlIF/text()')]
     institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R1}/ISPBIF/text()')]
-    file_identifier: Annotated[FileIdentifier, XmlPath(f'{PATH_R1}/IdentdArq/text()')]
+    file_identifier: Annotated[FileIdentifier | None, XmlPath(f'{PATH_R1}/IdentdArq/text()')] = None
     participant_datetime: Annotated[datetime, XmlPath(f'{PATH_R1}/DtHrPart/text()')]
     settlement_date: Annotated[date, XmlPath(f'{PATH_R1}/DtMovto/text()')]

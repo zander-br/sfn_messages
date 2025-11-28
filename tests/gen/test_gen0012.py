@@ -87,8 +87,6 @@ def test_gen0012_missing_required_fields() -> None:
         'institution_ispb',
         'recipient_ispb',
         'transmission_type',
-        'institution_origin_control_number',
-        'original_operation_number',
         'settlement_date',
     }
 
@@ -105,7 +103,6 @@ def test_gen0012r1_missing_required_fields() -> None:
         'operation_number',
         'institution_control_number',
         'institution_ispb',
-        'file_identifier',
         'participant_datetime',
         'settlement_date',
     }
@@ -291,8 +288,6 @@ def test_gen0012_from_xml_missing_required_fields() -> None:
         'institution_ispb',
         'recipient_ispb',
         'transmission_type',
-        'institution_origin_control_number',
-        'original_operation_number',
         'settlement_date',
     }
 
@@ -321,7 +316,6 @@ def test_gen0012r1_from_xml_missing_required_fields() -> None:
     assert missing_fields == {
         'institution_control_number',
         'institution_ispb',
-        'file_identifier',
         'participant_datetime',
         'settlement_date',
     }

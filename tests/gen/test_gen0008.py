@@ -92,7 +92,6 @@ def test_gen0008r1_missing_required_fields() -> None:
         'institution_control_number',
         'institution_ispb',
         'instituition_certificate',
-        'settlement_date',
         'vendor_timestamp',
     }
 
@@ -292,6 +291,5 @@ def test_gen0008r1_from_xml_missing_required_fields() -> None:
         'institution_control_number',
         'institution_ispb',
         'instituition_certificate',
-        'settlement_date',
         'vendor_timestamp',
     }

@@ -87,7 +87,6 @@ def test_gen0014_missing_required_fields() -> None:
         'issuing_ispb',
         'recipient_ispb',
         'file_name',
-        'selection_criteria',
         'transmission_type',
         'settlement_date',
     }
@@ -291,7 +290,6 @@ def test_gen0014_from_xml_missing_required_fields() -> None:
         'issuing_ispb',
         'recipient_ispb',
         'file_name',
-        'selection_criteria',
         'transmission_type',
         'settlement_date',
     }
