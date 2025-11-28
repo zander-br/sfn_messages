@@ -26,9 +26,12 @@ from .validations import PartyValidations
 PATH = 'DOC/SISMSG/STR0008'
 PATH_R1 = 'DOC/SISMSG/STR0008R1'
 PATH_R2 = 'DOC/SISMSG/STR0008R2'
+XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/STR0008.xsd'
 
 
 class STR0008(PartyValidations, BaseMessage):
+    XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
+
     document_parties: ClassVar[list[str]] = ['debtor', 'creditor']
     account_parties: ClassVar[list[str]] = ['debtor', 'creditor']
     others_enum_value: ClassVar[CustomerPurpose | None] = CustomerPurpose.OTHERS
@@ -64,6 +67,8 @@ class STR0008(PartyValidations, BaseMessage):
 
 
 class STR0008R1(BaseMessage):
+    XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
+
     message_code: Annotated[Literal['STR0008R1'], XmlPath(f'{PATH_R1}/CodMsg/text()')] = 'STR0008R1'
     institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_R1}/NumCtrlIF/text()')]
     debtor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R1}/ISPBIFDebtd/text()')]
@@ -74,6 +79,8 @@ class STR0008R1(BaseMessage):
 
 
 class STR0008R2(PartyValidations, BaseMessage):
+    XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
+
     document_parties: ClassVar[list[str]] = ['debtor', 'creditor']
     account_parties: ClassVar[list[str]] = ['debtor', 'creditor']
     others_enum_value: ClassVar[CustomerPurpose | None] = CustomerPurpose.OTHERS

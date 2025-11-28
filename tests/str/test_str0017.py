@@ -56,7 +56,7 @@ def test_str0017_to_xml() -> None:
     xml = message.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0017.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -79,7 +79,7 @@ def test_str0017_to_xml() -> None:
 
 def test_str0017_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0017.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -119,7 +119,7 @@ def test_str0017_roundtrip() -> None:
 
 def test_str0017_from_xml_missing_required_fields() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0017.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>

@@ -70,8 +70,8 @@ def test_str0011_to_xml() -> None:
     str0011 = STR0011.model_validate(params)
     xml = str0011.to_xml()
 
-    expected_xml = """
-    <DOC>
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0011.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -94,8 +94,8 @@ def test_str0011_to_xml() -> None:
 
 
 def test_str0011_from_xml() -> None:
-    xml = """
-    <DOC>
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0011.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -135,8 +135,8 @@ def test_str0011_roundtrip() -> None:
 
 
 def test_str0011_from_xml_missing_required_fields() -> None:
-    xml = """
-    <DOC>
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0011.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -199,8 +199,8 @@ def test_str0011r1_to_xml() -> None:
     str0011r1 = STR0011R1.model_validate(params)
     xml = str0011r1.to_xml()
 
-    expected_xml = """
-    <DOC>
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0011.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -223,8 +223,8 @@ def test_str0011r1_to_xml() -> None:
 
 
 def test_str0011r1_from_xml() -> None:
-    xml = """
-    <DOC>
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0011.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -263,8 +263,8 @@ def test_str0011r1_roundtrip() -> None:
 
 
 def test_str0011r1_from_xml_missing_required_fields() -> None:
-    xml = """
-    <DOC>
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0011.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>

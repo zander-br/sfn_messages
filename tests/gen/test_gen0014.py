@@ -118,7 +118,7 @@ def test_gen0014_to_xml() -> None:
     xml = gen0014.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0014.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -149,7 +149,7 @@ def test_gen0014r1_to_xml() -> None:
     xml = gen0014r1.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0014.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -173,7 +173,7 @@ def test_gen0014r1_to_xml() -> None:
 
 def test_gen0014_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0014.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -212,7 +212,7 @@ def test_gen0014_from_xml() -> None:
 
 def test_gen0014r1_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0014.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -267,7 +267,7 @@ def test_gen0014r1_roundtrip() -> None:
 
 def test_gen0014_from_xml_missing_required_fields() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0014.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -299,7 +299,7 @@ def test_gen0014_from_xml_missing_required_fields() -> None:
 
 def test_gen0014r1_from_xml_missing_required_fields() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0014.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>

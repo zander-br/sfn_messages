@@ -70,7 +70,7 @@ def test_str0013_to_xml() -> None:
     xml = str0013.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0013.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -93,7 +93,7 @@ def test_str0013_to_xml() -> None:
 
 def test_str0013_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0013.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -134,7 +134,7 @@ def test_str0013_roundtrip() -> None:
 
 def test_str0013_from_xml_missing_required_fields() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0013.xsd">
         <SISMSG>
             <STR0013>
                 <CodMsg>STR0013</CodMsg>
@@ -196,7 +196,7 @@ def test_str0013r1_to_xml() -> None:
     xml = str0013r1.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0013.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -221,7 +221,7 @@ def test_str0013r1_to_xml() -> None:
 
 def test_str0013r1_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0013.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -265,7 +265,7 @@ def test_str0013r1_roundtrip() -> None:
 
 def test_str0013r1_from_xml_missing_required_fields() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0013.xsd">
         <SISMSG>
             <STR0013R1>
                 <CodMsg>STR0013R1</CodMsg>

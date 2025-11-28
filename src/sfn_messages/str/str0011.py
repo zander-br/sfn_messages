@@ -1,14 +1,17 @@
 from datetime import date, datetime
-from typing import Annotated, Literal
+from typing import Annotated, ClassVar, Literal
 
 from sfn_messages.core.models import BaseMessage, XmlPath
 from sfn_messages.core.types import InstitutionControlNumber, Ispb, StrControlNumber
 
 PATH = 'DOC/SISMSG/STR0011'
 PATH_R1 = 'DOC/SISMSG/STR0011R1'
+XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/STR0011.xsd'
 
 
 class STR0011(BaseMessage):
+    XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
+
     message_code: Annotated[Literal['STR0011'], XmlPath(f'{PATH}/CodMsg/text()')] = 'STR0011'
     institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH}/NumCtrlIF/text()')]
     institution_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBIF/text()')]
@@ -17,6 +20,8 @@ class STR0011(BaseMessage):
 
 
 class STR0011R1(BaseMessage):
+    XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
+
     message_code: Annotated[Literal['STR0011'], XmlPath(f'{PATH_R1}/CodMsg/text()')] = 'STR0011'
     institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_R1}/NumCtrlIF/text()')]
     institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R1}/ISPBIF/text()')]

@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Annotated, Literal
+from typing import Annotated, ClassVar, Literal
 
 from sfn_messages.core.models import BaseMessage, XmlPath
 from sfn_messages.core.types import InstitutionControlNumber, Ispb, Name
@@ -8,9 +8,12 @@ from .types import SelectionCriteria, TransmissionType
 
 PATH = 'DOC/SISMSG/GEN0014'
 PATH_R1 = 'DOC/SISMSG/GEN0014R1'
+XML_NAMESPACE = 'http://www.bcb.gov.br/GEN/GEN0014.xsd'
 
 
 class GEN0014(BaseMessage):
+    XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
+
     message_code: Annotated[Literal['GEN0014'], XmlPath(f'{PATH}/CodMsg/text()')] = 'GEN0014'
     institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH}/NumCtrlIF/text()')]
     issuing_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBEmissor/text()')]
@@ -22,6 +25,8 @@ class GEN0014(BaseMessage):
 
 
 class GEN0014R1(BaseMessage):
+    XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
+
     message_code: Annotated[Literal['GEN0014R1'], XmlPath(f'{PATH_R1}/CodMsg/text()')] = 'GEN0014R1'
     institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_R1}/NumCtrlIF/text()')]
     institution_request_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_R1}/NumCtrlReqIF/text()')]
