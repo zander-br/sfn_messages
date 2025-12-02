@@ -24,16 +24,14 @@ class GEN0020(BaseMessage):
     settlement_date: Annotated[date, XmlPath(f'{PATH}/DtMovto/text()')]
 
 
-class GEN0020R1GROUP(BaseSubMessage):
-    responsible_cpf: Annotated[Cpf | None, XmlPath(f'{PATH_R1_GROUP}/CPFRespons/text()')] = None
-    responsible_document_number: Annotated[
-        IndividualIdentificationNumber | None, XmlPath(f'{PATH_R1_GROUP}/NumDocRespons/text()')
-    ] = None
-    responsible_name: Annotated[Name | None, XmlPath(f'{PATH_R1_GROUP}/NomRespons/text()')] = None
-    responsible_email: Annotated[Email | None, XmlPath(f'{PATH_R1_GROUP}/EndEletrnc/text()')] = None
-    responsible_telephone_1: Annotated[Telephone, XmlPath(f'{PATH_R1_GROUP}/NumTelRespons1/text()')]
-    responsible_telephone_2: Annotated[Telephone | None, XmlPath(f'{PATH_R1_GROUP}/NumTelRespons2/text()')] = None
-    responsible_telephone_3: Annotated[Telephone | None, XmlPath(f'{PATH_R1_GROUP}/NumTelRespons3/text()')] = None
+class Responsible(BaseSubMessage):
+    cpf: Annotated[Cpf | None, XmlPath(f'{PATH_R1_GROUP}/CPFRespons/text()')] = None
+    document: Annotated[IndividualIdentificationNumber | None, XmlPath(f'{PATH_R1_GROUP}/NumDocRespons/text()')] = None
+    name: Annotated[Name | None, XmlPath(f'{PATH_R1_GROUP}/NomRespons/text()')] = None
+    email: Annotated[Email | None, XmlPath(f'{PATH_R1_GROUP}/EndEletrnc/text()')] = None
+    telephone_1: Annotated[Telephone, XmlPath(f'{PATH_R1_GROUP}/NumTelRespons1/text()')]
+    telephone_2: Annotated[Telephone | None, XmlPath(f'{PATH_R1_GROUP}/NumTelRespons2/text()')] = None
+    telephone_3: Annotated[Telephone | None, XmlPath(f'{PATH_R1_GROUP}/NumTelRespons3/text()')] = None
     responsible_type: Annotated[ResponsibleType | None, XmlPath(f'{PATH_R1_GROUP}/TpRespons/text()')] = None
 
 
@@ -46,7 +44,7 @@ class GEN0020R1(BaseMessage):
     ]
     participant_ispb: Annotated[Ispb, XmlPath(f'{PATH_R1}/ISPBPart/text()')]
     parcitipant_consulted_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_R1}/ISPBPartConsd/text()')] = None
-    responsibles: Annotated[list[GEN0020R1GROUP], XmlPath(f'{PATH_R1}')] = Field(default_factory=list)
+    responsibles: Annotated[list[Responsible], XmlPath(f'{PATH_R1}')] = Field(default_factory=list)
     original_description: Annotated[Description | None, XmlPath(f'{PATH_R1}/HistOr/text()')] = None
     original_provider_datetime: Annotated[datetime | None, XmlPath(f'{PATH_R1}/DtHrPrestdOr/text()')] = None
     provider_datetime: Annotated[datetime, XmlPath(f'{PATH_R1}/DtHrPrestd/text()')]

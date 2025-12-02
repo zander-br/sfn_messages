@@ -4,7 +4,7 @@ from typing import Any
 import pytest
 from pydantic import ValidationError
 
-from sfn_messages.gen.gen0020 import GEN0020, GEN0020R1, GEN0020R1GROUP
+from sfn_messages.gen.gen0020 import GEN0020, GEN0020R1, Responsible
 from tests.conftest import extract_missing_fields, normalize_xml
 
 RESPONSIBLE_SIZE = 2
@@ -36,21 +36,21 @@ def make_valid_gen0020r1_params() -> dict[str, Any]:
         'parcitipant_consulted_ispb': '00038166',
         'responsibles': [
             {
-                'responsible_cpf': '05046528002',
-                'responsible_document_number': '398127955',
-                'responsible_name': 'John Doe 01',
-                'responsible_email': 'john.doe.01@test.com',
-                'responsible_telephone_1': '65994861321',
-                'responsible_telephone_2': '6537132095',
+                'cpf': '05046528002',
+                'document': '398127955',
+                'name': 'John Doe 01',
+                'email': 'john.doe.01@test.com',
+                'telephone_1': '65994861321',
+                'telephone_2': '6537132095',
                 'responsible_type': 'SPB_DIRECTOR',
             },
             {
-                'responsible_cpf': '30288815009',
-                'responsible_document_number': '151058246',
-                'responsible_name': 'John Doe 02',
-                'responsible_email': 'john.doe.02@test.com',
-                'responsible_telephone_1': '63987350515',
-                'responsible_telephone_2': '6325324500',
+                'cpf': '30288815009',
+                'document': '151058246',
+                'name': 'John Doe 02',
+                'email': 'john.doe.02@test.com',
+                'telephone_1': '63987350515',
+                'telephone_2': '6325324500',
                 'responsible_type': 'MONITOR',
             },
         ],
@@ -98,12 +98,12 @@ def test_gen0020r1_valid_model() -> None:
     assert len(gen0020r1.responsibles) == RESPONSIBLE_SIZE
     resp1 = gen0020r1.responsibles[0]
     resp2 = gen0020r1.responsibles[1]
-    assert isinstance(resp1, GEN0020R1GROUP)
-    assert resp1.responsible_cpf == '05046528002'
-    assert resp1.responsible_telephone_1 == '65994861321'
-    assert isinstance(resp2, GEN0020R1GROUP)
-    assert resp2.responsible_cpf == '30288815009'
-    assert resp2.responsible_telephone_1 == '63987350515'
+    assert isinstance(resp1, Responsible)
+    assert resp1.cpf == '05046528002'
+    assert resp1.telephone_1 == '65994861321'
+    assert isinstance(resp2, Responsible)
+    assert resp2.cpf == '30288815009'
+    assert resp2.telephone_1 == '63987350515'
 
 
 def test_gen0020_missing_required_fields() -> None:
@@ -312,12 +312,12 @@ def test_gen0020r1_from_xml() -> None:
     assert len(gen0020r1.responsibles) == RESPONSIBLE_SIZE
     resp1 = gen0020r1.responsibles[0]
     resp2 = gen0020r1.responsibles[1]
-    assert isinstance(resp1, GEN0020R1GROUP)
-    assert resp1.responsible_cpf == '05046528002'
-    assert resp1.responsible_telephone_1 == '65994861321'
-    assert isinstance(resp2, GEN0020R1GROUP)
-    assert resp2.responsible_cpf == '30288815009'
-    assert resp2.responsible_telephone_1 == '63987350515'
+    assert isinstance(resp1, Responsible)
+    assert resp1.cpf == '05046528002'
+    assert resp1.telephone_1 == '65994861321'
+    assert isinstance(resp2, Responsible)
+    assert resp2.cpf == '30288815009'
+    assert resp2.telephone_1 == '63987350515'
 
 
 def test_gen0020_roundtrip() -> None:
