@@ -1261,3 +1261,20 @@ class TimeType(EnumMixin, StrEnum):
             cls.EVENTUAL_EXCEPTION: 'E',
             cls.STANDARD: 'P',
         }
+
+
+class CreditDebitType(EnumMixin, StrEnum):
+    CREDIT = 'CREDIT'
+    DEBIT = 'DEBIT'
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[CreditDebitType, str]:
+        return {cls.CREDIT: 'C', cls.DEBIT: 'D'}
+
+
+type MessageCode = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(min_length=7, max_length=10, strip_whitespace=True)
+    ),
+]
