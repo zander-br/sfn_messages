@@ -1547,3 +1547,154 @@ type AssetDescription = Annotated[
         )
     ),
 ]
+
+
+type ParticipantIdentifier = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(max_length=8, pattern=r'^\d{8}$', strip_whitespace=True)
+    ),
+]
+
+
+class LdlSettlementStatus(EnumMixin, StrEnum):
+    EFFECTIVE = 'EFFECTIVE'
+    CANCELLED = 'CANCELLED'
+    CANCELLED_CONTINGENCY = 'CANCELLED_CONTINGENCY'
+    PENDING_STR = 'PENDING_STR'
+    PENDING_STR_CONTINGENCY = 'PENDING_STR_CONTINGENCY'
+    EFFECTIVE_CONTINGENCY = 'EFFECTIVE_CONTINGENCY'
+    REJECTED_IF_CONDITION = 'REJECTED_IF_CONDITION'
+    REJECTED_IF_CONDITION_CONTINGENCY = 'REJECTED_IF_CONDITION_CONTINGENCY'
+    REJECTED_AFTER_HOURS = 'REJECTED_AFTER_HOURS'
+    REJECTED_AFTER_HOURS_CONTINGENCY = 'REJECTED_AFTER_HOURS_CONTINGENCY'
+    EFFECTIVE_OPTIMIZATION = 'EFFECTIVE_OPTIMIZATION'
+    REJECTED_NO_BALANCE = 'REJECTED_NO_BALANCE'
+    REJECTED_AFTER_HOURS_SIMPLE = 'REJECTED_AFTER_HOURS_SIMPLE'
+    REJECTED_NO_BALANCE_CONTINGENCY = 'REJECTED_NO_BALANCE_CONTINGENCY'
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[LdlSettlementStatus, str]:
+        return {
+            cls.EFFECTIVE: '1',
+            cls.CANCELLED: '14',
+            cls.CANCELLED_CONTINGENCY: '15',
+            cls.PENDING_STR: '17',
+            cls.PENDING_STR_CONTINGENCY: '19',
+            cls.EFFECTIVE_CONTINGENCY: '2',
+            cls.REJECTED_IF_CONDITION: '22',
+            cls.REJECTED_IF_CONDITION_CONTINGENCY: '23',
+            cls.REJECTED_AFTER_HOURS: '24',
+            cls.REJECTED_AFTER_HOURS_CONTINGENCY: '25',
+            cls.EFFECTIVE_OPTIMIZATION: '3',
+            cls.REJECTED_NO_BALANCE: '5',
+            cls.REJECTED_AFTER_HOURS_SIMPLE: '6',
+            cls.REJECTED_AFTER_HOURS_CONTINGENCY: '8',
+            cls.REJECTED_NO_BALANCE_CONTINGENCY: '9',
+        }
+
+
+class PaymentType(EnumMixin, StrEnum):
+    NOT_APPLICABLE = 'NOT_APPLICABLE'
+    INTEREST_PAYMENT = 'INTEREST_PAYMENT'
+    REMUNERATION = 'REMUNERATION'
+    EARNING = 'EARNING'
+    DIVIDENDS = 'DIVIDENDS'
+    SUBSCRIPTION = 'SUBSCRIPTION'
+    REDEMPTION = 'REDEMPTION'
+    AMORTIZATION = 'AMORTIZATION'
+    PROFIT_SHARING = 'PROFIT_SHARING'
+    NO_REPACTUATION = 'NO_REPACTUATION'
+    PREMIUM_PAYMENT = 'PREMIUM_PAYMENT'
+    ISSUANCE = 'ISSUANCE'
+    OTHER = 'OTHER'
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[PaymentType, str]:
+        return {
+            cls.NOT_APPLICABLE: '0',
+            cls.INTEREST_PAYMENT: '1',
+            cls.DIVIDENDS: '2',
+            cls.SUBSCRIPTION: '3',
+            cls.REDEMPTION: '4',
+            cls.AMORTIZATION: '5',
+            cls.PROFIT_SHARING: '6',
+            cls.NO_REPACTUATION: '7',
+            cls.PREMIUM_PAYMENT: '8',
+            cls.ISSUANCE: '9',
+            cls.REMUNERATION: '10',
+            cls.EARNING: '11',
+            cls.OTHER: '99',
+        }
+
+
+class MovementType(EnumMixin, StrEnum):
+    DEPOSIT_OF_ASSET = 'DEPOSIT_OF_ASSET'
+    ISIN_CODE_UPDATE = 'ISIN_CODE_UPDATE'
+    DIVIDENDS_AND_CASH_BENEFITS = 'DIVIDENDS_AND_CASH_BENEFITS'
+    BONUS_AND_SPLIT_RIGHTS = 'BONUS_AND_SPLIT_RIGHTS'
+    SUBSCRIPTION_RIGHT = 'SUBSCRIPTION_RIGHT'
+    SUBSCRIPTION_RECEIPTS = 'SUBSCRIPTION_RECEIPTS'
+    INCORPORATION = 'INCORPORATION'
+    MERGER = 'MERGER'
+    FRACTION_TREATMENT = 'FRACTION_TREATMENT'
+    PROVISIONED_SUBSCRIPTION_RIGHTS = 'PROVISIONED_SUBSCRIPTION_RIGHTS'
+    BALANCE_UPDATE_COM = 'BALANCE_UPDATE_COM'
+    WITHDRAWAL_OF_ASSET = 'WITHDRAWAL_OF_ASSET'
+    BALANCE_UPDATE_EX = 'BALANCE_UPDATE_EX'
+    FINANCIAL_RESOURCES_TRANSFER = 'FINANCIAL_RESOURCES_TRANSFER'
+    RETURN = 'RETURN'
+    REDEMPTION = 'REDEMPTION'
+    EARNINGS = 'EARNINGS'
+    ASSET_AND_RIGHTS_TRANSFER = 'ASSET_AND_RIGHTS_TRANSFER'
+    SETTLEMENT = 'SETTLEMENT'
+    REVERSE_SPLIT = 'REVERSE_SPLIT'
+    SPIN_OFF = 'SPIN_OFF'
+    NORMAL = 'NORMAL'
+    COSTS = 'COSTS'
+    SUBORDINATED_TERM_SETTLEMENT = 'SUBORDINATED_TERM_SETTLEMENT'
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[MovementType, str]:
+        return {
+            cls.DEPOSIT_OF_ASSET: '1',
+            cls.ISIN_CODE_UPDATE: '10',
+            cls.DIVIDENDS_AND_CASH_BENEFITS: '11',
+            cls.BONUS_AND_SPLIT_RIGHTS: '12',
+            cls.SUBSCRIPTION_RIGHT: '13',
+            cls.SUBSCRIPTION_RECEIPTS: '14',
+            cls.INCORPORATION: '15',
+            cls.MERGER: '16',
+            cls.FRACTION_TREATMENT: '17',
+            cls.PROVISIONED_SUBSCRIPTION_RIGHTS: '18',
+            cls.BALANCE_UPDATE_COM: '19',
+            cls.WITHDRAWAL_OF_ASSET: '2',
+            cls.BALANCE_UPDATE_EX: '20',
+            cls.FINANCIAL_RESOURCES_TRANSFER: '21',
+            cls.RETURN: '3',
+            cls.REDEMPTION: '4',
+            cls.EARNINGS: '5',
+            cls.ASSET_AND_RIGHTS_TRANSFER: '6',
+            cls.SETTLEMENT: '7',
+            cls.REVERSE_SPLIT: '8',
+            cls.SPIN_OFF: '9',
+            cls.NORMAL: '01',
+            cls.COSTS: '03',
+            cls.SUBORDINATED_TERM_SETTLEMENT: '04',
+        }
+
+
+type PaymentNumber = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(min_length=1, max_length=20, strip_whitespace=True)
+    ),
+]
+
+
+type LdlControlNumber = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(min_length=1, max_length=20, strip_whitespace=True)
+    ),
+]
