@@ -6,7 +6,7 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.core.types import Priority
-from sfn_messages.slb.slb0002 import SLB0002, SLB0002R1
+from sfn_messages.slb.slb0002 import SLB0002, SLB0002E, SLB0002R1
 from sfn_messages.slb.types import SlbSettlementStatus
 from tests.conftest import extract_missing_fields, normalize_xml
 
@@ -43,6 +43,29 @@ def make_valid_slb0002r1_params() -> dict[str, Any]:
     }
 
 
+def make_valid_slb0002e_params(*, general_error: bool = False) -> dict[str, Any]:
+    slb0002e = {
+        'from_ispb': '31680151',
+        'to_ispb': '00038166',
+        'system_domain': 'SPB01',
+        'operation_number': '316801512509080000001',
+        'message_code': 'SLB0002',
+        'participant_institution_control_number': '123',
+        'participant_ispb': '31680153',
+        'original_slb_control_number': 'SLB20250101000000001',
+        'priority': 'HIGH',
+        'amount': 139.0,
+        'settlement_date': '2025-12-10',
+    }
+
+    if general_error:
+        slb0002e['general_error_code'] = 'EGEN0050'
+    else:
+        slb0002e['original_slb_control_number_error_code'] = 'EPCN0100'
+
+    return slb0002e
+
+
 def test_slb0002_valid_model() -> None:
     params = make_valid_slb0002_params()
     slb0002 = SLB0002.model_validate(params)
@@ -77,6 +100,46 @@ def test_slb0002r1_valid_model() -> None:
     assert slb0002r1.slb_settlement_status == SlbSettlementStatus.EFFECTED
     assert slb0002r1.settlement_timestamp == datetime(2025, 12, 10, 17, 9, tzinfo=UTC)
     assert slb0002r1.settlement_date == date(2025, 12, 10)
+
+
+def test_slb0002e_general_error_valid_model() -> None:
+    params = make_valid_slb0002e_params(general_error=True)
+    slb0002e = SLB0002E.model_validate(params)
+
+    assert isinstance(slb0002e, SLB0002E)
+    assert slb0002e.from_ispb == '31680151'
+    assert slb0002e.to_ispb == '00038166'
+    assert slb0002e.system_domain == 'SPB01'
+    assert slb0002e.operation_number == '316801512509080000001'
+    assert slb0002e.message_code == 'SLB0002'
+    assert slb0002e.participant_institution_control_number == '123'
+    assert slb0002e.participant_ispb == '31680153'
+    assert slb0002e.original_slb_control_number == 'SLB20250101000000001'
+    assert slb0002e.priority == Priority.HIGH
+    assert slb0002e.amount == Decimal('139.0')
+    assert slb0002e.settlement_date == date(2025, 12, 10)
+
+    assert slb0002e.general_error_code == 'EGEN0050'
+
+
+def test_slb0002e_tag_error_valid_model() -> None:
+    params = make_valid_slb0002e_params()
+    slb0002e = SLB0002E.model_validate(params)
+
+    assert isinstance(slb0002e, SLB0002E)
+    assert slb0002e.from_ispb == '31680151'
+    assert slb0002e.to_ispb == '00038166'
+    assert slb0002e.system_domain == 'SPB01'
+    assert slb0002e.operation_number == '316801512509080000001'
+    assert slb0002e.message_code == 'SLB0002'
+    assert slb0002e.participant_institution_control_number == '123'
+    assert slb0002e.participant_ispb == '31680153'
+    assert slb0002e.original_slb_control_number == 'SLB20250101000000001'
+    assert slb0002e.priority == Priority.HIGH
+    assert slb0002e.amount == Decimal('139.0')
+    assert slb0002e.settlement_date == date(2025, 12, 10)
+
+    assert slb0002e.original_slb_control_number_error_code == 'EPCN0100'
 
 
 def test_slb0002_missing_required_fields() -> None:
@@ -175,6 +238,66 @@ def test_slb0002r1_to_xml() -> None:
     assert normalize_xml(expected_xml) == normalize_xml(xml)
 
 
+def test_slb0002e_general_error_to_xml() -> None:
+    params = make_valid_slb0002e_params(general_error=True)
+    slb0002e = SLB0002E.model_validate(params)
+
+    xml = slb0002e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0002E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <SLB0002E CodErro="EGEN0050">
+                <CodMsg>SLB0002</CodMsg>
+                <NumCtrlPart>123</NumCtrlPart>
+                <ISPBPart>31680153</ISPBPart>
+                <NumCtrlSLBOr>SLB20250101000000001</NumCtrlSLBOr>
+                <NivelPref>B</NivelPref>
+                <VlrLanc>139.0</VlrLanc>
+                <DtMovto>2025-12-10</DtMovto>
+            </SLB0002E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_slb0002e_tag_error_to_xml() -> None:
+    params = make_valid_slb0002e_params()
+    slb0002e = SLB0002E.model_validate(params)
+
+    xml = slb0002e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0002E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <SLB0002E>
+                <CodMsg>SLB0002</CodMsg>
+                <NumCtrlPart>123</NumCtrlPart>
+                <ISPBPart>31680153</ISPBPart>
+                <NumCtrlSLBOr CodErro="EPCN0100">SLB20250101000000001</NumCtrlSLBOr>
+                <NivelPref>B</NivelPref>
+                <VlrLanc>139.0</VlrLanc>
+                <DtMovto>2025-12-10</DtMovto>
+            </SLB0002E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
 def test_slb0002_from_xml() -> None:
     xml = """<?xml version="1.0"?>
     <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0002.xsd">
@@ -251,6 +374,88 @@ def test_slb0002r1_from_xml() -> None:
     assert slb0002r1.slb_settlement_status == SlbSettlementStatus.EFFECTED
     assert slb0002r1.settlement_timestamp == datetime(2025, 12, 10, 17, 9, tzinfo=UTC)
     assert slb0002r1.settlement_date == date(2025, 12, 10)
+
+
+def test_slb0002e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0002.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <SLB0002E CodErro="EGEN0050">
+                <CodMsg>SLB0002</CodMsg>
+                <NumCtrlPart>123</NumCtrlPart>
+                <ISPBPart>31680153</ISPBPart>
+                <NumCtrlSLBOr>SLB20250101000000001</NumCtrlSLBOr>
+                <NivelPref>B</NivelPref>
+                <VlrLanc>139.0</VlrLanc>
+                <DtMovto>2025-12-10</DtMovto>
+            </SLB0002E>
+        </SISMSG>
+    </DOC>
+    """
+
+    slb0002e = SLB0002E.from_xml(xml)
+
+    assert isinstance(slb0002e, SLB0002E)
+    assert slb0002e.from_ispb == '31680151'
+    assert slb0002e.to_ispb == '00038166'
+    assert slb0002e.system_domain == 'SPB01'
+    assert slb0002e.operation_number == '316801512509080000001'
+    assert slb0002e.message_code == 'SLB0002'
+    assert slb0002e.participant_institution_control_number == '123'
+    assert slb0002e.participant_ispb == '31680153'
+    assert slb0002e.original_slb_control_number == 'SLB20250101000000001'
+    assert slb0002e.priority == Priority.HIGH
+    assert slb0002e.amount == Decimal('139.0')
+    assert slb0002e.settlement_date == date(2025, 12, 10)
+
+    assert slb0002e.general_error_code == 'EGEN0050'
+
+
+def test_slb0002e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0002E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <SLB0002E>
+                <CodMsg>SLB0002</CodMsg>
+                <NumCtrlPart>123</NumCtrlPart>
+                <ISPBPart>31680153</ISPBPart>
+                <NumCtrlSLBOr CodErro="EPCN0100">SLB20250101000000001</NumCtrlSLBOr>
+                <NivelPref>B</NivelPref>
+                <VlrLanc>139.0</VlrLanc>
+                <DtMovto>2025-12-10</DtMovto>
+            </SLB0002E>
+        </SISMSG>
+    </DOC>
+    """
+
+    slb0002e = SLB0002E.from_xml(xml)
+
+    assert isinstance(slb0002e, SLB0002E)
+    assert slb0002e.from_ispb == '31680151'
+    assert slb0002e.to_ispb == '00038166'
+    assert slb0002e.system_domain == 'SPB01'
+    assert slb0002e.operation_number == '316801512509080000001'
+    assert slb0002e.message_code == 'SLB0002'
+    assert slb0002e.participant_institution_control_number == '123'
+    assert slb0002e.participant_ispb == '31680153'
+    assert slb0002e.original_slb_control_number == 'SLB20250101000000001'
+    assert slb0002e.priority == Priority.HIGH
+    assert slb0002e.amount == Decimal('139.0')
+    assert slb0002e.settlement_date == date(2025, 12, 10)
+
+    assert slb0002e.original_slb_control_number_error_code == 'EPCN0100'
 
 
 def test_slb0002_roundtrip() -> None:
