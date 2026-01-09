@@ -6,7 +6,7 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.core.types import LdlSettlementStatus
-from sfn_messages.ldl.ldl0004 import LDL0004, LDL0004R1, LDL0004R2, NetResult, NetResultR2
+from sfn_messages.ldl.ldl0004 import LDL0004, LDL0004E, LDL0004R1, LDL0004R2, NetResult, NetResultError, NetResultR2
 from tests.conftest import extract_missing_fields, normalize_xml
 
 NET_RESULT_SIZE = 2
@@ -85,6 +85,41 @@ def make_valid_ldl0004r2_params() -> dict[str, Any]:
     }
 
 
+def make_valid_ldl0004e_params(*, general_error: bool = False) -> dict[str, Any]:
+    ldl0004e = {
+        'from_ispb': '31680151',
+        'to_ispb': '00038166',
+        'system_domain': 'SPB01',
+        'operation_number': '316801512509080000001',
+        'message_code': 'LDL0004',
+        'institution_control_number': '123',
+        'institution_ispb': '31680151',
+        'original_ldl_control_number': '321',
+        'ldl_ispb': '31680153',
+        'amount': 120.0,
+        'net_result_group': [
+            {
+                'cnpj': '68689822000165',
+                'participant_identifier': '43075534',
+                'amount': 60.0,
+            },
+            {
+                'cnpj': '39548823000191',
+                'participant_identifier': '43075534',
+                'amount': 60.0,
+            },
+        ],
+        'settlement_date': '2025-12-09',
+    }
+
+    if general_error:
+        ldl0004e['general_error_code'] = 'EGEN0050'
+    else:
+        ldl0004e['institution_ispb_error_code'] = 'ELDL0123'
+
+    return ldl0004e
+
+
 def test_ldl0004_valid_model() -> None:
     params = make_valid_ldl0004_params()
     ldl0004 = LDL0004.model_validate(params)
@@ -161,6 +196,38 @@ def test_ldl0004r2_valid_model() -> None:
     assert result2.cnpj == '39548823000191'
     assert result2.participant_identifier == '43075534'
     assert result2.amount == Decimal('60.0')
+
+
+def test_ldl0004e_valid_model() -> None:
+    params = make_valid_ldl0004e_params()
+    ldl0004e = LDL0004E.model_validate(params)
+
+    assert isinstance(ldl0004e, LDL0004E)
+    assert ldl0004e.from_ispb == '31680151'
+    assert ldl0004e.to_ispb == '00038166'
+    assert ldl0004e.system_domain == 'SPB01'
+    assert ldl0004e.operation_number == '316801512509080000001'
+    assert ldl0004e.message_code == 'LDL0004'
+    assert ldl0004e.institution_control_number == '123'
+    assert ldl0004e.institution_ispb == '31680151'
+    assert ldl0004e.original_ldl_control_number == '321'
+    assert ldl0004e.ldl_ispb == '31680153'
+    assert ldl0004e.amount == Decimal('120.0')
+    assert ldl0004e.settlement_date == date(2025, 12, 9)
+
+    assert len(ldl0004e.net_result_group) == NET_RESULT_SIZE
+    result1 = ldl0004e.net_result_group[0]
+    result2 = ldl0004e.net_result_group[1]
+    assert isinstance(result1, NetResultError)
+    assert result1.cnpj == '68689822000165'
+    assert result1.participant_identifier == '43075534'
+    assert result1.amount == Decimal('60.0')
+    assert isinstance(result2, NetResultError)
+    assert result2.cnpj == '39548823000191'
+    assert result2.participant_identifier == '43075534'
+    assert result2.amount == Decimal('60.0')
+
+    assert ldl0004e.institution_ispb_error_code == 'ELDL0123'
 
 
 def test_ldl0004_missing_required_fields() -> None:
@@ -331,6 +398,86 @@ def test_ldl0004r2_to_xml() -> None:
     assert normalize_xml(expected_xml) == normalize_xml(xml)
 
 
+def test_ldl0004e_general_error_to_xml() -> None:
+    params = make_valid_ldl0004e_params(general_error=True)
+    ldl0004e = LDL0004E.model_validate(params)
+
+    xml = ldl0004e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0004E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LDL0004E CodErro="EGEN0050">
+                <CodMsg>LDL0004</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <NumCtrlLDLOr>321</NumCtrlLDLOr>
+                <ISPBLDL>31680153</ISPBLDL>
+                <VlrLanc>120.0</VlrLanc>
+                <Grupo_LDL0004_ResultLiqd>
+                    <CNPJNLiqdant>68689822000165</CNPJNLiqdant>
+                    <IdentdPartCamr>43075534</IdentdPartCamr>
+                    <VlrResultLiqdNLiqdant>60.0</VlrResultLiqdNLiqdant>
+                </Grupo_LDL0004_ResultLiqd>
+                <Grupo_LDL0004_ResultLiqd>
+                    <CNPJNLiqdant>39548823000191</CNPJNLiqdant>
+                    <IdentdPartCamr>43075534</IdentdPartCamr>
+                    <VlrResultLiqdNLiqdant>60.0</VlrResultLiqdNLiqdant>
+                </Grupo_LDL0004_ResultLiqd>
+                <DtMovto>2025-12-09</DtMovto>
+            </LDL0004E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_ldl0004e_tag_error_to_xml() -> None:
+    params = make_valid_ldl0004e_params()
+    ldl0004e = LDL0004E.model_validate(params)
+
+    xml = ldl0004e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0004E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LDL0004E>
+                <CodMsg>LDL0004</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF CodErro="ELDL0123">31680151</ISPBIF>
+                <NumCtrlLDLOr>321</NumCtrlLDLOr>
+                <ISPBLDL>31680153</ISPBLDL>
+                <VlrLanc>120.0</VlrLanc>
+                <Grupo_LDL0004_ResultLiqd>
+                    <CNPJNLiqdant>68689822000165</CNPJNLiqdant>
+                    <IdentdPartCamr>43075534</IdentdPartCamr>
+                    <VlrResultLiqdNLiqdant>60.0</VlrResultLiqdNLiqdant>
+                </Grupo_LDL0004_ResultLiqd>
+                <Grupo_LDL0004_ResultLiqd>
+                    <CNPJNLiqdant>39548823000191</CNPJNLiqdant>
+                    <IdentdPartCamr>43075534</IdentdPartCamr>
+                    <VlrResultLiqdNLiqdant>60.0</VlrResultLiqdNLiqdant>
+                </Grupo_LDL0004_ResultLiqd>
+                <DtMovto>2025-12-09</DtMovto>
+            </LDL0004E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
 def test_ldl0004_from_xml() -> None:
     xml = """<?xml version="1.0"?>
     <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0004.xsd">
@@ -491,6 +638,132 @@ def test_ldl0004r2_from_xml() -> None:
     assert result2.cnpj == '39548823000191'
     assert result2.participant_identifier == '43075534'
     assert result2.amount == Decimal('60.0')
+
+
+def test_ldl0004e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0004E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LDL0004E CodErro="EGEN0050">
+                <CodMsg>LDL0004</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <NumCtrlLDLOr>321</NumCtrlLDLOr>
+                <ISPBLDL>31680153</ISPBLDL>
+                <VlrLanc>120.0</VlrLanc>
+                <Grupo_LDL0004_ResultLiqd>
+                    <CNPJNLiqdant>68689822000165</CNPJNLiqdant>
+                    <IdentdPartCamr>43075534</IdentdPartCamr>
+                    <VlrResultLiqdNLiqdant>60.0</VlrResultLiqdNLiqdant>
+                </Grupo_LDL0004_ResultLiqd>
+                <Grupo_LDL0004_ResultLiqd>
+                    <CNPJNLiqdant>39548823000191</CNPJNLiqdant>
+                    <IdentdPartCamr>43075534</IdentdPartCamr>
+                    <VlrResultLiqdNLiqdant>60.0</VlrResultLiqdNLiqdant>
+                </Grupo_LDL0004_ResultLiqd>
+                <DtMovto>2025-12-09</DtMovto>
+            </LDL0004E>
+        </SISMSG>
+    </DOC>
+    """
+
+    ldl0004e = LDL0004E.from_xml(xml)
+
+    assert isinstance(ldl0004e, LDL0004E)
+    assert ldl0004e.from_ispb == '31680151'
+    assert ldl0004e.to_ispb == '00038166'
+    assert ldl0004e.system_domain == 'SPB01'
+    assert ldl0004e.operation_number == '316801512509080000001'
+    assert ldl0004e.message_code == 'LDL0004'
+    assert ldl0004e.institution_control_number == '123'
+    assert ldl0004e.institution_ispb == '31680151'
+    assert ldl0004e.original_ldl_control_number == '321'
+    assert ldl0004e.ldl_ispb == '31680153'
+    assert ldl0004e.amount == Decimal('120.0')
+    assert ldl0004e.settlement_date == date(2025, 12, 9)
+
+    assert len(ldl0004e.net_result_group) == NET_RESULT_SIZE
+    result1 = ldl0004e.net_result_group[0]
+    result2 = ldl0004e.net_result_group[1]
+    assert isinstance(result1, NetResultError)
+    assert result1.cnpj == '68689822000165'
+    assert result1.participant_identifier == '43075534'
+    assert result1.amount == Decimal('60.0')
+    assert isinstance(result2, NetResultError)
+    assert result2.cnpj == '39548823000191'
+    assert result2.participant_identifier == '43075534'
+    assert result2.amount == Decimal('60.0')
+
+    assert ldl0004e.general_error_code == 'EGEN0050'
+
+
+def test_ldl0004e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0004E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LDL0004E>
+                <CodMsg>LDL0004</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF CodErro="ELDL0123">31680151</ISPBIF>
+                <NumCtrlLDLOr>321</NumCtrlLDLOr>
+                <ISPBLDL>31680153</ISPBLDL>
+                <VlrLanc>120.0</VlrLanc>
+                <Grupo_LDL0004_ResultLiqd>
+                    <CNPJNLiqdant>68689822000165</CNPJNLiqdant>
+                    <IdentdPartCamr>43075534</IdentdPartCamr>
+                    <VlrResultLiqdNLiqdant>60.0</VlrResultLiqdNLiqdant>
+                </Grupo_LDL0004_ResultLiqd>
+                <Grupo_LDL0004_ResultLiqd>
+                    <CNPJNLiqdant>39548823000191</CNPJNLiqdant>
+                    <IdentdPartCamr>43075534</IdentdPartCamr>
+                    <VlrResultLiqdNLiqdant>60.0</VlrResultLiqdNLiqdant>
+                </Grupo_LDL0004_ResultLiqd>
+                <DtMovto>2025-12-09</DtMovto>
+            </LDL0004E>
+        </SISMSG>
+    </DOC>
+    """
+
+    ldl0004e = LDL0004E.from_xml(xml)
+
+    assert isinstance(ldl0004e, LDL0004E)
+    assert ldl0004e.from_ispb == '31680151'
+    assert ldl0004e.to_ispb == '00038166'
+    assert ldl0004e.system_domain == 'SPB01'
+    assert ldl0004e.operation_number == '316801512509080000001'
+    assert ldl0004e.message_code == 'LDL0004'
+    assert ldl0004e.institution_control_number == '123'
+    assert ldl0004e.institution_ispb == '31680151'
+    assert ldl0004e.original_ldl_control_number == '321'
+    assert ldl0004e.ldl_ispb == '31680153'
+    assert ldl0004e.amount == Decimal('120.0')
+    assert ldl0004e.settlement_date == date(2025, 12, 9)
+
+    assert len(ldl0004e.net_result_group) == NET_RESULT_SIZE
+    result1 = ldl0004e.net_result_group[0]
+    result2 = ldl0004e.net_result_group[1]
+    assert isinstance(result1, NetResultError)
+    assert result1.cnpj == '68689822000165'
+    assert result1.participant_identifier == '43075534'
+    assert result1.amount == Decimal('60.0')
+    assert isinstance(result2, NetResultError)
+    assert result2.cnpj == '39548823000191'
+    assert result2.participant_identifier == '43075534'
+    assert result2.amount == Decimal('60.0')
+
+    assert ldl0004e.institution_ispb_error_code == 'ELDL0123'
 
 
 def test_ldl0004_roundtrip() -> None:

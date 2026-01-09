@@ -1698,3 +1698,15 @@ type LdlControlNumber = Annotated[
         lambda _tp, _handler: core_schema.str_schema(min_length=1, max_length=20, strip_whitespace=True)
     ),
 ]
+
+
+type ErrorCode = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            pattern=r'^E[A-Z]{3}\d{4}$',
+            strip_whitespace=True,
+            to_upper=True,
+        )
+    ),
+]
