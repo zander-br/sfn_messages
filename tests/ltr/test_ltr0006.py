@@ -6,7 +6,7 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.core.types import StrSettlementStatus
-from sfn_messages.ltr.ltr0006 import LTR0006, LTR0006R1, LTR0006R2
+from sfn_messages.ltr.ltr0006 import LTR0006, LTR0006E, LTR0006R1, LTR0006R2
 from tests.conftest import extract_missing_fields, normalize_xml
 
 
@@ -59,6 +59,30 @@ def make_valid_ltr0006r2_params() -> dict[str, Any]:
         'vendor_timestamp': '2025-12-04T13:22:00+00:00',
         'settlement_date': '2025-12-04',
     }
+
+
+def make_valid_ltr0006e_params(*, general_error: bool = False) -> dict[str, Any]:
+    ltr0006e = {
+        'from_ispb': '31680151',
+        'to_ispb': '00038166',
+        'system_domain': 'SPB01',
+        'operation_number': '316801512509080000001',
+        'message_code': 'LTR0006',
+        'institution_or_ltr_control_number': '123',
+        'debtor_institution_or_ltr_ispb': '31680151',
+        'creditor_institution_or_ltr_ispb': '31680152',
+        'original_ltr_control_number': '321',
+        'amount': 123.0,
+        'description': 'Test description',
+        'settlement_date': '2025-12-04',
+    }
+
+    if general_error:
+        ltr0006e['general_error_code'] = 'EGEN0050'
+    else:
+        ltr0006e['original_ltr_control_number_error_code'] = 'EGEN0051'
+
+    return ltr0006e
 
 
 def test_ltr0006_valid_model() -> None:
@@ -116,6 +140,48 @@ def test_ltr0006r2_valid_model() -> None:
     assert ltr0006r2.description == 'Test description'
     assert ltr0006r2.vendor_timestamp == datetime(2025, 12, 4, 13, 22, tzinfo=UTC)
     assert ltr0006r2.settlement_date == date(2025, 12, 4)
+
+
+def test_ltr0006e_general_error_valid_model() -> None:
+    params = make_valid_ltr0006e_params(general_error=True)
+    ltr0006e = LTR0006E.model_validate(params)
+
+    assert isinstance(ltr0006e, LTR0006E)
+    assert ltr0006e.from_ispb == '31680151'
+    assert ltr0006e.to_ispb == '00038166'
+    assert ltr0006e.system_domain == 'SPB01'
+    assert ltr0006e.operation_number == '316801512509080000001'
+    assert ltr0006e.message_code == 'LTR0006'
+    assert ltr0006e.institution_or_ltr_control_number == '123'
+    assert ltr0006e.debtor_institution_or_ltr_ispb == '31680151'
+    assert ltr0006e.creditor_institution_or_ltr_ispb == '31680152'
+    assert ltr0006e.original_ltr_control_number == '321'
+    assert ltr0006e.amount == Decimal('123.0')
+    assert ltr0006e.description == 'Test description'
+    assert ltr0006e.settlement_date == date(2025, 12, 4)
+
+    assert ltr0006e.general_error_code == 'EGEN0050'
+
+
+def test_ltr0006e_tag_error_valid_model() -> None:
+    params = make_valid_ltr0006e_params()
+    ltr0006e = LTR0006E.model_validate(params)
+
+    assert isinstance(ltr0006e, LTR0006E)
+    assert ltr0006e.from_ispb == '31680151'
+    assert ltr0006e.to_ispb == '00038166'
+    assert ltr0006e.system_domain == 'SPB01'
+    assert ltr0006e.operation_number == '316801512509080000001'
+    assert ltr0006e.message_code == 'LTR0006'
+    assert ltr0006e.institution_or_ltr_control_number == '123'
+    assert ltr0006e.debtor_institution_or_ltr_ispb == '31680151'
+    assert ltr0006e.creditor_institution_or_ltr_ispb == '31680152'
+    assert ltr0006e.original_ltr_control_number == '321'
+    assert ltr0006e.amount == Decimal('123.0')
+    assert ltr0006e.description == 'Test description'
+    assert ltr0006e.settlement_date == date(2025, 12, 4)
+
+    assert ltr0006e.original_ltr_control_number_error_code == 'EGEN0051'
 
 
 def test_ltr0006_missing_required_fields() -> None:
@@ -270,6 +336,68 @@ def test_ltr0006r2_to_xml() -> None:
     assert normalize_xml(expected_xml) == normalize_xml(xml)
 
 
+def test_ltr0006e_general_error_to_xml() -> None:
+    params = make_valid_ltr0006e_params(general_error=True)
+    ltr0006e = LTR0006E.model_validate(params)
+
+    xml = ltr0006e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0006E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LTR0006E CodErro="EGEN0050">
+                <CodMsg>LTR0006</CodMsg>
+                <NumCtrlIF_LTR>123</NumCtrlIF_LTR>
+                <ISPBIF_LTRDebtd>31680151</ISPBIF_LTRDebtd>
+                <ISPBIF_LTRCredtd>31680152</ISPBIF_LTRCredtd>
+                <NumCtrlLTROr>321</NumCtrlLTROr>
+                <VlrLanc>123.0</VlrLanc>
+                <Hist>Test description</Hist>
+                <DtMovto>2025-12-04</DtMovto>
+            </LTR0006E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_ltr0006e_tag_error_to_xml() -> None:
+    params = make_valid_ltr0006e_params()
+    ltr0006e = LTR0006E.model_validate(params)
+
+    xml = ltr0006e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0006E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LTR0006E>
+                <CodMsg>LTR0006</CodMsg>
+                <NumCtrlIF_LTR>123</NumCtrlIF_LTR>
+                <ISPBIF_LTRDebtd>31680151</ISPBIF_LTRDebtd>
+                <ISPBIF_LTRCredtd>31680152</ISPBIF_LTRCredtd>
+                <NumCtrlLTROr CodErro="EGEN0051">321</NumCtrlLTROr>
+                <VlrLanc>123.0</VlrLanc>
+                <Hist>Test description</Hist>
+                <DtMovto>2025-12-04</DtMovto>
+            </LTR0006E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
 def test_ltr0006_from_xml() -> None:
     xml = """<?xml version="1.0"?>
     <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0006.xsd">
@@ -391,6 +519,92 @@ def test_ltr0006r2_from_xml() -> None:
     assert ltr0006r2.description == 'Test description'
     assert ltr0006r2.vendor_timestamp == datetime(2025, 12, 4, 13, 22, tzinfo=UTC)
     assert ltr0006r2.settlement_date == date(2025, 12, 4)
+
+
+def test_ltr0006e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0006E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LTR0006E CodErro="EGEN0050">
+                <CodMsg>LTR0006</CodMsg>
+                <NumCtrlIF_LTR>123</NumCtrlIF_LTR>
+                <ISPBIF_LTRDebtd>31680151</ISPBIF_LTRDebtd>
+                <ISPBIF_LTRCredtd>31680152</ISPBIF_LTRCredtd>
+                <NumCtrlLTROr>321</NumCtrlLTROr>
+                <VlrLanc>123.0</VlrLanc>
+                <Hist>Test description</Hist>
+                <DtMovto>2025-12-04</DtMovto>
+            </LTR0006E>
+        </SISMSG>
+    </DOC>
+    """
+
+    ltr0006e = LTR0006E.from_xml(xml)
+
+    assert isinstance(ltr0006e, LTR0006E)
+    assert ltr0006e.from_ispb == '31680151'
+    assert ltr0006e.to_ispb == '00038166'
+    assert ltr0006e.system_domain == 'SPB01'
+    assert ltr0006e.operation_number == '316801512509080000001'
+    assert ltr0006e.message_code == 'LTR0006'
+    assert ltr0006e.institution_or_ltr_control_number == '123'
+    assert ltr0006e.debtor_institution_or_ltr_ispb == '31680151'
+    assert ltr0006e.creditor_institution_or_ltr_ispb == '31680152'
+    assert ltr0006e.original_ltr_control_number == '321'
+    assert ltr0006e.amount == Decimal('123.0')
+    assert ltr0006e.description == 'Test description'
+    assert ltr0006e.settlement_date == date(2025, 12, 4)
+
+    assert ltr0006e.general_error_code == 'EGEN0050'
+
+
+def test_ltr0006e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0006E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LTR0006E>
+                <CodMsg>LTR0006</CodMsg>
+                <NumCtrlIF_LTR>123</NumCtrlIF_LTR>
+                <ISPBIF_LTRDebtd>31680151</ISPBIF_LTRDebtd>
+                <ISPBIF_LTRCredtd>31680152</ISPBIF_LTRCredtd>
+                <NumCtrlLTROr CodErro="EGEN0051">321</NumCtrlLTROr>
+                <VlrLanc>123.0</VlrLanc>
+                <Hist>Test description</Hist>
+                <DtMovto>2025-12-04</DtMovto>
+            </LTR0006E>
+        </SISMSG>
+    </DOC>
+    """
+
+    ltr0006e = LTR0006E.from_xml(xml)
+
+    assert isinstance(ltr0006e, LTR0006E)
+    assert ltr0006e.from_ispb == '31680151'
+    assert ltr0006e.to_ispb == '00038166'
+    assert ltr0006e.system_domain == 'SPB01'
+    assert ltr0006e.operation_number == '316801512509080000001'
+    assert ltr0006e.message_code == 'LTR0006'
+    assert ltr0006e.institution_or_ltr_control_number == '123'
+    assert ltr0006e.debtor_institution_or_ltr_ispb == '31680151'
+    assert ltr0006e.creditor_institution_or_ltr_ispb == '31680152'
+    assert ltr0006e.original_ltr_control_number == '321'
+    assert ltr0006e.amount == Decimal('123.0')
+    assert ltr0006e.description == 'Test description'
+    assert ltr0006e.settlement_date == date(2025, 12, 4)
+
+    assert ltr0006e.original_ltr_control_number_error_code == 'EGEN0051'
 
 
 def test_ltr0006_roundtrip() -> None:

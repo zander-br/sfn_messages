@@ -6,7 +6,7 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.core.types import AssetType, StrSettlementStatus
-from sfn_messages.ltr.ltr0004 import LTR0004, LTR0004R1, LTR0004R2
+from sfn_messages.ltr.ltr0004 import LTR0004, LTR0004E, LTR0004R1, LTR0004R2
 from tests.conftest import extract_missing_fields, normalize_xml
 
 
@@ -63,6 +63,32 @@ def make_valid_ltr0004r2_params() -> dict[str, Any]:
         'vendor_timestamp': '2025-12-04T14:11:00+00:00',
         'settlement_date': '2025-12-04',
     }
+
+
+def make_valid_ltr0004e_params(*, general_error: bool = False) -> dict[str, Any]:
+    ltr0004e = {
+        'from_ispb': '31680151',
+        'to_ispb': '00038166',
+        'system_domain': 'SPB01',
+        'operation_number': '316801512509080000001',
+        'message_code': 'LTR0004',
+        'institution_control_number': '123',
+        'institution_ispb': '31680151',
+        'ltr_ispb': '31680153',
+        'original_ltr_control_number': '321',
+        'amount': 123.0,
+        'sub_asset_type': 'INVESTMENT_PORTFOLIO_ASSETS',
+        'asset_description': 'Test asset description',
+        'description': 'Test description',
+        'settlement_date': '2025-12-04',
+    }
+
+    if general_error:
+        ltr0004e['general_error_code'] = 'EGEN0050'
+    else:
+        ltr0004e['ltr_ispb_error_code'] = 'ELTR0123'
+
+    return ltr0004e
 
 
 def test_ltr0004_valid_model() -> None:
@@ -124,6 +150,52 @@ def test_ltr0004r2_valid_model() -> None:
     assert ltr0004r2.description == 'Test description'
     assert ltr0004r2.vendor_timestamp == datetime(2025, 12, 4, 14, 11, tzinfo=UTC)
     assert ltr0004r2.settlement_date == date(2025, 12, 4)
+
+
+def test_ltr0004e_valid_model() -> None:
+    params = make_valid_ltr0004e_params()
+    ltr0004e = LTR0004E.model_validate(params)
+
+    assert isinstance(ltr0004e, LTR0004E)
+    assert ltr0004e.from_ispb == '31680151'
+    assert ltr0004e.to_ispb == '00038166'
+    assert ltr0004e.system_domain == 'SPB01'
+    assert ltr0004e.operation_number == '316801512509080000001'
+    assert ltr0004e.message_code == 'LTR0004'
+    assert ltr0004e.institution_control_number == '123'
+    assert ltr0004e.institution_ispb == '31680151'
+    assert ltr0004e.ltr_ispb == '31680153'
+    assert ltr0004e.original_ltr_control_number == '321'
+    assert ltr0004e.amount == Decimal('123.0')
+    assert ltr0004e.sub_asset_type == AssetType.INVESTMENT_PORTFOLIO_ASSETS
+    assert ltr0004e.asset_description == 'Test asset description'
+    assert ltr0004e.description == 'Test description'
+    assert ltr0004e.settlement_date == date(2025, 12, 4)
+
+    assert ltr0004e.ltr_ispb_error_code == 'ELTR0123'
+
+
+def test_ltr0004e_general_error_valid_model() -> None:
+    params = make_valid_ltr0004e_params(general_error=True)
+    ltr0004e = LTR0004E.model_validate(params)
+
+    assert isinstance(ltr0004e, LTR0004E)
+    assert ltr0004e.from_ispb == '31680151'
+    assert ltr0004e.to_ispb == '00038166'
+    assert ltr0004e.system_domain == 'SPB01'
+    assert ltr0004e.operation_number == '316801512509080000001'
+    assert ltr0004e.message_code == 'LTR0004'
+    assert ltr0004e.institution_control_number == '123'
+    assert ltr0004e.institution_ispb == '31680151'
+    assert ltr0004e.ltr_ispb == '31680153'
+    assert ltr0004e.original_ltr_control_number == '321'
+    assert ltr0004e.amount == Decimal('123.0')
+    assert ltr0004e.sub_asset_type == AssetType.INVESTMENT_PORTFOLIO_ASSETS
+    assert ltr0004e.asset_description == 'Test asset description'
+    assert ltr0004e.description == 'Test description'
+    assert ltr0004e.settlement_date == date(2025, 12, 4)
+
+    assert ltr0004e.general_error_code == 'EGEN0050'
 
 
 def test_ltr0004_missing_required_fields() -> None:
@@ -283,6 +355,72 @@ def test_ltr0004r2_to_xml() -> None:
     assert normalize_xml(expected_xml) == normalize_xml(xml)
 
 
+def test_ltr0004e_general_error_to_xml() -> None:
+    params = make_valid_ltr0004e_params(general_error=True)
+    ltr0004e = LTR0004E.model_validate(params)
+
+    xml = ltr0004e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0004E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LTR0004E CodErro="EGEN0050">
+                <CodMsg>LTR0004</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <ISPBLTR>31680153</ISPBLTR>
+                <NumCtrlLTROr>321</NumCtrlLTROr>
+                <VlrLanc>123.0</VlrLanc>
+                <SubTpAtv>ACI</SubTpAtv>
+                <DescAtv>Test asset description</DescAtv>
+                <Hist>Test description</Hist>
+                <DtMovto>2025-12-04</DtMovto>
+            </LTR0004E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_ltr0004e_tag_error_to_xml() -> None:
+    params = make_valid_ltr0004e_params()
+    ltr0004e = LTR0004E.model_validate(params)
+
+    xml = ltr0004e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0004E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LTR0004E>
+                <CodMsg>LTR0004</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <ISPBLTR CodErro="ELTR0123">31680153</ISPBLTR>
+                <NumCtrlLTROr>321</NumCtrlLTROr>
+                <VlrLanc>123.0</VlrLanc>
+                <SubTpAtv>ACI</SubTpAtv>
+                <DescAtv>Test asset description</DescAtv>
+                <Hist>Test description</Hist>
+                <DtMovto>2025-12-04</DtMovto>
+            </LTR0004E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
 def test_ltr0004_from_xml() -> None:
     xml = """<?xml version="1.0"?>
     <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0004.xsd">
@@ -412,6 +550,100 @@ def test_ltr0004r2_from_xml() -> None:
     assert ltr0004r2.description == 'Test description'
     assert ltr0004r2.vendor_timestamp == datetime(2025, 12, 4, 14, 11, tzinfo=UTC)
     assert ltr0004r2.settlement_date == date(2025, 12, 4)
+
+
+def test_ltr0004e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0004E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LTR0004E CodErro="EGEN0050">
+                <CodMsg>LTR0004</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <ISPBLTR>31680153</ISPBLTR>
+                <NumCtrlLTROr>321</NumCtrlLTROr>
+                <VlrLanc>123.0</VlrLanc>
+                <SubTpAtv>ACI</SubTpAtv>
+                <DescAtv>Test asset description</DescAtv>
+                <Hist>Test description</Hist>
+                <DtMovto>2025-12-04</DtMovto>
+            </LTR0004E>
+        </SISMSG>
+    </DOC>
+    """
+
+    ltr0004e = LTR0004E.from_xml(xml)
+
+    assert isinstance(ltr0004e, LTR0004E)
+    assert ltr0004e.from_ispb == '31680151'
+    assert ltr0004e.to_ispb == '00038166'
+    assert ltr0004e.system_domain == 'SPB01'
+    assert ltr0004e.operation_number == '316801512509080000001'
+    assert ltr0004e.message_code == 'LTR0004'
+    assert ltr0004e.institution_control_number == '123'
+    assert ltr0004e.institution_ispb == '31680151'
+    assert ltr0004e.ltr_ispb == '31680153'
+    assert ltr0004e.original_ltr_control_number == '321'
+    assert ltr0004e.amount == Decimal('123.0')
+    assert ltr0004e.sub_asset_type == AssetType.INVESTMENT_PORTFOLIO_ASSETS
+    assert ltr0004e.asset_description == 'Test asset description'
+    assert ltr0004e.description == 'Test description'
+    assert ltr0004e.settlement_date == date(2025, 12, 4)
+
+    assert ltr0004e.general_error_code == 'EGEN0050'
+
+
+def test_ltr0004e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0004E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LTR0004E>
+                <CodMsg>LTR0004</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <ISPBLTR CodErro="ELTR0123">31680153</ISPBLTR>
+                <NumCtrlLTROr>321</NumCtrlLTROr>
+                <VlrLanc>123.0</VlrLanc>
+                <SubTpAtv>ACI</SubTpAtv>
+                <DescAtv>Test asset description</DescAtv>
+                <Hist>Test description</Hist>
+                <DtMovto>2025-12-04</DtMovto>
+            </LTR0004E>
+        </SISMSG>
+    </DOC>
+    """
+
+    ltr0004e = LTR0004E.from_xml(xml)
+
+    assert isinstance(ltr0004e, LTR0004E)
+    assert ltr0004e.from_ispb == '31680151'
+    assert ltr0004e.to_ispb == '00038166'
+    assert ltr0004e.system_domain == 'SPB01'
+    assert ltr0004e.operation_number == '316801512509080000001'
+    assert ltr0004e.message_code == 'LTR0004'
+    assert ltr0004e.institution_control_number == '123'
+    assert ltr0004e.institution_ispb == '31680151'
+    assert ltr0004e.ltr_ispb == '31680153'
+    assert ltr0004e.original_ltr_control_number == '321'
+    assert ltr0004e.amount == Decimal('123.0')
+    assert ltr0004e.sub_asset_type == AssetType.INVESTMENT_PORTFOLIO_ASSETS
+    assert ltr0004e.asset_description == 'Test asset description'
+    assert ltr0004e.description == 'Test description'
+    assert ltr0004e.settlement_date == date(2025, 12, 4)
+
+    assert ltr0004e.ltr_ispb_error_code == 'ELTR0123'
 
 
 def test_ltr0004_roundtrip() -> None:
