@@ -6,7 +6,7 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.core.types import StrSettlementStatus, TransferReturnReason
-from sfn_messages.str.str0010 import STR0010, STR0010R1, STR0010R2
+from sfn_messages.str.str0010 import STR0010, STR0010E, STR0010R1, STR0010R2
 from tests.conftest import extract_missing_fields, normalize_xml
 
 
@@ -63,6 +63,33 @@ def make_valid_str0010r2_params() -> dict[str, Any]:
     }
 
 
+def make_valid_str0010e_params(*, general_error: bool = False) -> dict[str, Any]:
+    str0010e = {
+        'from_ispb': '31680151',
+        'operation_number': '316801512509080000001',
+        'system_domain': 'SPB01',
+        'to_ispb': '00038166',
+        'institution_control_number': '31680151202509090425',
+        'debtor_institution_ispb': '31680151',
+        'creditor_institution_ispb': '60701190',
+        'amount': 100.00,
+        'transfer_return_reason': 'DESTINATION_ACCOUNT_CLOSED',
+        'original_str_control_number': 'STR20250101000000001',
+        'description': 'Return Payment for services',
+        'scheduled_date': '2025-09-09',
+        'scheduled_time': '15:30:00',
+        'priority': 'MEDIUM',
+        'settlement_date': '2025-09-08',
+    }
+
+    if general_error:
+        str0010e['general_error_code'] = 'EGEN0050'
+    else:
+        str0010e['original_str_control_number_error_code'] = 'EORC1001'
+
+    return str0010e
+
+
 def test_str0010_valid_params() -> None:
     params = make_valid_str0010_params()
     str0010 = STR0010.model_validate(params)
@@ -82,6 +109,50 @@ def test_str0010_valid_params() -> None:
     assert str0010.scheduled_time == time(15, 30, 0)
     assert str0010.priority == 'MEDIUM'
     assert str0010.settlement_date == date(2025, 9, 8)
+
+
+def test_str0010e_general_error_valid_params() -> None:
+    params = make_valid_str0010e_params(general_error=True)
+    str0010e = STR0010E.model_validate(params)
+    assert isinstance(str0010e, STR0010E)
+    assert str0010e.from_ispb == '31680151'
+    assert str0010e.operation_number == '316801512509080000001'
+    assert str0010e.system_domain == 'SPB01'
+    assert str0010e.to_ispb == '00038166'
+    assert str0010e.institution_control_number == '31680151202509090425'
+    assert str0010e.debtor_institution_ispb == '31680151'
+    assert str0010e.creditor_institution_ispb == '60701190'
+    assert str0010e.amount == Decimal('100.00')
+    assert str0010e.transfer_return_reason == TransferReturnReason.DESTINATION_ACCOUNT_CLOSED
+    assert str0010e.original_str_control_number == 'STR20250101000000001'
+    assert str0010e.description == 'Return Payment for services'
+    assert str0010e.scheduled_date == date(2025, 9, 9)
+    assert str0010e.scheduled_time == time(15, 30, 0)
+    assert str0010e.priority == 'MEDIUM'
+    assert str0010e.settlement_date == date(2025, 9, 8)
+    assert str0010e.general_error_code == 'EGEN0050'
+
+
+def test_str0010e_tag_error_valid_params() -> None:
+    params = make_valid_str0010e_params()
+    str0010e = STR0010E.model_validate(params)
+    assert isinstance(str0010e, STR0010E)
+    assert str0010e.from_ispb == '31680151'
+    assert str0010e.operation_number == '316801512509080000001'
+    assert str0010e.system_domain == 'SPB01'
+    assert str0010e.to_ispb == '00038166'
+    assert str0010e.institution_control_number == '31680151202509090425'
+    assert str0010e.debtor_institution_ispb == '31680151'
+    assert str0010e.creditor_institution_ispb == '60701190'
+    assert str0010e.amount == Decimal('100.00')
+    assert str0010e.transfer_return_reason == TransferReturnReason.DESTINATION_ACCOUNT_CLOSED
+    assert str0010e.original_str_control_number == 'STR20250101000000001'
+    assert str0010e.description == 'Return Payment for services'
+    assert str0010e.scheduled_date == date(2025, 9, 9)
+    assert str0010e.scheduled_time == time(15, 30, 0)
+    assert str0010e.priority == 'MEDIUM'
+    assert str0010e.settlement_date == date(2025, 9, 8)
+    assert str0010e.original_str_control_number_error_code == 'EORC1001'
 
 
 def test_str0010_missing_required_fields() -> None:
@@ -132,6 +203,76 @@ def test_str0010_to_xml() -> None:
                 <NivelPref>C</NivelPref>
                 <DtMovto>2025-09-08</DtMovto>
             </STR0010>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_str0010e_general_error_to_xml() -> None:
+    params = make_valid_str0010e_params(general_error=True)
+    str0010e = STR0010E.model_validate(params)
+    xml = str0010e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0010E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0010E CodErro="EGEN0050">
+                <CodMsg>STR0010</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <ISPBIFCredtd>60701190</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <CodDevTransf>1</CodDevTransf>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
+                <Hist>Return Payment for services</Hist>
+                <DtAgendt>2025-09-09</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0010E>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_str0010e_tag_error_to_xml() -> None:
+    params = make_valid_str0010e_params()
+    str0010e = STR0010E.model_validate(params)
+    xml = str0010e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0010E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0010E>
+                <CodMsg>STR0010</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <ISPBIFCredtd>60701190</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <CodDevTransf>1</CodDevTransf>
+                <NumCtrlSTROr CodErro="EORC1001">STR20250101000000001</NumCtrlSTROr>
+                <Hist>Return Payment for services</Hist>
+                <DtAgendt>2025-09-09</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0010E>
         </SISMSG>
     </DOC>
     """
@@ -219,6 +360,102 @@ def test_str0010_from_xml() -> None:
     assert str0010.scheduled_time == time(15, 30, 0)
     assert str0010.priority == 'MEDIUM'
     assert str0010.settlement_date == date(2025, 9, 8)
+
+
+def test_str0010e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0010E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0010E CodErro="EGEN0050">
+                <CodMsg>STR0010</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <ISPBIFCredtd>60701190</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <CodDevTransf>1</CodDevTransf>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
+                <Hist>Return Payment for services</Hist>
+                <DtAgendt>2025-09-09</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0010E>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0010e = STR0010E.from_xml(xml)
+    assert isinstance(str0010e, STR0010E)
+    assert str0010e.from_ispb == '31680151'
+    assert str0010e.operation_number == '316801512509080000001'
+    assert str0010e.system_domain == 'SPB01'
+    assert str0010e.to_ispb == '00038166'
+    assert str0010e.institution_control_number == '31680151202509090425'
+    assert str0010e.debtor_institution_ispb == '31680151'
+    assert str0010e.creditor_institution_ispb == '60701190'
+    assert str0010e.amount == Decimal('100.00')
+    assert str0010e.transfer_return_reason == TransferReturnReason.DESTINATION_ACCOUNT_CLOSED
+    assert str0010e.original_str_control_number == 'STR20250101000000001'
+    assert str0010e.description == 'Return Payment for services'
+    assert str0010e.scheduled_date == date(2025, 9, 9)
+    assert str0010e.scheduled_time == time(15, 30, 0)
+    assert str0010e.priority == 'MEDIUM'
+    assert str0010e.settlement_date == date(2025, 9, 8)
+    assert str0010e.general_error_code == 'EGEN0050'
+
+
+def test_str0010e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0010E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0010E>
+                <CodMsg>STR0010</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <ISPBIFCredtd>60701190</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <CodDevTransf>1</CodDevTransf>
+                <NumCtrlSTROr CodErro="EORC1001">STR20250101000000001</NumCtrlSTROr>
+                <Hist>Return Payment for services</Hist>
+                <DtAgendt>2025-09-09</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0010E>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0010e = STR0010E.from_xml(xml)
+    assert isinstance(str0010e, STR0010E)
+    assert str0010e.from_ispb == '31680151'
+    assert str0010e.operation_number == '316801512509080000001'
+    assert str0010e.system_domain == 'SPB01'
+    assert str0010e.to_ispb == '00038166'
+    assert str0010e.institution_control_number == '31680151202509090425'
+    assert str0010e.debtor_institution_ispb == '31680151'
+    assert str0010e.creditor_institution_ispb == '60701190'
+    assert str0010e.amount == Decimal('100.00')
+    assert str0010e.transfer_return_reason == TransferReturnReason.DESTINATION_ACCOUNT_CLOSED
+    assert str0010e.original_str_control_number == 'STR20250101000000001'
+    assert str0010e.description == 'Return Payment for services'
+    assert str0010e.scheduled_date == date(2025, 9, 9)
+    assert str0010e.scheduled_time == time(15, 30, 0)
+    assert str0010e.priority == 'MEDIUM'
+    assert str0010e.settlement_date == date(2025, 9, 8)
+    assert str0010e.original_str_control_number_error_code == 'EORC1001'
 
 
 def test_str0010_from_xml_omit_optional_fields() -> None:

@@ -3,12 +3,21 @@ from decimal import Decimal
 from typing import Annotated, ClassVar, Literal
 
 from sfn_messages.core.models import BaseMessage, XmlPath
-from sfn_messages.core.types import Description, InstitutionControlNumber, Ispb, StrControlNumber, StrSettlementStatus
+from sfn_messages.core.types import (
+    Description,
+    ErrorCode,
+    InstitutionControlNumber,
+    Ispb,
+    StrControlNumber,
+    StrSettlementStatus,
+)
 
 PATH = 'DOC/SISMSG/LTR0006'
 PATH_R1 = 'DOC/SISMSG/LTR0006R1'
 PATH_R2 = 'DOC/SISMSG/LTR0006R2'
+PATH_E = 'DOC/SISMSG/LTR0006E'
 XML_NAMESPACE = 'http://www.bcb.gov.br/LTR/LTR0006.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/LTR/LTR0006E.xsd'
 
 
 class LTR0006(BaseMessage):
@@ -48,3 +57,33 @@ class LTR0006R2(BaseMessage):
     description: Annotated[Description | None, XmlPath(f'{PATH_R2}/Hist/text()')] = None
     vendor_timestamp: Annotated[datetime, XmlPath(f'{PATH_R2}/DtHrBC/text()')]
     settlement_date: Annotated[date, XmlPath(f'{PATH_R2}/DtMovto/text()')]
+
+
+class LTR0006E(BaseMessage):
+    XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
+
+    message_code: Annotated[Literal['LTR0006'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'LTR0006'
+    institution_or_ltr_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIF_LTR/text()')]
+    debtor_institution_or_ltr_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIF_LTRDebtd/text()')]
+    creditor_institution_or_ltr_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIF_LTRCredtd/text()')]
+    original_ltr_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlLTROr/text()')]
+    amount: Annotated[Decimal, XmlPath(f'{PATH_E}/VlrLanc/text()')]
+    description: Annotated[Description | None, XmlPath(f'{PATH_E}/Hist/text()')] = None
+    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+
+    general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
+    institution_or_ltr_control_number_error_code: Annotated[
+        ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIF_LTR/@CodErro')
+    ] = None
+    debtor_institution_or_ltr_ispb_error_code: Annotated[
+        ErrorCode | None, XmlPath(f'{PATH_E}/ISPBIF_LTRDebtd/@CodErro')
+    ] = None
+    creditor_institution_or_ltr_ispb_error_code: Annotated[
+        ErrorCode | None, XmlPath(f'{PATH_E}/ISPBIF_LTRCredtd/@CodErro')
+    ] = None
+    original_ltr_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlLTROr/@CodErro')] = (
+        None
+    )
+    amount_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/VlrLanc/@CodErro')] = None
+    description_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/Hist/@CodErro')] = None
+    settlement_date_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/DtMovto/@CodErro')] = None

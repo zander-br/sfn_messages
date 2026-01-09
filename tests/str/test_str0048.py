@@ -6,7 +6,7 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.core.types import Priority, StrSettlementStatus
-from sfn_messages.str.str0048 import STR0048, STR0048R1, STR0048R2
+from sfn_messages.str.str0048 import STR0048, STR0048E, STR0048R1, STR0048R2
 from sfn_messages.str.types import PortabilityReturnReason
 from tests.conftest import extract_missing_fields, normalize_xml
 
@@ -66,6 +66,34 @@ def make_valid_str0048r2_params() -> dict[str, Any]:
     }
 
 
+def make_valid_str0048e_params(*, general_error: bool = False) -> dict[str, Any]:
+    str0048e = {
+        'from_ispb': '31680151',
+        'operation_number': '316801512509080000001',
+        'system_domain': 'SPB01',
+        'to_ispb': '00038166',
+        'institution_control_number': '31680151202509090425',
+        'debtor_institution_ispb': '31680151',
+        'creditor_institution_ispb': '00038166',
+        'amount': 100.00,
+        'portability_return_reason': 'DESTINATION_ACCOUNT_CLOSED',
+        'original_str_control_number': 'STR20250101000000001',
+        'provider_ispb': '31680151',
+        'description': 'Payment for services',
+        'scheduled_date': '2025-09-08',
+        'scheduled_time': '15:30:00',
+        'priority': 'MEDIUM',
+        'settlement_date': '2025-09-08',
+    }
+
+    if general_error:
+        str0048e['general_error_code'] = 'EGEN0050'
+    else:
+        str0048e['provider_ispb_error_code'] = 'ESPE0051'
+
+    return str0048e
+
+
 def test_str0048_valid_params() -> None:
     params = make_valid_str0048_params()
     str0048 = STR0048.model_validate(params)
@@ -86,6 +114,52 @@ def test_str0048_valid_params() -> None:
     assert str0048.scheduled_time == time(15, 30, 0)
     assert str0048.priority == Priority.MEDIUM
     assert str0048.settlement_date == date(2025, 9, 8)
+
+
+def test_str0048e_general_error_valid_params() -> None:
+    params = make_valid_str0048e_params(general_error=True)
+    str0048e = STR0048E.model_validate(params)
+    assert isinstance(str0048e, STR0048E)
+    assert str0048e.from_ispb == '31680151'
+    assert str0048e.operation_number == '316801512509080000001'
+    assert str0048e.system_domain == 'SPB01'
+    assert str0048e.to_ispb == '00038166'
+    assert str0048e.institution_control_number == '31680151202509090425'
+    assert str0048e.debtor_institution_ispb == '31680151'
+    assert str0048e.creditor_institution_ispb == '00038166'
+    assert str0048e.amount == Decimal('100.00')
+    assert str0048e.portability_return_reason == PortabilityReturnReason.DESTINATION_ACCOUNT_CLOSED
+    assert str0048e.original_str_control_number == 'STR20250101000000001'
+    assert str0048e.provider_ispb == '31680151'
+    assert str0048e.description == 'Payment for services'
+    assert str0048e.scheduled_date == date(2025, 9, 8)
+    assert str0048e.scheduled_time == time(15, 30, 0)
+    assert str0048e.priority == Priority.MEDIUM
+    assert str0048e.settlement_date == date(2025, 9, 8)
+    assert str0048e.general_error_code == 'EGEN0050'
+
+
+def test_str0048e_tag_error_valid_params() -> None:
+    params = make_valid_str0048e_params()
+    str0048e = STR0048E.model_validate(params)
+    assert isinstance(str0048e, STR0048E)
+    assert str0048e.from_ispb == '31680151'
+    assert str0048e.operation_number == '316801512509080000001'
+    assert str0048e.system_domain == 'SPB01'
+    assert str0048e.to_ispb == '00038166'
+    assert str0048e.institution_control_number == '31680151202509090425'
+    assert str0048e.debtor_institution_ispb == '31680151'
+    assert str0048e.creditor_institution_ispb == '00038166'
+    assert str0048e.amount == Decimal('100.00')
+    assert str0048e.portability_return_reason == PortabilityReturnReason.DESTINATION_ACCOUNT_CLOSED
+    assert str0048e.original_str_control_number == 'STR20250101000000001'
+    assert str0048e.provider_ispb == '31680151'
+    assert str0048e.description == 'Payment for services'
+    assert str0048e.scheduled_date == date(2025, 9, 8)
+    assert str0048e.scheduled_time == time(15, 30, 0)
+    assert str0048e.priority == Priority.MEDIUM
+    assert str0048e.settlement_date == date(2025, 9, 8)
+    assert str0048e.provider_ispb_error_code == 'ESPE0051'
 
 
 def test_str0048_missing_required_fields() -> None:
@@ -123,7 +197,7 @@ def test_str0048_to_xml() -> None:
             <NUOp>316801512509080000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008>
+            <STR0048>
                 <CodMsg>STR0048</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
@@ -137,7 +211,79 @@ def test_str0048_to_xml() -> None:
                 <HrAgendt>15:30:00</HrAgendt>
                 <NivelPref>C</NivelPref>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0008>
+            </STR0048>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_str0048e_general_error_to_xml() -> None:
+    params = make_valid_str0048e_params(general_error=True)
+    str0048e = STR0048E.model_validate(params)
+    xml = str0048e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0048E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0048E CodErro="EGEN0050">
+                <CodMsg>STR0048</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <ISPBIFCredtd>00038166</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <CodDevPortdd>1</CodDevPortdd>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
+                <ISPBPrestd>31680151</ISPBPrestd>
+                <Hist>Payment for services</Hist>
+                <DtAgendt>2025-09-08</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0048E>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_str0048e_tag_error_to_xml() -> None:
+    params = make_valid_str0048e_params()
+    str0048e = STR0048E.model_validate(params)
+    xml = str0048e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0048E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0048E>
+                <CodMsg>STR0048</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <ISPBIFCredtd>00038166</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <CodDevPortdd>1</CodDevPortdd>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
+                <ISPBPrestd CodErro="ESPE0051">31680151</ISPBPrestd>
+                <Hist>Payment for services</Hist>
+                <DtAgendt>2025-09-08</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0048E>
         </SISMSG>
     </DOC>
     """
@@ -164,7 +310,7 @@ def test_str0048_to_xml_omit_optional_fields() -> None:
             <NUOp>316801512509080000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008>
+            <STR0048>
                 <CodMsg>STR0048</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
@@ -174,7 +320,7 @@ def test_str0048_to_xml_omit_optional_fields() -> None:
                 <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <ISPBPrestd>31680151</ISPBPrestd>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0008>
+            </STR0048>
         </SISMSG>
     </DOC>
     """
@@ -192,7 +338,7 @@ def test_str0048_from_xml() -> None:
             <NUOp>316801512509080000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008>
+            <STR0048>
                 <CodMsg>STR0048</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
@@ -206,7 +352,7 @@ def test_str0048_from_xml() -> None:
                 <HrAgendt>15:30:00</HrAgendt>
                 <NivelPref>C</NivelPref>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0008>
+            </STR0048>
         </SISMSG>
     </DOC>
     """
@@ -231,6 +377,106 @@ def test_str0048_from_xml() -> None:
     assert str0048.settlement_date == date(2025, 9, 8)
 
 
+def test_str0048e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0048E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0048E CodErro="EGEN0050">
+                <CodMsg>STR0048</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <ISPBIFCredtd>00038166</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <CodDevPortdd>1</CodDevPortdd>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
+                <ISPBPrestd>31680151</ISPBPrestd>
+                <Hist>Payment for services</Hist>
+                <DtAgendt>2025-09-08</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0048E>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0048e = STR0048E.from_xml(xml)
+    assert isinstance(str0048e, STR0048E)
+    assert str0048e.from_ispb == '31680151'
+    assert str0048e.operation_number == '316801512509080000001'
+    assert str0048e.system_domain == 'SPB01'
+    assert str0048e.to_ispb == '00038166'
+    assert str0048e.institution_control_number == '31680151202509090425'
+    assert str0048e.debtor_institution_ispb == '31680151'
+    assert str0048e.creditor_institution_ispb == '00038166'
+    assert str0048e.amount == Decimal('100.00')
+    assert str0048e.portability_return_reason == PortabilityReturnReason.DESTINATION_ACCOUNT_CLOSED
+    assert str0048e.original_str_control_number == 'STR20250101000000001'
+    assert str0048e.provider_ispb == '31680151'
+    assert str0048e.description == 'Payment for services'
+    assert str0048e.scheduled_date == date(2025, 9, 8)
+    assert str0048e.scheduled_time == time(15, 30, 0)
+    assert str0048e.priority == Priority.MEDIUM
+    assert str0048e.settlement_date == date(2025, 9, 8)
+    assert str0048e.general_error_code == 'EGEN0050'
+
+
+def test_str0048e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0048E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0048E>
+                <CodMsg>STR0048</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <ISPBIFCredtd>00038166</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <CodDevPortdd>1</CodDevPortdd>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
+                <ISPBPrestd CodErro="ESPE0051">31680151</ISPBPrestd>
+                <Hist>Payment for services</Hist>
+                <DtAgendt>2025-09-08</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0048E>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0048e = STR0048E.from_xml(xml)
+    assert isinstance(str0048e, STR0048E)
+    assert str0048e.from_ispb == '31680151'
+    assert str0048e.operation_number == '316801512509080000001'
+    assert str0048e.system_domain == 'SPB01'
+    assert str0048e.to_ispb == '00038166'
+    assert str0048e.institution_control_number == '31680151202509090425'
+    assert str0048e.debtor_institution_ispb == '31680151'
+    assert str0048e.creditor_institution_ispb == '00038166'
+    assert str0048e.amount == Decimal('100.00')
+    assert str0048e.portability_return_reason == PortabilityReturnReason.DESTINATION_ACCOUNT_CLOSED
+    assert str0048e.original_str_control_number == 'STR20250101000000001'
+    assert str0048e.provider_ispb == '31680151'
+    assert str0048e.description == 'Payment for services'
+    assert str0048e.scheduled_date == date(2025, 9, 8)
+    assert str0048e.scheduled_time == time(15, 30, 0)
+    assert str0048e.priority == Priority.MEDIUM
+    assert str0048e.settlement_date == date(2025, 9, 8)
+    assert str0048e.provider_ispb_error_code == 'ESPE0051'
+
+
 def test_str0048_from_xml_missing_optional_fields() -> None:
     xml = """<?xml version="1.0"?>
     <DOC xmlns="http://www.bcb.gov.br/SPB/STR0048.xsd">
@@ -241,7 +487,7 @@ def test_str0048_from_xml_missing_optional_fields() -> None:
             <NUOp>316801512509080000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008>
+            <STR0048>
                 <CodMsg>STR0048</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
@@ -251,7 +497,7 @@ def test_str0048_from_xml_missing_optional_fields() -> None:
                 <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <ISPBPrestd>31680151</ISPBPrestd>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0008>
+            </STR0048>
         </SISMSG>
     </DOC>
     """
@@ -294,9 +540,9 @@ def test_str0048_from_xml_missing_required_fields() -> None:
             <NUOp>316801512509080000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008>
+            <STR0048>
                 <CodMsg>STR0048</CodMsg>
-            </STR0008>
+            </STR0048>
         </SISMSG>
     </DOC>
     """
@@ -362,7 +608,7 @@ def test_str0048r1_to_xml() -> None:
             <NUOp>316801512509080000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008R1>
+            <STR0048R1>
                 <CodMsg>STR0048R1</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
@@ -370,7 +616,7 @@ def test_str0048r1_to_xml() -> None:
                 <SitLancSTR>1</SitLancSTR>
                 <DtHrSit>2025-11-20 15:30:00+00:00</DtHrSit>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0008R1>
+            </STR0048R1>
         </SISMSG>
     </DOC>
     """
@@ -388,7 +634,7 @@ def test_str0048r1_from_xml() -> None:
             <NUOp>316801512509080000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008R1>
+            <STR0048R1>
                 <CodMsg>STR0048R1</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
@@ -396,7 +642,7 @@ def test_str0048r1_from_xml() -> None:
                 <SitLancSTR>1</SitLancSTR>
                 <DtHrSit>2025-11-20 15:30:00+00:00</DtHrSit>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0008R1>
+            </STR0048R1>
         </SISMSG>
     </DOC>
     """
@@ -429,9 +675,9 @@ def test_str0048r1_from_xml_missing_required_fields() -> None:
             <NUOp>316801512509080000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008R1>
+            <STR0048R1>
                 <CodMsg>STR0048R1</CodMsg>
-            </STR0008R1>
+            </STR0048R1>
         </SISMSG>
     </DOC>
     """
@@ -502,7 +748,7 @@ def test_str0048r2_to_xml() -> None:
             <NUOp>316801512509080000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008R2>
+            <STR0048R2>
                 <CodMsg>STR0048R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000002</NumCtrlSTR>
                 <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
@@ -514,7 +760,7 @@ def test_str0048r2_to_xml() -> None:
                 <ISPBPrestd>31680151</ISPBPrestd>
                 <Hist>Payment for services</Hist>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0008R2>
+            </STR0048R2>
         </SISMSG>
     </DOC>
     """
@@ -538,7 +784,7 @@ def test_str0048r2_to_xml_omit_optional_fields() -> None:
             <NUOp>316801512509080000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008R2>
+            <STR0048R2>
                 <CodMsg>STR0048R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000002</NumCtrlSTR>
                 <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
@@ -549,7 +795,7 @@ def test_str0048r2_to_xml_omit_optional_fields() -> None:
                 <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <ISPBPrestd>31680151</ISPBPrestd>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0008R2>
+            </STR0048R2>
         </SISMSG>
     </DOC>
     """
@@ -567,7 +813,7 @@ def test_str0048r2_from_xml() -> None:
             <NUOp>316801512509080000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008R2>
+            <STR0048R2>
                 <CodMsg>STR0048R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000002</NumCtrlSTR>
                 <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
@@ -579,7 +825,7 @@ def test_str0048r2_from_xml() -> None:
                 <ISPBPrestd>31680151</ISPBPrestd>
                 <Hist>Payment for services</Hist>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0008R2>
+            </STR0048R2>
         </SISMSG>
     </DOC>
     """
@@ -608,7 +854,7 @@ def test_str0048r2_from_xml_missing_optional_fields() -> None:
             <NUOp>316801512509080000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008R2>
+            <STR0048R2>
                 <CodMsg>STR0048R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000002</NumCtrlSTR>
                 <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
@@ -619,7 +865,7 @@ def test_str0048r2_from_xml_missing_optional_fields() -> None:
                 <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <ISPBPrestd>31680151</ISPBPrestd>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0008R2>
+            </STR0048R2>
         </SISMSG>
     </DOC>
     """
@@ -656,9 +902,9 @@ def test_str0048r2_from_xml_missing_required_fields() -> None:
             <NUOp>316801512509080000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008R2>
+            <STR0048R2>
                 <CodMsg>STR0048R2</CodMsg>
-            </STR0008R2>
+            </STR0048R2>
         </SISMSG>
     </DOC>
     """

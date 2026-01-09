@@ -6,7 +6,7 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.core.types import LdlSettlementStatus, ProductCode
-from sfn_messages.ldl.ldl0022 import LDL0022, LDL0022R1, LDL0022R2
+from sfn_messages.ldl.ldl0022 import LDL0022, LDL0022E, LDL0022R1, LDL0022R2
 from tests.conftest import extract_missing_fields, normalize_xml
 
 
@@ -59,7 +59,30 @@ def make_valid_ldl0022r2_params() -> dict[str, Any]:
     }
 
 
-def test_ldl0014_valid_model() -> None:
+def make_valid_ldl0022e_params(*, general_error: bool = False) -> dict[str, Any]:
+    ldl0022e = {
+        'from_ispb': '31680151',
+        'to_ispb': '00038166',
+        'system_domain': 'SPB01',
+        'operation_number': '316801512509080000001',
+        'message_code': 'LDL0022',
+        'institution_control_number': '123',
+        'institution_ispb': '31680151',
+        'ldl_ispb': '31680153',
+        'product_code': 'AMEX_CREDIT_CARD',
+        'amount': 177.22,
+        'settlement_date': '2025-12-10',
+    }
+
+    if general_error:
+        ldl0022e['general_error_code'] = 'EGEN0050'
+    else:
+        ldl0022e['ldl_ispb_error_code'] = 'ELDL0123'
+
+    return ldl0022e
+
+
+def test_ldl0022_valid_model() -> None:
     params = make_valid_ldl0022_params()
     ldl0022 = LDL0022.model_validate(params)
 
@@ -112,6 +135,26 @@ def test_ldl0022r2_valid_model() -> None:
     assert ldl0022r2.product_code == ProductCode.AMEX_CREDIT_CARD
     assert ldl0022r2.amount == Decimal('177.22')
     assert ldl0022r2.settlement_date == date(2025, 12, 10)
+
+
+def test_ldl0022e_valid_model() -> None:
+    params = make_valid_ldl0022e_params()
+    ldl0022e = LDL0022E.model_validate(params)
+
+    assert isinstance(ldl0022e, LDL0022E)
+    assert ldl0022e.from_ispb == '31680151'
+    assert ldl0022e.to_ispb == '00038166'
+    assert ldl0022e.system_domain == 'SPB01'
+    assert ldl0022e.operation_number == '316801512509080000001'
+    assert ldl0022e.message_code == 'LDL0022'
+    assert ldl0022e.institution_control_number == '123'
+    assert ldl0022e.institution_ispb == '31680151'
+    assert ldl0022e.ldl_ispb == '31680153'
+    assert ldl0022e.product_code == ProductCode.AMEX_CREDIT_CARD
+    assert ldl0022e.amount == Decimal('177.22')
+    assert ldl0022e.settlement_date == date(2025, 12, 10)
+
+    assert ldl0022e.ldl_ispb_error_code == 'ELDL0123'
 
 
 def test_ldl0022_missing_required_fields() -> None:
@@ -263,6 +306,66 @@ def test_ldl0022r2_to_xml() -> None:
     assert normalize_xml(expected_xml) == normalize_xml(xml)
 
 
+def test_ldl0022e_general_error_to_xml() -> None:
+    params = make_valid_ldl0022e_params(general_error=True)
+    ldl0022e = LDL0022E.model_validate(params)
+
+    xml = ldl0022e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0022E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LDL0022E CodErro="EGEN0050">
+                <CodMsg>LDL0022</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <ISPBLDL>31680153</ISPBLDL>
+                <CodProdt>ACC</CodProdt>
+                <VlrLanc>177.22</VlrLanc>
+                <DtMovto>2025-12-10</DtMovto>
+            </LDL0022E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_ldl0022e_tag_error_to_xml() -> None:
+    params = make_valid_ldl0022e_params()
+    ldl0022e = LDL0022E.model_validate(params)
+
+    xml = ldl0022e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0022E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LDL0022E>
+                <CodMsg>LDL0022</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <ISPBLDL CodErro="ELDL0123">31680153</ISPBLDL>
+                <CodProdt>ACC</CodProdt>
+                <VlrLanc>177.22</VlrLanc>
+                <DtMovto>2025-12-10</DtMovto>
+            </LDL0022E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
 def test_ldl0022_from_xml() -> None:
     xml = """<?xml version="1.0"?>
     <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0022.xsd">
@@ -380,6 +483,88 @@ def test_ldl0022r2_from_xml() -> None:
     assert ldl0022r2.product_code == ProductCode.AMEX_CREDIT_CARD
     assert ldl0022r2.amount == Decimal('177.22')
     assert ldl0022r2.settlement_date == date(2025, 12, 10)
+
+
+def test_ldl0022e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0022E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LDL0022E CodErro="EGEN0050">
+                <CodMsg>LDL0022</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <ISPBLDL>31680153</ISPBLDL>
+                <CodProdt>ACC</CodProdt>
+                <VlrLanc>177.22</VlrLanc>
+                <DtMovto>2025-12-10</DtMovto>
+            </LDL0022E>
+        </SISMSG>
+    </DOC>
+    """
+
+    ldl0022e = LDL0022E.from_xml(xml)
+
+    assert isinstance(ldl0022e, LDL0022E)
+    assert ldl0022e.from_ispb == '31680151'
+    assert ldl0022e.to_ispb == '00038166'
+    assert ldl0022e.system_domain == 'SPB01'
+    assert ldl0022e.operation_number == '316801512509080000001'
+    assert ldl0022e.message_code == 'LDL0022'
+    assert ldl0022e.institution_control_number == '123'
+    assert ldl0022e.institution_ispb == '31680151'
+    assert ldl0022e.ldl_ispb == '31680153'
+    assert ldl0022e.product_code == ProductCode.AMEX_CREDIT_CARD
+    assert ldl0022e.amount == Decimal('177.22')
+    assert ldl0022e.settlement_date == date(2025, 12, 10)
+
+    assert ldl0022e.general_error_code == 'EGEN0050'
+
+
+def test_ldl0022e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0022E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LDL0022E>
+                <CodMsg>LDL0022</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <ISPBLDL CodErro="ELDL0123">31680153</ISPBLDL>
+                <CodProdt>ACC</CodProdt>
+                <VlrLanc>177.22</VlrLanc>
+                <DtMovto>2025-12-10</DtMovto>
+            </LDL0022E>
+        </SISMSG>
+    </DOC>
+    """
+
+    ldl0022e = LDL0022E.from_xml(xml)
+
+    assert isinstance(ldl0022e, LDL0022E)
+    assert ldl0022e.from_ispb == '31680151'
+    assert ldl0022e.to_ispb == '00038166'
+    assert ldl0022e.system_domain == 'SPB01'
+    assert ldl0022e.operation_number == '316801512509080000001'
+    assert ldl0022e.message_code == 'LDL0022'
+    assert ldl0022e.institution_control_number == '123'
+    assert ldl0022e.institution_ispb == '31680151'
+    assert ldl0022e.ldl_ispb == '31680153'
+    assert ldl0022e.product_code == ProductCode.AMEX_CREDIT_CARD
+    assert ldl0022e.amount == Decimal('177.22')
+    assert ldl0022e.settlement_date == date(2025, 12, 10)
+
+    assert ldl0022e.ldl_ispb_error_code == 'ELDL0123'
 
 
 def test_ldl0022_roundtrip() -> None:

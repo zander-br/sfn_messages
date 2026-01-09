@@ -5,6 +5,7 @@ from typing import Annotated, ClassVar, Literal
 from sfn_messages.core.models import BaseMessage, XmlPath
 from sfn_messages.core.types import (
     Description,
+    ErrorCode,
     InstitutionControlNumber,
     Ispb,
     Priority,
@@ -14,10 +15,12 @@ from sfn_messages.core.types import (
 
 from .types import PortabilityReturnReason
 
-PATH = 'DOC/SISMSG/STR0008'
-PATH_R1 = 'DOC/SISMSG/STR0008R1'
-PATH_R2 = 'DOC/SISMSG/STR0008R2'
+PATH = 'DOC/SISMSG/STR0048'
+PATH_R1 = 'DOC/SISMSG/STR0048R1'
+PATH_R2 = 'DOC/SISMSG/STR0048R2'
+PATH_E = 'DOC/SISMSG/STR0048E'
 XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/STR0048.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/STR0048E.xsd'
 
 
 class STR0048(BaseMessage):
@@ -64,3 +67,41 @@ class STR0048R2(BaseMessage):
     provider_ispb: Annotated[Ispb, XmlPath(f'{PATH_R2}/ISPBPrestd/text()')]
     description: Annotated[Description | None, XmlPath(f'{PATH_R2}/Hist/text()')] = None
     settlement_date: Annotated[date, XmlPath(f'{PATH_R2}/DtMovto/text()')]
+
+
+class STR0048E(BaseMessage):
+    XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
+
+    message_code: Annotated[Literal['STR0048'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'STR0048'
+    institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIF/text()')]
+    debtor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIFDebtd/text()')]
+    creditor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIFCredtd/text()')]
+    amount: Annotated[Decimal, XmlPath(f'{PATH_E}/VlrLanc/text()')]
+    portability_return_reason: Annotated[PortabilityReturnReason, XmlPath(f'{PATH_E}/CodDevPortdd/text()')]
+    original_str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_E}/NumCtrlSTROr/text()')]
+    provider_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBPrestd/text()')]
+    description: Annotated[Description | None, XmlPath(f'{PATH_E}/Hist/text()')] = None
+    scheduled_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtAgendt/text()')] = None
+    scheduled_time: Annotated[time | None, XmlPath(f'{PATH_E}/HrAgendt/text()')] = None
+    priority: Annotated[Priority | None, XmlPath(f'{PATH_E}/NivelPref/text()')] = None
+    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+
+    general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
+    institution_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIF/@CodErro')] = None
+    debtor_institution_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBIFDebtd/@CodErro')] = None
+    creditor_institution_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBIFCredtd/@CodErro')] = (
+        None
+    )
+    amount_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/VlrLanc/@CodErro')] = None
+    portability_return_reason_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/CodDevPortdd/@CodErro')] = (
+        None
+    )
+    original_str_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlSTROr/@CodErro')] = (
+        None
+    )
+    provider_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBPrestd/@CodErro')] = None
+    description_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/Hist/@CodErro')] = None
+    scheduled_date_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/DtAgendt/@CodErro')] = None
+    scheduled_time_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/HrAgendt/@CodErro')] = None
+    priority_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NivelPref/@CodErro')] = None
+    settlement_date_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/DtMovto/@CodErro')] = None

@@ -7,6 +7,7 @@ from sfn_messages.core.types import (
     AssetDescription,
     AssetType,
     Description,
+    ErrorCode,
     InstitutionControlNumber,
     Ispb,
     StrControlNumber,
@@ -16,7 +17,9 @@ from sfn_messages.core.types import (
 PATH = 'DOC/SISMSG/LTR0004'
 PATH_R1 = 'DOC/SISMSG/LTR0004R1'
 PATH_R2 = 'DOC/SISMSG/LTR0004R2'
+PATH_E = 'DOC/SISMSG/LTR0004E'
 XML_NAMESPACE = 'http://www.bcb.gov.br/LTR/LTR0004.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/LTR/LTR0004E.xsd'
 
 
 class LTR0004(BaseMessage):
@@ -60,3 +63,31 @@ class LTR0004R2(BaseMessage):
     description: Annotated[Description | None, XmlPath(f'{PATH_R2}/Hist/text()')] = None
     vendor_timestamp: Annotated[datetime, XmlPath(f'{PATH_R2}/DtHrBC/text()')]
     settlement_date: Annotated[date, XmlPath(f'{PATH_R2}/DtMovto/text()')]
+
+
+class LTR0004E(BaseMessage):
+    XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
+
+    message_code: Annotated[Literal['LTR0004'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'LTR0004'
+    institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIF/text()')]
+    institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIF/text()')]
+    ltr_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBLTR/text()')]
+    original_ltr_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlLTROr/text()')]
+    amount: Annotated[Decimal, XmlPath(f'{PATH_E}/VlrLanc/text()')]
+    sub_asset_type: Annotated[AssetType, XmlPath(f'{PATH_E}/SubTpAtv/text()')]
+    asset_description: Annotated[AssetDescription | None, XmlPath(f'{PATH_E}/DescAtv/text()')] = None
+    description: Annotated[Description | None, XmlPath(f'{PATH_E}/Hist/text()')] = None
+    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+
+    general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
+    institution_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIF/@CodErro')] = None
+    institution_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBIF/@CodErro')] = None
+    ltr_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBLTR/@CodErro')] = None
+    original_ltr_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlLTROr/@CodErro')] = (
+        None
+    )
+    amount_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/VlrLanc/@CodErro')] = None
+    sub_asset_type_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/SubTpAtv/@CodErro')] = None
+    asset_description_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/DescAtv/@CodErro')] = None
+    description_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/Hist/@CodErro')] = None
+    settlement_date_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/DtMovto/@CodErro')] = None

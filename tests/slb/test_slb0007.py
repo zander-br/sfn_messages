@@ -6,7 +6,7 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.core.types import Priority
-from sfn_messages.slb.slb0007 import SLB0007, SLB0007R1
+from sfn_messages.slb.slb0007 import SLB0007, SLB0007E, SLB0007R1
 from sfn_messages.slb.types import SlbPurpose, SlbSettlementStatus
 from tests.conftest import extract_missing_fields, normalize_xml
 
@@ -47,6 +47,32 @@ def make_valid_slb0007r1_params() -> dict[str, Any]:
     }
 
 
+def make_valid_slb0007e_params(*, general_error: bool = False) -> dict[str, Any]:
+    slb0007e = {
+        'from_ispb': '31680151',
+        'to_ispb': '00038166',
+        'system_domain': 'SPB01',
+        'operation_number': '316801512509080000001',
+        'message_code': 'SLB0007',
+        'participant_institution_control_number': '123',
+        'participant_ispb': '31680154',
+        'original_slb_control_number': 'SLB20250101000000001',
+        'partner_cnpj': '56369416000136',
+        'slb_purpose': 'BCB_FX_PURCHASE_SPOT_CREDIT_REAIS_TO_FI',
+        'amount': 199.58,
+        'priority': 'HIGH',
+        'description': 'Test description',
+        'settlement_date': '2025-12-10',
+    }
+
+    if general_error:
+        slb0007e['general_error_code'] = 'EGEN0050'
+    else:
+        slb0007e['partner_cnpj_error_code'] = 'ECNJ0010'
+
+    return slb0007e
+
+
 def test_slb0007_valid_model() -> None:
     params = make_valid_slb0007_params()
     slb0007 = SLB0007.model_validate(params)
@@ -85,6 +111,52 @@ def test_slb0007r1_valid_model() -> None:
     assert slb0007r1.slb_settlement_status == SlbSettlementStatus.EFFECTED
     assert slb0007r1.settlement_timestamp == datetime(2025, 12, 10, 17, 22, tzinfo=UTC)
     assert slb0007r1.settlement_date == date(2025, 12, 10)
+
+
+def test_slb0007e_general_error_valid_model() -> None:
+    params = make_valid_slb0007e_params(general_error=True)
+    slb0007e = SLB0007E.model_validate(params)
+
+    assert isinstance(slb0007e, SLB0007E)
+    assert slb0007e.from_ispb == '31680151'
+    assert slb0007e.to_ispb == '00038166'
+    assert slb0007e.system_domain == 'SPB01'
+    assert slb0007e.operation_number == '316801512509080000001'
+    assert slb0007e.message_code == 'SLB0007'
+    assert slb0007e.participant_institution_control_number == '123'
+    assert slb0007e.participant_ispb == '31680154'
+    assert slb0007e.original_slb_control_number == 'SLB20250101000000001'
+    assert slb0007e.partner_cnpj == '56369416000136'
+    assert slb0007e.slb_purpose == SlbPurpose.BCB_FX_PURCHASE_SPOT_CREDIT_REAIS_TO_FI
+    assert slb0007e.amount == Decimal('199.58')
+    assert slb0007e.priority == Priority.HIGH
+    assert slb0007e.description == 'Test description'
+    assert slb0007e.settlement_date == date(2025, 12, 10)
+
+    assert slb0007e.general_error_code == 'EGEN0050'
+
+
+def test_slb0007e_tag_error_valid_model() -> None:
+    params = make_valid_slb0007e_params()
+    slb0007e = SLB0007E.model_validate(params)
+
+    assert isinstance(slb0007e, SLB0007E)
+    assert slb0007e.from_ispb == '31680151'
+    assert slb0007e.to_ispb == '00038166'
+    assert slb0007e.system_domain == 'SPB01'
+    assert slb0007e.operation_number == '316801512509080000001'
+    assert slb0007e.message_code == 'SLB0007'
+    assert slb0007e.participant_institution_control_number == '123'
+    assert slb0007e.participant_ispb == '31680154'
+    assert slb0007e.original_slb_control_number == 'SLB20250101000000001'
+    assert slb0007e.partner_cnpj == '56369416000136'
+    assert slb0007e.slb_purpose == SlbPurpose.BCB_FX_PURCHASE_SPOT_CREDIT_REAIS_TO_FI
+    assert slb0007e.amount == Decimal('199.58')
+    assert slb0007e.priority == Priority.HIGH
+    assert slb0007e.description == 'Test description'
+    assert slb0007e.settlement_date == date(2025, 12, 10)
+
+    assert slb0007e.partner_cnpj_error_code == 'ECNJ0010'
 
 
 def test_slb0007_missing_required_fields() -> None:
@@ -190,6 +262,72 @@ def test_slb0007r1_to_xml() -> None:
     assert normalize_xml(expected_xml) == normalize_xml(xml)
 
 
+def test_slb0007e_general_error_to_xml() -> None:
+    params = make_valid_slb0007e_params(general_error=True)
+    slb0007e = SLB0007E.model_validate(params)
+
+    xml = slb0007e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0007E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <SLB0007E CodErro="EGEN0050">
+                <CodMsg>SLB0007</CodMsg>
+                <NumCtrlPart>123</NumCtrlPart>
+                <ISPBPart>31680154</ISPBPart>
+                <NumCtrlSLBOr>SLB20250101000000001</NumCtrlSLBOr>
+                <CNPJConv>56369416000136</CNPJConv>
+                <FinlddSLB>CAM060164</FinlddSLB>
+                <VlrLanc>199.58</VlrLanc>
+                <NivelPref>B</NivelPref>
+                <Hist>Test description</Hist>
+                <DtMovto>2025-12-10</DtMovto>
+            </SLB0007E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_slb0007e_tag_error_to_xml() -> None:
+    params = make_valid_slb0007e_params()
+    slb0007e = SLB0007E.model_validate(params)
+
+    xml = slb0007e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0007E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <SLB0007E>
+                <CodMsg>SLB0007</CodMsg>
+                <NumCtrlPart>123</NumCtrlPart>
+                <ISPBPart>31680154</ISPBPart>
+                <NumCtrlSLBOr>SLB20250101000000001</NumCtrlSLBOr>
+                <CNPJConv CodErro="ECNJ0010">56369416000136</CNPJConv>
+                <FinlddSLB>CAM060164</FinlddSLB>
+                <VlrLanc>199.58</VlrLanc>
+                <NivelPref>B</NivelPref>
+                <Hist>Test description</Hist>
+                <DtMovto>2025-12-10</DtMovto>
+            </SLB0007E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
 def test_slb0007_from_xml() -> None:
     xml = """<?xml version="1.0"?>
     <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0007.xsd">
@@ -274,6 +412,100 @@ def test_slb0007r1_from_xml() -> None:
     assert slb0007r1.slb_settlement_status == SlbSettlementStatus.EFFECTED
     assert slb0007r1.settlement_timestamp == datetime(2025, 12, 10, 17, 22, tzinfo=UTC)
     assert slb0007r1.settlement_date == date(2025, 12, 10)
+
+
+def test_slb0007e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0007E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <SLB0007E CodErro="EGEN0050">
+                <CodMsg>SLB0007</CodMsg>
+                <NumCtrlPart>123</NumCtrlPart>
+                <ISPBPart>31680154</ISPBPart>
+                <NumCtrlSLBOr>SLB20250101000000001</NumCtrlSLBOr>
+                <CNPJConv>56369416000136</CNPJConv>
+                <FinlddSLB>CAM060164</FinlddSLB>
+                <VlrLanc>199.58</VlrLanc>
+                <NivelPref>B</NivelPref>
+                <Hist>Test description</Hist>
+                <DtMovto>2025-12-10</DtMovto>
+            </SLB0007E>
+        </SISMSG>
+    </DOC>
+    """
+
+    slb0007e = SLB0007E.from_xml(xml)
+
+    assert isinstance(slb0007e, SLB0007E)
+    assert slb0007e.from_ispb == '31680151'
+    assert slb0007e.to_ispb == '00038166'
+    assert slb0007e.system_domain == 'SPB01'
+    assert slb0007e.operation_number == '316801512509080000001'
+    assert slb0007e.message_code == 'SLB0007'
+    assert slb0007e.participant_institution_control_number == '123'
+    assert slb0007e.participant_ispb == '31680154'
+    assert slb0007e.original_slb_control_number == 'SLB20250101000000001'
+    assert slb0007e.partner_cnpj == '56369416000136'
+    assert slb0007e.slb_purpose == SlbPurpose.BCB_FX_PURCHASE_SPOT_CREDIT_REAIS_TO_FI
+    assert slb0007e.amount == Decimal('199.58')
+    assert slb0007e.priority == Priority.HIGH
+    assert slb0007e.description == 'Test description'
+    assert slb0007e.settlement_date == date(2025, 12, 10)
+
+    assert slb0007e.general_error_code == 'EGEN0050'
+
+
+def test_slb0007e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0007E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <SLB0007E>
+                <CodMsg>SLB0007</CodMsg>
+                <NumCtrlPart>123</NumCtrlPart>
+                <ISPBPart>31680154</ISPBPart>
+                <NumCtrlSLBOr>SLB20250101000000001</NumCtrlSLBOr>
+                <CNPJConv CodErro="ECNJ0010">56369416000136</CNPJConv>
+                <FinlddSLB>CAM060164</FinlddSLB>
+                <VlrLanc>199.58</VlrLanc>
+                <NivelPref>B</NivelPref>
+                <Hist>Test description</Hist>
+                <DtMovto>2025-12-10</DtMovto>
+            </SLB0007E>
+        </SISMSG>
+    </DOC>
+    """
+
+    slb0007e = SLB0007E.from_xml(xml)
+
+    assert isinstance(slb0007e, SLB0007E)
+    assert slb0007e.from_ispb == '31680151'
+    assert slb0007e.to_ispb == '00038166'
+    assert slb0007e.system_domain == 'SPB01'
+    assert slb0007e.operation_number == '316801512509080000001'
+    assert slb0007e.message_code == 'SLB0007'
+    assert slb0007e.participant_institution_control_number == '123'
+    assert slb0007e.participant_ispb == '31680154'
+    assert slb0007e.original_slb_control_number == 'SLB20250101000000001'
+    assert slb0007e.partner_cnpj == '56369416000136'
+    assert slb0007e.slb_purpose == SlbPurpose.BCB_FX_PURCHASE_SPOT_CREDIT_REAIS_TO_FI
+    assert slb0007e.amount == Decimal('199.58')
+    assert slb0007e.priority == Priority.HIGH
+    assert slb0007e.description == 'Test description'
+    assert slb0007e.settlement_date == date(2025, 12, 10)
+
+    assert slb0007e.partner_cnpj_error_code == 'ECNJ0010'
 
 
 def test_slb0007_roundtrip() -> None:
