@@ -1710,3 +1710,17 @@ type ErrorCode = Annotated[
         )
     ),
 ]
+
+
+type StaProtocolNumber = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            # A regex '\d{8,18}' garante que a string tenha de 8 a 18 dígitos.
+            pattern=r'^\d{8,18}$',
+            min_length=8,
+            max_length=18,
+            strip_whitespace=True,
+        )
+    ),
+]
