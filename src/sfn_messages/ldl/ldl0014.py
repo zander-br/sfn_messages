@@ -7,6 +7,7 @@ from pydantic import Field
 from sfn_messages.core.models import BaseMessage, BaseSubMessage, XmlPath
 from sfn_messages.core.types import (
     Cnpj,
+    ErrorCode,
     InstitutionControlNumber,
     Ispb,
     LdlControlNumber,
@@ -20,7 +21,9 @@ PATH_GROUP = 'Grupo_LDL0014_Dep'
 PATH_R1 = 'DOC/SISMSG/LDL0014R1'
 PATH_R2 = 'DOC/SISMSG/LDL0014R2'
 PATH_GROUP_R2 = 'Grupo_LDL0014R2_Dep'
+PATH_E = 'DOC/SISMSG/LDL0014E'
 XML_NAMESPACE = 'http://www.bcb.gov.br/LDL/LDL0014.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/LDL/LDL0014E.xsd'
 
 
 class DepositGroup(BaseSubMessage):
@@ -85,3 +88,52 @@ class LDL0014R2(BaseMessage):
     amount: Annotated[Decimal, XmlPath(f'{PATH_R2}/VlrLanc/text()')]
     deposit_group: Annotated[list[DepositGroupR2], XmlPath(f'{PATH_R2}')] = Field(default_factory=list)
     settlement_date: Annotated[date, XmlPath(f'{PATH_R2}/DtMovto/text()')]
+
+
+class DepositGroupError(BaseSubMessage):
+    cnpj: Annotated[Cnpj, XmlPath(f'{PATH_GROUP}/CNPJNLiqdant/text()')]
+    participant_identifier: Annotated[ParticipantIdentifier | None, XmlPath(f'{PATH_GROUP}/IdentdPartCamr/text()')] = (
+        None
+    )
+    amount: Annotated[Decimal, XmlPath(f'{PATH_GROUP}/VlrNLiqdant/text()')]
+    original_ldl_acceptance_control_number: Annotated[
+        InstitutionControlNumber, XmlPath(f'{PATH_GROUP}/NumCtrlActeLDLOr/text()')
+    ]
+    original_if_request_control_number: Annotated[
+        InstitutionControlNumber, XmlPath(f'{PATH_GROUP}/NumCtrlReqIFOr/text()')
+    ]
+
+    cnpj_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_GROUP}/CNPJNLiqdant/@CodErro')] = None
+    participant_identifier_error_code: Annotated[
+        ErrorCode | None, XmlPath(f'{PATH_GROUP}/IdentdPartCamr/@CodErro')
+    ] = None
+    amount_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_GROUP}/VlrNLiqdant/@CodErro')] = None
+    original_ldl_acceptance_control_number_error_code: Annotated[
+        ErrorCode | None, XmlPath(f'{PATH_GROUP}/NumCtrlActeLDLOr/@CodErro')
+    ] = None
+    original_if_request_control_number_error_code: Annotated[
+        ErrorCode | None, XmlPath(f'{PATH_GROUP}/NumCtrlReqIFOr/@CodErro')
+    ] = None
+
+
+class LDL0014E(BaseMessage):
+    XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
+
+    message_code: Annotated[Literal['LDL0014'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'LDL0014'
+    institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIF/text()')]
+    original_ldl_control_number: Annotated[LdlControlNumber, XmlPath(f'{PATH_E}/NumCtrlLDLOr/text()')]
+    institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIF/text()')]
+    ldl_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBLDL/text()')]
+    amount: Annotated[Decimal, XmlPath(f'{PATH_E}/VlrLanc/text()')]
+    deposit_group: Annotated[list[DepositGroupError], XmlPath(f'{PATH_E}')] = Field(default_factory=list)
+    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+
+    general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
+    institution_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIF/@CodErro')] = None
+    original_ldl_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlLDLOr/@CodErro')] = (
+        None
+    )
+    institution_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBIF/@CodErro')] = None
+    ldl_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBLDL/@CodErro')] = None
+    amount_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/VlrLanc/@CodErro')] = None
+    settlement_date_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/DtMovto/@CodErro')] = None

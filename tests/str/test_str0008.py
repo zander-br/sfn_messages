@@ -6,7 +6,7 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.core.types import AccountType, CustomerPurpose, PersonType, Priority, StrSettlementStatus
-from sfn_messages.str.str0008 import STR0008, STR0008R1, STR0008R2
+from sfn_messages.str.str0008 import STR0008, STR0008E, STR0008R1, STR0008R2
 from tests.conftest import extract_missing_fields, normalize_xml
 
 
@@ -87,6 +87,45 @@ def make_valid_str0008r2_params() -> dict[str, Any]:
     }
 
 
+def make_valid_str0008e_params(*, general_error: bool = False) -> dict[str, Any]:
+    str0008e = {
+        'amount': 100.00,
+        'creditor_account_number': '123456',
+        'creditor_account_type': 'DEPOSIT',
+        'creditor_institution_ispb': '60701190',
+        'creditor_branch': '0001',
+        'creditor_document': '69327934075',
+        'creditor_name': 'Joe Doe',
+        'creditor_type': 'INDIVIDUAL',
+        'debtor_account_number': '654321',
+        'debtor_account_type': 'CURRENT',
+        'debtor_institution_ispb': '31680151',
+        'debtor_branch': '0002',
+        'debtor_document': '56369416000136',
+        'debtor_name': 'ACME Inc',
+        'debtor_type': 'BUSINESS',
+        'description': 'Payment for services',
+        'from_ispb': '31680151',
+        'institution_control_number': '31680151202509090425',
+        'operation_number': '316801512509080000001',
+        'priority': 'MEDIUM',
+        'purpose': 'CREDIT_IN_ACCOUNT',
+        'scheduled_date': '2025-09-09',
+        'scheduled_time': '15:30:00',
+        'settlement_date': '2025-09-08',
+        'system_domain': 'SPB01',
+        'to_ispb': '00038166',
+        'transaction_id': '0000000000000000000000001',
+    }
+
+    if general_error:
+        str0008e['general_error_code'] = 'EGEN0050'
+    else:
+        str0008e['debtor_institution_ispb_error_code'] = 'EGEN0051'
+
+    return str0008e
+
+
 def test_str0008_valid_model() -> None:
     params = make_valid_str0008_params()
     str0008 = STR0008.model_validate(params)
@@ -120,6 +159,78 @@ def test_str0008_valid_model() -> None:
     assert str0008.system_domain == 'SPB01'
     assert str0008.to_ispb == '00038166'
     assert str0008.transaction_id == '0000000000000000000000001'
+
+
+def test_str0008e_general_error_valid_model() -> None:
+    params = make_valid_str0008e_params(general_error=True)
+    str0008e = STR0008E.model_validate(params)
+    assert isinstance(str0008e, STR0008E)
+    assert str0008e.amount == Decimal('100.00')
+    assert str0008e.creditor_account_number == '123456'
+    assert str0008e.creditor_account_type == AccountType.DEPOSIT
+    assert str0008e.creditor_branch == '0001'
+    assert str0008e.creditor_document == '69327934075'
+    assert str0008e.creditor_institution_ispb == '60701190'
+    assert str0008e.creditor_name == 'Joe Doe'
+    assert str0008e.creditor_payment_account_number is None
+    assert str0008e.creditor_type == PersonType.INDIVIDUAL
+    assert str0008e.debtor_account_number == '654321'
+    assert str0008e.debtor_account_type == AccountType.CURRENT
+    assert str0008e.debtor_branch == '0002'
+    assert str0008e.debtor_document == '56369416000136'
+    assert str0008e.debtor_institution_ispb == '31680151'
+    assert str0008e.debtor_name == 'ACME Inc'
+    assert str0008e.debtor_payment_account_number is None
+    assert str0008e.debtor_type == PersonType.BUSINESS
+    assert str0008e.description == 'Payment for services'
+    assert str0008e.from_ispb == '31680151'
+    assert str0008e.institution_control_number == '31680151202509090425'
+    assert str0008e.operation_number == '316801512509080000001'
+    assert str0008e.priority == Priority.MEDIUM
+    assert str0008e.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
+    assert str0008e.scheduled_date == date(2025, 9, 9)
+    assert str0008e.scheduled_time == time(15, 30)
+    assert str0008e.settlement_date == date(2025, 9, 8)
+    assert str0008e.system_domain == 'SPB01'
+    assert str0008e.to_ispb == '00038166'
+    assert str0008e.transaction_id == '0000000000000000000000001'
+    assert str0008e.general_error_code == 'EGEN0050'
+
+
+def test_str0008e_tag_error_valid_model() -> None:
+    params = make_valid_str0008e_params()
+    str0008e = STR0008E.model_validate(params)
+    assert isinstance(str0008e, STR0008E)
+    assert str0008e.amount == Decimal('100.00')
+    assert str0008e.creditor_account_number == '123456'
+    assert str0008e.creditor_account_type == AccountType.DEPOSIT
+    assert str0008e.creditor_branch == '0001'
+    assert str0008e.creditor_document == '69327934075'
+    assert str0008e.creditor_institution_ispb == '60701190'
+    assert str0008e.creditor_name == 'Joe Doe'
+    assert str0008e.creditor_payment_account_number is None
+    assert str0008e.creditor_type == PersonType.INDIVIDUAL
+    assert str0008e.debtor_account_number == '654321'
+    assert str0008e.debtor_account_type == AccountType.CURRENT
+    assert str0008e.debtor_branch == '0002'
+    assert str0008e.debtor_document == '56369416000136'
+    assert str0008e.debtor_institution_ispb == '31680151'
+    assert str0008e.debtor_name == 'ACME Inc'
+    assert str0008e.debtor_payment_account_number is None
+    assert str0008e.debtor_type == PersonType.BUSINESS
+    assert str0008e.description == 'Payment for services'
+    assert str0008e.from_ispb == '31680151'
+    assert str0008e.institution_control_number == '31680151202509090425'
+    assert str0008e.operation_number == '316801512509080000001'
+    assert str0008e.priority == Priority.MEDIUM
+    assert str0008e.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
+    assert str0008e.scheduled_date == date(2025, 9, 9)
+    assert str0008e.scheduled_time == time(15, 30)
+    assert str0008e.settlement_date == date(2025, 9, 8)
+    assert str0008e.system_domain == 'SPB01'
+    assert str0008e.to_ispb == '00038166'
+    assert str0008e.transaction_id == '0000000000000000000000001'
+    assert str0008e.debtor_institution_ispb_error_code == 'EGEN0051'
 
 
 def test_str0008_missing_required_fields() -> None:
@@ -284,6 +395,100 @@ def test_str0008_to_xml() -> None:
     assert normalize_xml(expected_xml) == normalize_xml(xml)
 
 
+def test_str0008e_general_error_to_xml() -> None:
+    params = make_valid_str0008e_params(general_error=True)
+    str0008e = STR0008E.model_validate(params)
+    xml = str0008e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0008E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0008E CodErro="EGEN0050">
+                <CodMsg>STR0008</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <AgDebtd>0002</AgDebtd>
+                <TpCtDebtd>CC</TpCtDebtd>
+                <CtDebtd>654321</CtDebtd>
+                <TpPessoaDebtd>J</TpPessoaDebtd>
+                <CNPJ_CPFCliDebtd>56369416000136</CNPJ_CPFCliDebtd>
+                <NomCliDebtd>ACME Inc</NomCliDebtd>
+                <ISPBIFCredtd>60701190</ISPBIFCredtd>
+                <AgCredtd>0001</AgCredtd>
+                <TpCtCredtd>CD</TpCtCredtd>
+                <CtCredtd>123456</CtCredtd>
+                <TpPessoaCredtd>F</TpPessoaCredtd>
+                <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
+                <NomCliCredtd>Joe Doe</NomCliCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <FinlddCli>10</FinlddCli>
+                <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
+                <Hist>Payment for services</Hist>
+                <DtAgendt>2025-09-09</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0008E>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_str0008e_tag_error_to_xml() -> None:
+    params = make_valid_str0008e_params()
+    str0008e = STR0008E.model_validate(params)
+    xml = str0008e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0008E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0008E>
+                <CodMsg>STR0008</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd CodErro="EGEN0051">31680151</ISPBIFDebtd>
+                <AgDebtd>0002</AgDebtd>
+                <TpCtDebtd>CC</TpCtDebtd>
+                <CtDebtd>654321</CtDebtd>
+                <TpPessoaDebtd>J</TpPessoaDebtd>
+                <CNPJ_CPFCliDebtd>56369416000136</CNPJ_CPFCliDebtd>
+                <NomCliDebtd>ACME Inc</NomCliDebtd>
+                <ISPBIFCredtd>60701190</ISPBIFCredtd>
+                <AgCredtd>0001</AgCredtd>
+                <TpCtCredtd>CD</TpCtCredtd>
+                <CtCredtd>123456</CtCredtd>
+                <TpPessoaCredtd>F</TpPessoaCredtd>
+                <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
+                <NomCliCredtd>Joe Doe</NomCliCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <FinlddCli>10</FinlddCli>
+                <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
+                <Hist>Payment for services</Hist>
+                <DtAgendt>2025-09-09</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0008E>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
 def test_str0008_to_xml_omit_optional_fields() -> None:
     params = make_valid_str0008_params()
     del params['description']
@@ -403,6 +608,154 @@ def test_str0008_from_xml() -> None:
     assert str0008.system_domain == 'SPB01'
     assert str0008.to_ispb == '00038166'
     assert str0008.transaction_id == '0000000000000000000000001'
+
+
+def test_str0008e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0008E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0008E CodErro="EGEN0050">
+                <CodMsg>STR0008</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <AgDebtd>0002</AgDebtd>
+                <TpCtDebtd>CC</TpCtDebtd>
+                <CtDebtd>654321</CtDebtd>
+                <TpPessoaDebtd>J</TpPessoaDebtd>
+                <CNPJ_CPFCliDebtd>56369416000136</CNPJ_CPFCliDebtd>
+                <NomCliDebtd>ACME Inc</NomCliDebtd>
+                <ISPBIFCredtd>60701190</ISPBIFCredtd>
+                <AgCredtd>0001</AgCredtd>
+                <TpCtCredtd>CD</TpCtCredtd>
+                <CtCredtd>123456</CtCredtd>
+                <TpPessoaCredtd>F</TpPessoaCredtd>
+                <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
+                <NomCliCredtd>Joe Doe</NomCliCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <FinlddCli>10</FinlddCli>
+                <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
+                <Hist>Payment for services</Hist>
+                <DtAgendt>2025-09-09</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0008E>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0008e = STR0008E.from_xml(xml)
+    assert isinstance(str0008e, STR0008E)
+    assert str0008e.amount == Decimal('100.0')
+    assert str0008e.creditor_account_number == '123456'
+    assert str0008e.creditor_account_type == AccountType.DEPOSIT
+    assert str0008e.creditor_branch == '0001'
+    assert str0008e.creditor_document == '69327934075'
+    assert str0008e.creditor_institution_ispb == '60701190'
+    assert str0008e.creditor_name == 'Joe Doe'
+    assert str0008e.creditor_payment_account_number is None
+    assert str0008e.creditor_type == PersonType.INDIVIDUAL
+    assert str0008e.debtor_account_number == '654321'
+    assert str0008e.debtor_account_type == AccountType.CURRENT
+    assert str0008e.debtor_branch == '0002'
+    assert str0008e.debtor_document == '56369416000136'
+    assert str0008e.debtor_institution_ispb == '31680151'
+    assert str0008e.debtor_name == 'ACME Inc'
+    assert str0008e.debtor_payment_account_number is None
+    assert str0008e.debtor_type == PersonType.BUSINESS
+    assert str0008e.description == 'Payment for services'
+    assert str0008e.from_ispb == '31680151'
+    assert str0008e.institution_control_number == '31680151202509090425'
+    assert str0008e.operation_number == '316801512509080000001'
+    assert str0008e.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
+    assert str0008e.priority == Priority.MEDIUM
+    assert str0008e.scheduled_date == date(2025, 9, 9)
+    assert str0008e.scheduled_time == time(15, 30)
+    assert str0008e.settlement_date == date(2025, 9, 8)
+    assert str0008e.system_domain == 'SPB01'
+    assert str0008e.to_ispb == '00038166'
+    assert str0008e.transaction_id == '0000000000000000000000001'
+    assert str0008e.general_error_code == 'EGEN0050'
+
+
+def test_str0008e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0008E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0008E>
+                <CodMsg>STR0008</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd CodErro="EGEN0051">31680151</ISPBIFDebtd>
+                <AgDebtd>0002</AgDebtd>
+                <TpCtDebtd>CC</TpCtDebtd>
+                <CtDebtd>654321</CtDebtd>
+                <TpPessoaDebtd>J</TpPessoaDebtd>
+                <CNPJ_CPFCliDebtd>56369416000136</CNPJ_CPFCliDebtd>
+                <NomCliDebtd>ACME Inc</NomCliDebtd>
+                <ISPBIFCredtd>60701190</ISPBIFCredtd>
+                <AgCredtd>0001</AgCredtd>
+                <TpCtCredtd>CD</TpCtCredtd>
+                <CtCredtd>123456</CtCredtd>
+                <TpPessoaCredtd>F</TpPessoaCredtd>
+                <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
+                <NomCliCredtd>Joe Doe</NomCliCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <FinlddCli>10</FinlddCli>
+                <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
+                <Hist>Payment for services</Hist>
+                <DtAgendt>2025-09-09</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0008E>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0008e = STR0008E.from_xml(xml)
+    assert isinstance(str0008e, STR0008E)
+    assert str0008e.amount == Decimal('100.0')
+    assert str0008e.creditor_account_number == '123456'
+    assert str0008e.creditor_account_type == AccountType.DEPOSIT
+    assert str0008e.creditor_branch == '0001'
+    assert str0008e.creditor_document == '69327934075'
+    assert str0008e.creditor_institution_ispb == '60701190'
+    assert str0008e.creditor_name == 'Joe Doe'
+    assert str0008e.creditor_payment_account_number is None
+    assert str0008e.creditor_type == PersonType.INDIVIDUAL
+    assert str0008e.debtor_account_number == '654321'
+    assert str0008e.debtor_account_type == AccountType.CURRENT
+    assert str0008e.debtor_branch == '0002'
+    assert str0008e.debtor_document == '56369416000136'
+    assert str0008e.debtor_institution_ispb == '31680151'
+    assert str0008e.debtor_name == 'ACME Inc'
+    assert str0008e.debtor_payment_account_number is None
+    assert str0008e.debtor_type == PersonType.BUSINESS
+    assert str0008e.description == 'Payment for services'
+    assert str0008e.from_ispb == '31680151'
+    assert str0008e.institution_control_number == '31680151202509090425'
+    assert str0008e.operation_number == '316801512509080000001'
+    assert str0008e.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
+    assert str0008e.priority == Priority.MEDIUM
+    assert str0008e.scheduled_date == date(2025, 9, 9)
+    assert str0008e.scheduled_time == time(15, 30)
+    assert str0008e.settlement_date == date(2025, 9, 8)
+    assert str0008e.system_domain == 'SPB01'
+    assert str0008e.to_ispb == '00038166'
+    assert str0008e.transaction_id == '0000000000000000000000001'
+    assert str0008e.debtor_institution_ispb_error_code == 'EGEN0051'
 
 
 def test_str0008_from_xml_omit_optional_fields() -> None:

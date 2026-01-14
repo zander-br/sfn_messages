@@ -6,7 +6,15 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.core.types import LdlSettlementStatus, PaymentType
-from sfn_messages.ldl.ldl0008 import LDL0008, LDL0008R1, LDL0008R2, EmissionEventGroup, EmissionEventGroupR2
+from sfn_messages.ldl.ldl0008 import (
+    LDL0008,
+    LDL0008E,
+    LDL0008R1,
+    LDL0008R2,
+    EmissionEventGroup,
+    EmissionEventGroupError,
+    EmissionEventGroupR2,
+)
 from tests.conftest import extract_missing_fields, normalize_xml
 
 EMISSION_EVENT_SIZE = 2
@@ -93,6 +101,46 @@ def make_valid_ldl0008r2_params() -> dict[str, Any]:
     }
 
 
+def make_valid_ldl0008e_params(*, general_error: bool = False) -> dict[str, Any]:
+    ldl0008e: dict[str, Any] = {
+        'from_ispb': '31680151',
+        'to_ispb': '00038166',
+        'system_domain': 'SPB01',
+        'operation_number': '316801512509080000001',
+        'message_code': 'LDL0008',
+        'institution_control_number': '123',
+        'institution_ispb': '31680151',
+        'original_ldl_control_number': '321',
+        'ldl_ispb': '31680153',
+        'amount': 933.00,
+        'emission_event_group': [
+            {
+                'cnpj': '53753940000118',
+                'amount': 312.0,
+                'payment_type_ldl': 'REMUNERATION',
+                'payment_number': '312',
+                'participant_identifier': '55386424',
+            },
+            {
+                'cnpj': '50214141000185',
+                'amount': 621.0,
+                'payment_type_ldl': 'EARNING',
+                'payment_number': '222',
+                'participant_identifier': '43075534',
+            },
+        ],
+        'settlement_date': '2025-12-09',
+    }
+
+    if general_error:
+        ldl0008e['general_error_code'] = 'EGEN0050'
+    else:
+        ldl0008e['ldl_ispb_error_code'] = 'EGEN0051'
+        ldl0008e['emission_event_group'][0]['payment_type_ldl_error_code'] = 'ELDL0019'
+
+    return ldl0008e
+
+
 def test_ldl0008_valid_model() -> None:
     params = make_valid_ldl0008_params()
     ldl0008 = LDL0008.model_validate(params)
@@ -175,6 +223,79 @@ def test_ldl0008r2_valid_model() -> None:
     assert event1.participant_identifier == '55386424'
 
     assert isinstance(event2, EmissionEventGroupR2)
+    assert event2.cnpj == '50214141000185'
+    assert event2.amount == Decimal('621.0')
+    assert event2.payment_type_ldl == PaymentType.EARNING
+    assert event2.payment_number == '222'
+    assert event2.participant_identifier == '43075534'
+
+
+def test_ldl0008e_general_error_valid_model() -> None:
+    params = make_valid_ldl0008e_params(general_error=True)
+    ldl0008e = LDL0008E.model_validate(params)
+
+    assert isinstance(ldl0008e, LDL0008E)
+    assert ldl0008e.from_ispb == '31680151'
+    assert ldl0008e.to_ispb == '00038166'
+    assert ldl0008e.system_domain == 'SPB01'
+    assert ldl0008e.operation_number == '316801512509080000001'
+    assert ldl0008e.message_code == 'LDL0008'
+    assert ldl0008e.institution_control_number == '123'
+    assert ldl0008e.institution_ispb == '31680151'
+    assert ldl0008e.original_ldl_control_number == '321'
+    assert ldl0008e.ldl_ispb == '31680153'
+    assert ldl0008e.amount == Decimal('933.00')
+    assert ldl0008e.settlement_date == date(2025, 12, 9)
+    assert ldl0008e.general_error_code == 'EGEN0050'
+
+    assert len(ldl0008e.emission_event_group) == EMISSION_EVENT_SIZE
+    event1 = ldl0008e.emission_event_group[0]
+    event2 = ldl0008e.emission_event_group[1]
+    assert isinstance(event1, EmissionEventGroupError)
+    assert event1.cnpj == '53753940000118'
+    assert event1.amount == Decimal('312.0')
+    assert event1.payment_type_ldl == PaymentType.REMUNERATION
+    assert event1.payment_number == '312'
+    assert event1.participant_identifier == '55386424'
+
+    assert isinstance(event2, EmissionEventGroupError)
+    assert event2.cnpj == '50214141000185'
+    assert event2.amount == Decimal('621.0')
+    assert event2.payment_type_ldl == PaymentType.EARNING
+    assert event2.payment_number == '222'
+    assert event2.participant_identifier == '43075534'
+
+
+def test_ldl0008e_tag_error_valid_model() -> None:
+    params = make_valid_ldl0008e_params()
+    ldl0008 = LDL0008E.model_validate(params)
+
+    assert isinstance(ldl0008, LDL0008E)
+    assert ldl0008.from_ispb == '31680151'
+    assert ldl0008.to_ispb == '00038166'
+    assert ldl0008.system_domain == 'SPB01'
+    assert ldl0008.operation_number == '316801512509080000001'
+    assert ldl0008.message_code == 'LDL0008'
+    assert ldl0008.institution_control_number == '123'
+    assert ldl0008.institution_ispb == '31680151'
+    assert ldl0008.original_ldl_control_number == '321'
+    assert ldl0008.ldl_ispb == '31680153'
+    assert ldl0008.amount == Decimal('933.00')
+    assert ldl0008.settlement_date == date(2025, 12, 9)
+    assert ldl0008.ldl_ispb_error_code == 'EGEN0051'
+
+    assert len(ldl0008.emission_event_group) == EMISSION_EVENT_SIZE
+    event1 = ldl0008.emission_event_group[0]
+    event2 = ldl0008.emission_event_group[1]
+    assert isinstance(event1, EmissionEventGroupError)
+    assert event1.cnpj == '53753940000118'
+    assert event1.amount == Decimal('312.0')
+    assert event1.payment_type_ldl == PaymentType.REMUNERATION
+    assert event1.payment_number == '312'
+    assert event1.participant_identifier == '55386424'
+    assert event1.payment_type_ldl_error_code == 'ELDL0019'
+
+    assert isinstance(event2, EmissionEventGroupError)
     assert event2.cnpj == '50214141000185'
     assert event2.amount == Decimal('621.0')
     assert event2.payment_type_ldl == PaymentType.EARNING
@@ -359,6 +480,94 @@ def test_ldl0008r2_to_xml() -> None:
     assert normalize_xml(expected_xml) == normalize_xml(xml)
 
 
+def test_ldl0008e_general_error_to_xml() -> None:
+    params = make_valid_ldl0008e_params(general_error=True)
+    ldl0008e = LDL0008E.model_validate(params)
+
+    xml = ldl0008e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0008E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LDL0008E CodErro="EGEN0050">
+                <CodMsg>LDL0008</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <NumCtrlLDLOr>321</NumCtrlLDLOr>
+                <ISPBLDL>31680153</ISPBLDL>
+                <VlrLanc>933.0</VlrLanc>
+                <Grupo_LDL0008_EvtEms>
+                    <CNPJNLiqdant>53753940000118</CNPJNLiqdant>
+                    <VlrNLiqdant>312.0</VlrNLiqdant>
+                    <TpPgtoLDL>10</TpPgtoLDL>
+                    <NumPgtoLDL>312</NumPgtoLDL>
+                    <IdentdPartCamr>55386424</IdentdPartCamr>
+                </Grupo_LDL0008_EvtEms>
+                <Grupo_LDL0008_EvtEms>
+                    <CNPJNLiqdant>50214141000185</CNPJNLiqdant>
+                    <VlrNLiqdant>621.0</VlrNLiqdant>
+                    <TpPgtoLDL>11</TpPgtoLDL>
+                    <NumPgtoLDL>222</NumPgtoLDL>
+                    <IdentdPartCamr>43075534</IdentdPartCamr>
+                </Grupo_LDL0008_EvtEms>
+                <DtMovto>2025-12-09</DtMovto>
+            </LDL0008E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_ldl0008e_tag_error_to_xml() -> None:
+    params = make_valid_ldl0008e_params()
+    ldl0008e = LDL0008E.model_validate(params)
+
+    xml = ldl0008e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0008E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LDL0008E>
+                <CodMsg>LDL0008</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <NumCtrlLDLOr>321</NumCtrlLDLOr>
+                <ISPBLDL CodErro="EGEN0051">31680153</ISPBLDL>
+                <VlrLanc>933.0</VlrLanc>
+                <Grupo_LDL0008_EvtEms>
+                    <CNPJNLiqdant>53753940000118</CNPJNLiqdant>
+                    <VlrNLiqdant>312.0</VlrNLiqdant>
+                    <TpPgtoLDL CodErro="ELDL0019">10</TpPgtoLDL>
+                    <NumPgtoLDL>312</NumPgtoLDL>
+                    <IdentdPartCamr>55386424</IdentdPartCamr>
+                </Grupo_LDL0008_EvtEms>
+                <Grupo_LDL0008_EvtEms>
+                    <CNPJNLiqdant>50214141000185</CNPJNLiqdant>
+                    <VlrNLiqdant>621.0</VlrNLiqdant>
+                    <TpPgtoLDL>11</TpPgtoLDL>
+                    <NumPgtoLDL>222</NumPgtoLDL>
+                    <IdentdPartCamr>43075534</IdentdPartCamr>
+                </Grupo_LDL0008_EvtEms>
+                <DtMovto>2025-12-09</DtMovto>
+            </LDL0008E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
 def test_ldl0008_from_xml() -> None:
     xml = """<?xml version="1.0"?>
     <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0008.xsd">
@@ -533,6 +742,149 @@ def test_ldl0008r2_from_xml() -> None:
     assert event1.participant_identifier == '55386424'
 
     assert isinstance(event2, EmissionEventGroupR2)
+    assert event2.cnpj == '50214141000185'
+    assert event2.amount == Decimal('621.0')
+    assert event2.payment_type_ldl == PaymentType.EARNING
+    assert event2.payment_number == '222'
+    assert event2.participant_identifier == '43075534'
+
+
+def test_ldl0008e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0008E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LDL0008E CodErro="EGEN0050">
+                <CodMsg>LDL0008</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <NumCtrlLDLOr>321</NumCtrlLDLOr>
+                <ISPBLDL>31680153</ISPBLDL>
+                <VlrLanc>933.0</VlrLanc>
+                <Grupo_LDL0008_EvtEms>
+                    <CNPJNLiqdant>53753940000118</CNPJNLiqdant>
+                    <VlrNLiqdant>312.0</VlrNLiqdant>
+                    <TpPgtoLDL>10</TpPgtoLDL>
+                    <NumPgtoLDL>312</NumPgtoLDL>
+                    <IdentdPartCamr>55386424</IdentdPartCamr>
+                </Grupo_LDL0008_EvtEms>
+                <Grupo_LDL0008_EvtEms>
+                    <CNPJNLiqdant>50214141000185</CNPJNLiqdant>
+                    <VlrNLiqdant>621.0</VlrNLiqdant>
+                    <TpPgtoLDL>11</TpPgtoLDL>
+                    <NumPgtoLDL>222</NumPgtoLDL>
+                    <IdentdPartCamr>43075534</IdentdPartCamr>
+                </Grupo_LDL0008_EvtEms>
+                <DtMovto>2025-12-09</DtMovto>
+            </LDL0008E>
+        </SISMSG>
+    </DOC>
+    """
+
+    ldl0008e = LDL0008E.from_xml(xml)
+
+    assert isinstance(ldl0008e, LDL0008E)
+    assert ldl0008e.from_ispb == '31680151'
+    assert ldl0008e.to_ispb == '00038166'
+    assert ldl0008e.system_domain == 'SPB01'
+    assert ldl0008e.operation_number == '316801512509080000001'
+    assert ldl0008e.message_code == 'LDL0008'
+    assert ldl0008e.institution_control_number == '123'
+    assert ldl0008e.institution_ispb == '31680151'
+    assert ldl0008e.original_ldl_control_number == '321'
+    assert ldl0008e.ldl_ispb == '31680153'
+    assert ldl0008e.amount == Decimal('933.00')
+    assert ldl0008e.settlement_date == date(2025, 12, 9)
+    assert ldl0008e.general_error_code == 'EGEN0050'
+
+    assert len(ldl0008e.emission_event_group) == EMISSION_EVENT_SIZE
+    event1 = ldl0008e.emission_event_group[0]
+    event2 = ldl0008e.emission_event_group[1]
+    assert isinstance(event1, EmissionEventGroupError)
+    assert event1.cnpj == '53753940000118'
+    assert event1.amount == Decimal('312.0')
+    assert event1.payment_type_ldl == PaymentType.REMUNERATION
+    assert event1.payment_number == '312'
+    assert event1.participant_identifier == '55386424'
+
+    assert isinstance(event2, EmissionEventGroupError)
+    assert event2.cnpj == '50214141000185'
+    assert event2.amount == Decimal('621.0')
+    assert event2.payment_type_ldl == PaymentType.EARNING
+    assert event2.payment_number == '222'
+    assert event2.participant_identifier == '43075534'
+
+
+def test_ldl0008e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0008E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LDL0008E>
+                <CodMsg>LDL0008</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <NumCtrlLDLOr>321</NumCtrlLDLOr>
+                <ISPBLDL CodErro="EGEN0051">31680153</ISPBLDL>
+                <VlrLanc>933.0</VlrLanc>
+                <Grupo_LDL0008_EvtEms>
+                    <CNPJNLiqdant>53753940000118</CNPJNLiqdant>
+                    <VlrNLiqdant>312.0</VlrNLiqdant>
+                    <TpPgtoLDL CodErro="ELDL0019">10</TpPgtoLDL>
+                    <NumPgtoLDL>312</NumPgtoLDL>
+                    <IdentdPartCamr>55386424</IdentdPartCamr>
+                </Grupo_LDL0008_EvtEms>
+                <Grupo_LDL0008_EvtEms>
+                    <CNPJNLiqdant>50214141000185</CNPJNLiqdant>
+                    <VlrNLiqdant>621.0</VlrNLiqdant>
+                    <TpPgtoLDL>11</TpPgtoLDL>
+                    <NumPgtoLDL>222</NumPgtoLDL>
+                    <IdentdPartCamr>43075534</IdentdPartCamr>
+                </Grupo_LDL0008_EvtEms>
+                <DtMovto>2025-12-09</DtMovto>
+            </LDL0008E>
+        </SISMSG>
+    </DOC>
+    """
+
+    ldl0008e = LDL0008E.from_xml(xml)
+
+    assert isinstance(ldl0008e, LDL0008E)
+    assert ldl0008e.from_ispb == '31680151'
+    assert ldl0008e.to_ispb == '00038166'
+    assert ldl0008e.system_domain == 'SPB01'
+    assert ldl0008e.operation_number == '316801512509080000001'
+    assert ldl0008e.message_code == 'LDL0008'
+    assert ldl0008e.institution_control_number == '123'
+    assert ldl0008e.institution_ispb == '31680151'
+    assert ldl0008e.original_ldl_control_number == '321'
+    assert ldl0008e.ldl_ispb == '31680153'
+    assert ldl0008e.amount == Decimal('933.00')
+    assert ldl0008e.settlement_date == date(2025, 12, 9)
+    assert ldl0008e.ldl_ispb_error_code == 'EGEN0051'
+
+    assert len(ldl0008e.emission_event_group) == EMISSION_EVENT_SIZE
+    event1 = ldl0008e.emission_event_group[0]
+    event2 = ldl0008e.emission_event_group[1]
+    assert isinstance(event1, EmissionEventGroupError)
+    assert event1.cnpj == '53753940000118'
+    assert event1.amount == Decimal('312.0')
+    assert event1.payment_type_ldl == PaymentType.REMUNERATION
+    assert event1.payment_number == '312'
+    assert event1.participant_identifier == '55386424'
+    assert event1.payment_type_ldl_error_code == 'ELDL0019'
+
+    assert isinstance(event2, EmissionEventGroupError)
     assert event2.cnpj == '50214141000185'
     assert event2.amount == Decimal('621.0')
     assert event2.payment_type_ldl == PaymentType.EARNING

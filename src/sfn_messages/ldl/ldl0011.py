@@ -6,6 +6,7 @@ from sfn_messages.core.models import BaseMessage, XmlPath
 from sfn_messages.core.types import (
     AccountNumber,
     Branch,
+    ErrorCode,
     InstitutionControlNumber,
     Ispb,
     LdlControlNumber,
@@ -16,7 +17,9 @@ from sfn_messages.core.types import (
 PATH = 'DOC/SISMSG/LDL0011'
 PATH_R1 = 'DOC/SISMSG/LDL0011R1'
 PATH_R2 = 'DOC/SISMSG/LDL0011R2'
+PATH_E = 'DOC/SISMSG/LDL0011E'
 XML_NAMESPACE = 'http://www.bcb.gov.br/LDL/LDL0011.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/LDL/LDL0011E.xsd'
 
 
 class LDL0011(BaseMessage):
@@ -58,3 +61,29 @@ class LDL0011R2(BaseMessage):
     ldl_ispb: Annotated[Ispb, XmlPath(f'{PATH_R2}/ISPBLDL/text()')]
     amount: Annotated[Decimal, XmlPath(f'{PATH_R2}/VlrLanc/text()')]
     settlement_date: Annotated[date, XmlPath(f'{PATH_R2}/DtMovto/text()')]
+
+
+class LDL0011E(BaseMessage):
+    XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
+
+    message_code: Annotated[Literal['LDL0011'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'LDL0011'
+    institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIF/text()')]
+    institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIF/text()')]
+    original_ldl_control_number: Annotated[LdlControlNumber, XmlPath(f'{PATH_E}/NumCtrlLDLOr/text()')]
+    branch: Annotated[Branch, XmlPath(f'{PATH_E}/AgDebtd/text()')]
+    account_number: Annotated[AccountNumber, XmlPath(f'{PATH_E}/CtDebtd/text()')]
+    ldl_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBLDL/text()')]
+    amount: Annotated[Decimal, XmlPath(f'{PATH_E}/VlrLanc/text()')]
+    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+
+    general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
+    institution_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIF/@CodErro')] = None
+    institution_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBIF/@CodErro')] = None
+    original_ldl_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlLDLOr/@CodErro')] = (
+        None
+    )
+    branch_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/AgDebtd/@CodErro')] = None
+    account_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/CtDebtd/@CodErro')] = None
+    ldl_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBLDL/@CodErro')] = None
+    amount_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/VlrLanc/@CodErro')] = None
+    settlement_date_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/DtMovto/@CodErro')] = None

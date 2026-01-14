@@ -4,7 +4,7 @@ from typing import Any
 import pytest
 from pydantic import ValidationError
 
-from sfn_messages.gen.gen0003 import GEN0003, GEN0003R1
+from sfn_messages.gen.gen0003 import GEN0003, GEN0003E, GEN0003R1
 from tests.conftest import extract_missing_fields, normalize_xml
 
 
@@ -37,6 +37,26 @@ def make_valid_gen0003r1_params() -> dict[str, Any]:
     }
 
 
+def make_valid_gen0003e_params(*, general_error: bool = False) -> dict[str, Any]:
+    gen0003e = {
+        'from_ispb': '31680151',
+        'to_ispb': '00038166',
+        'system_domain': 'SPB01',
+        'operation_number': '316801512509080000001',
+        'message_code': 'GEN0003',
+        'institution_control_number': '123',
+        'issuing_ispb': '31680151',
+        'recipient_ispb': '31680151',
+    }
+
+    if general_error:
+        gen0003e['general_error_code'] = 'EGEN0050'
+    else:
+        gen0003e['issuing_ispb_error_code'] = 'EGEN0051'
+
+    return gen0003e
+
+
 def test_gen0003_valid_model() -> None:
     params = make_valid_gen0003_params()
     gen0003 = GEN0003.model_validate(params)
@@ -59,6 +79,30 @@ def test_gen0003r1_valid_model() -> None:
     assert gen0003r1.last_number_operation == '00316801512509080000001'
     assert gen0003r1.issuing_ispb == '31680151'
     assert gen0003r1.recipient_ispb == '31680151'
+
+
+def test_gen0003e_general_error_valid_model() -> None:
+    params = make_valid_gen0003e_params(general_error=True)
+    gen0003e = GEN0003E.model_validate(params)
+
+    assert isinstance(gen0003e, GEN0003E)
+    assert gen0003e.message_code == 'GEN0003'
+    assert gen0003e.institution_control_number == '123'
+    assert gen0003e.issuing_ispb == '31680151'
+    assert gen0003e.recipient_ispb == '31680151'
+    assert gen0003e.general_error_code == 'EGEN0050'
+
+
+def test_gen0003e_tag_error_valid_model() -> None:
+    params = make_valid_gen0003e_params()
+    gen0003e = GEN0003E.model_validate(params)
+
+    assert isinstance(gen0003e, GEN0003E)
+    assert gen0003e.message_code == 'GEN0003'
+    assert gen0003e.institution_control_number == '123'
+    assert gen0003e.issuing_ispb == '31680151'
+    assert gen0003e.recipient_ispb == '31680151'
+    assert gen0003e.issuing_ispb_error_code == 'EGEN0051'
 
 
 def test_gen0003_missing_required_fields() -> None:
@@ -155,6 +199,62 @@ def test_gen0003r1_to_xml() -> None:
     assert normalize_xml(expected_xml) == normalize_xml(xml)
 
 
+def test_gen0003e_general_error_to_xml() -> None:
+    params = make_valid_gen0003e_params(general_error=True)
+
+    gen0003e = GEN0003E.model_validate(params)
+    xml = gen0003e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0003E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <GEN0003E CodErro="EGEN0050">
+                <CodMsg>GEN0003</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBEmissor>31680151</ISPBEmissor>
+                <ISPBDestinatario>31680151</ISPBDestinatario>
+            </GEN0003E>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_gen0003e_tag_error_to_xml() -> None:
+    params = make_valid_gen0003e_params()
+
+    gen0003e = GEN0003E.model_validate(params)
+    xml = gen0003e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0003E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <GEN0003E>
+                <CodMsg>GEN0003</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBEmissor CodErro="EGEN0051">31680151</ISPBEmissor>
+                <ISPBDestinatario>31680151</ISPBDestinatario>
+            </GEN0003E>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
 def test_gen0003_from_xml() -> None:
     xml = """<?xml version="1.0"?>
     <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0003.xsd">
@@ -215,6 +315,64 @@ def test_gen0003r1_from_xml() -> None:
     assert gen0003r1.last_number_operation == '00316801512509080000001'
     assert gen0003r1.issuing_ispb == '31680151'
     assert gen0003r1.recipient_ispb == '31680151'
+
+
+def test_gen0003e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0003E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <GEN0003E CodErro="EGEN0050">
+                <CodMsg>GEN0003</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBEmissor>31680151</ISPBEmissor>
+                <ISPBDestinatario>31680151</ISPBDestinatario>
+            </GEN0003E>
+        </SISMSG>
+    </DOC>
+    """
+
+    gen0003e = GEN0003E.from_xml(xml)
+
+    assert isinstance(gen0003e, GEN0003E)
+    assert gen0003e.issuing_ispb == '31680151'
+    assert gen0003e.recipient_ispb == '31680151'
+    assert gen0003e.institution_control_number == '123'
+    assert gen0003e.general_error_code == 'EGEN0050'
+
+
+def test_gen0003e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0003E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <GEN0003E>
+                <CodMsg>GEN0003</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBEmissor CodErro="EGEN0051">31680151</ISPBEmissor>
+                <ISPBDestinatario>31680151</ISPBDestinatario>
+            </GEN0003E>
+        </SISMSG>
+    </DOC>
+    """
+
+    gen0003e = GEN0003E.from_xml(xml)
+
+    assert isinstance(gen0003e, GEN0003E)
+    assert gen0003e.issuing_ispb == '31680151'
+    assert gen0003e.recipient_ispb == '31680151'
+    assert gen0003e.institution_control_number == '123'
+    assert gen0003e.issuing_ispb_error_code == 'EGEN0051'
 
 
 def test_gen0003_roundtrip() -> None:

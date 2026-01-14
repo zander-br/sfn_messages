@@ -6,7 +6,15 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.core.types import LdlSettlementStatus
-from sfn_messages.ldl.ldl0014 import LDL0014, LDL0014R1, LDL0014R2, DepositGroup, DepositGroupR2
+from sfn_messages.ldl.ldl0014 import (
+    LDL0014,
+    LDL0014E,
+    LDL0014R1,
+    LDL0014R2,
+    DepositGroup,
+    DepositGroupError,
+    DepositGroupR2,
+)
 from tests.conftest import extract_missing_fields, normalize_xml
 
 DEPOSIT_GROUP_SIZE = 2
@@ -89,6 +97,46 @@ def make_valid_ldl0014r2_params() -> dict[str, Any]:
         ],
         'settlement_date': '2025-12-10',
     }
+
+
+def make_valid_ldl0014e_params(*, general_error: bool = False) -> dict[str, Any]:
+    ldl0014e: dict[str, Any] = {
+        'from_ispb': '31680151',
+        'to_ispb': '00038166',
+        'system_domain': 'SPB01',
+        'operation_number': '316801512509080000001',
+        'message_code': 'LDL0014',
+        'institution_control_number': '123',
+        'original_ldl_control_number': '321',
+        'institution_ispb': '31680151',
+        'ldl_ispb': '31680153',
+        'amount': 188.0,
+        'deposit_group': [
+            {
+                'cnpj': '50214141000185',
+                'participant_identifier': '55386424',
+                'amount': 100.0,
+                'original_ldl_acceptance_control_number': '312',
+                'original_if_request_control_number': '323',
+            },
+            {
+                'cnpj': '53753940000118',
+                'participant_identifier': '43075534',
+                'amount': 88.0,
+                'original_ldl_acceptance_control_number': '132',
+                'original_if_request_control_number': '322',
+            },
+        ],
+        'settlement_date': '2025-12-10',
+    }
+
+    if general_error:
+        ldl0014e['general_error_code'] = 'EGEN0050'
+    else:
+        ldl0014e['ldl_ispb_error_code'] = 'EGEN0051'
+        ldl0014e['deposit_group'][1]['participant_identifier_error_code'] = 'ELDL0019'
+
+    return ldl0014e
 
 
 def test_ldl0014_valid_model() -> None:
@@ -174,6 +222,77 @@ def test_ldl0014r2_valid_model() -> None:
     assert deposit2.participant_identifier == '43075534'
     assert deposit2.amount == Decimal('88.0')
     assert deposit2.original_ldl_acceptance_control_number == '132'
+
+
+def test_ldl0014e_general_error_valid_model() -> None:
+    params = make_valid_ldl0014e_params(general_error=True)
+    ldl0014e = LDL0014E.model_validate(params)
+
+    assert isinstance(ldl0014e, LDL0014E)
+    assert ldl0014e.from_ispb == '31680151'
+    assert ldl0014e.to_ispb == '00038166'
+    assert ldl0014e.system_domain == 'SPB01'
+    assert ldl0014e.operation_number == '316801512509080000001'
+    assert ldl0014e.message_code == 'LDL0014'
+    assert ldl0014e.institution_control_number == '123'
+    assert ldl0014e.original_ldl_control_number == '321'
+    assert ldl0014e.institution_ispb == '31680151'
+    assert ldl0014e.ldl_ispb == '31680153'
+    assert ldl0014e.amount == Decimal('188.0')
+    assert ldl0014e.settlement_date == date(2025, 12, 10)
+    assert ldl0014e.general_error_code == 'EGEN0050'
+
+    assert len(ldl0014e.deposit_group) == DEPOSIT_GROUP_SIZE
+    deposit1 = ldl0014e.deposit_group[0]
+    deposit2 = ldl0014e.deposit_group[1]
+    assert isinstance(deposit1, DepositGroupError)
+    assert deposit1.cnpj == '50214141000185'
+    assert deposit1.participant_identifier == '55386424'
+    assert deposit1.amount == Decimal('100.0')
+    assert deposit1.original_ldl_acceptance_control_number == '312'
+    assert deposit1.original_if_request_control_number == '323'
+    assert isinstance(deposit2, DepositGroupError)
+    assert deposit2.cnpj == '53753940000118'
+    assert deposit2.participant_identifier == '43075534'
+    assert deposit2.amount == Decimal('88.0')
+    assert deposit2.original_ldl_acceptance_control_number == '132'
+    assert deposit2.original_if_request_control_number == '322'
+
+
+def test_ldl0014e_tag_error_valid_model() -> None:
+    params = make_valid_ldl0014e_params()
+    ldl0014e = LDL0014E.model_validate(params)
+
+    assert isinstance(ldl0014e, LDL0014E)
+    assert ldl0014e.from_ispb == '31680151'
+    assert ldl0014e.to_ispb == '00038166'
+    assert ldl0014e.system_domain == 'SPB01'
+    assert ldl0014e.operation_number == '316801512509080000001'
+    assert ldl0014e.message_code == 'LDL0014'
+    assert ldl0014e.institution_control_number == '123'
+    assert ldl0014e.original_ldl_control_number == '321'
+    assert ldl0014e.institution_ispb == '31680151'
+    assert ldl0014e.ldl_ispb == '31680153'
+    assert ldl0014e.amount == Decimal('188.0')
+    assert ldl0014e.settlement_date == date(2025, 12, 10)
+    assert ldl0014e.ldl_ispb_error_code == 'EGEN0051'
+
+    assert len(ldl0014e.deposit_group) == DEPOSIT_GROUP_SIZE
+    deposit1 = ldl0014e.deposit_group[0]
+    deposit2 = ldl0014e.deposit_group[1]
+    assert isinstance(deposit1, DepositGroupError)
+    assert deposit1.cnpj == '50214141000185'
+    assert deposit1.participant_identifier == '55386424'
+    assert deposit1.amount == Decimal('100.0')
+    assert deposit1.original_ldl_acceptance_control_number == '312'
+    assert deposit1.original_if_request_control_number == '323'
+    assert isinstance(deposit2, DepositGroupError)
+    assert deposit2.cnpj == '53753940000118'
+    assert deposit2.participant_identifier == '43075534'
+    assert deposit2.amount == Decimal('88.0')
+    assert deposit2.original_ldl_acceptance_control_number == '132'
+    assert deposit2.original_if_request_control_number == '322'
+    assert deposit2.participant_identifier_error_code == 'ELDL0019'
 
 
 def test_ldl0014_missing_required_fields() -> None:
@@ -345,6 +464,94 @@ def test_ldl0014r2_to_xml() -> None:
                 </Grupo_LDL0014R2_Dep>
                 <DtMovto>2025-12-10</DtMovto>
             </LDL0014R2>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_ldl0014e_general_error_to_xml() -> None:
+    params = make_valid_ldl0014e_params(general_error=True)
+    ldl0014e = LDL0014E.model_validate(params)
+
+    xml = ldl0014e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0014E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LDL0014E CodErro="EGEN0050">
+                <CodMsg>LDL0014</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <NumCtrlLDLOr>321</NumCtrlLDLOr>
+                <ISPBIF>31680151</ISPBIF>
+                <ISPBLDL>31680153</ISPBLDL>
+                <VlrLanc>188.0</VlrLanc>
+                <Grupo_LDL0014_Dep>
+                    <CNPJNLiqdant>50214141000185</CNPJNLiqdant>
+                    <IdentdPartCamr>55386424</IdentdPartCamr>
+                    <VlrNLiqdant>100.0</VlrNLiqdant>
+                    <NumCtrlActeLDLOr>312</NumCtrlActeLDLOr>
+                    <NumCtrlReqIFOr>323</NumCtrlReqIFOr>
+                </Grupo_LDL0014_Dep>
+                <Grupo_LDL0014_Dep>
+                    <CNPJNLiqdant>53753940000118</CNPJNLiqdant>
+                    <IdentdPartCamr>43075534</IdentdPartCamr>
+                    <VlrNLiqdant>88.0</VlrNLiqdant>
+                    <NumCtrlActeLDLOr>132</NumCtrlActeLDLOr>
+                    <NumCtrlReqIFOr>322</NumCtrlReqIFOr>
+                </Grupo_LDL0014_Dep>
+                <DtMovto>2025-12-10</DtMovto>
+            </LDL0014E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_ldl0014e_tag_error_to_xml() -> None:
+    params = make_valid_ldl0014e_params()
+    ldl0014e = LDL0014E.model_validate(params)
+
+    xml = ldl0014e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0014E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LDL0014E>
+                <CodMsg>LDL0014</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <NumCtrlLDLOr>321</NumCtrlLDLOr>
+                <ISPBIF>31680151</ISPBIF>
+                <ISPBLDL CodErro="EGEN0051">31680153</ISPBLDL>
+                <VlrLanc>188.0</VlrLanc>
+                <Grupo_LDL0014_Dep>
+                    <CNPJNLiqdant>50214141000185</CNPJNLiqdant>
+                    <IdentdPartCamr>55386424</IdentdPartCamr>
+                    <VlrNLiqdant>100.0</VlrNLiqdant>
+                    <NumCtrlActeLDLOr>312</NumCtrlActeLDLOr>
+                    <NumCtrlReqIFOr>323</NumCtrlReqIFOr>
+                </Grupo_LDL0014_Dep>
+                <Grupo_LDL0014_Dep>
+                    <CNPJNLiqdant>53753940000118</CNPJNLiqdant>
+                    <IdentdPartCamr CodErro="ELDL0019">43075534</IdentdPartCamr>
+                    <VlrNLiqdant>88.0</VlrNLiqdant>
+                    <NumCtrlActeLDLOr>132</NumCtrlActeLDLOr>
+                    <NumCtrlReqIFOr>322</NumCtrlReqIFOr>
+                </Grupo_LDL0014_Dep>
+                <DtMovto>2025-12-10</DtMovto>
+            </LDL0014E>
         </SISMSG>
     </DOC>
     """
@@ -524,6 +731,147 @@ def test_ldl0014r2_from_xml() -> None:
     assert deposit2.participant_identifier == '43075534'
     assert deposit2.amount == Decimal('88.0')
     assert deposit2.original_ldl_acceptance_control_number == '132'
+
+
+def test_ldl0014e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0014E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LDL0014E CodErro="EGEN0050">
+                <CodMsg>LDL0014</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <NumCtrlLDLOr>321</NumCtrlLDLOr>
+                <ISPBIF>31680151</ISPBIF>
+                <ISPBLDL>31680153</ISPBLDL>
+                <VlrLanc>188.0</VlrLanc>
+                <Grupo_LDL0014_Dep>
+                    <CNPJNLiqdant>50214141000185</CNPJNLiqdant>
+                    <IdentdPartCamr>55386424</IdentdPartCamr>
+                    <VlrNLiqdant>100.0</VlrNLiqdant>
+                    <NumCtrlActeLDLOr>312</NumCtrlActeLDLOr>
+                    <NumCtrlReqIFOr>323</NumCtrlReqIFOr>
+                </Grupo_LDL0014_Dep>
+                <Grupo_LDL0014_Dep>
+                    <CNPJNLiqdant>53753940000118</CNPJNLiqdant>
+                    <IdentdPartCamr>43075534</IdentdPartCamr>
+                    <VlrNLiqdant>88.0</VlrNLiqdant>
+                    <NumCtrlActeLDLOr>132</NumCtrlActeLDLOr>
+                    <NumCtrlReqIFOr>322</NumCtrlReqIFOr>
+                </Grupo_LDL0014_Dep>
+                <DtMovto>2025-12-10</DtMovto>
+            </LDL0014E>
+        </SISMSG>
+    </DOC>
+    """
+
+    ldl0014e = LDL0014E.from_xml(xml)
+
+    assert isinstance(ldl0014e, LDL0014E)
+    assert ldl0014e.from_ispb == '31680151'
+    assert ldl0014e.to_ispb == '00038166'
+    assert ldl0014e.system_domain == 'SPB01'
+    assert ldl0014e.operation_number == '316801512509080000001'
+    assert ldl0014e.message_code == 'LDL0014'
+    assert ldl0014e.institution_control_number == '123'
+    assert ldl0014e.original_ldl_control_number == '321'
+    assert ldl0014e.institution_ispb == '31680151'
+    assert ldl0014e.ldl_ispb == '31680153'
+    assert ldl0014e.amount == Decimal('188.0')
+    assert ldl0014e.settlement_date == date(2025, 12, 10)
+    assert ldl0014e.general_error_code == 'EGEN0050'
+
+    assert len(ldl0014e.deposit_group) == DEPOSIT_GROUP_SIZE
+    deposit1 = ldl0014e.deposit_group[0]
+    deposit2 = ldl0014e.deposit_group[1]
+    assert isinstance(deposit1, DepositGroupError)
+    assert deposit1.cnpj == '50214141000185'
+    assert deposit1.participant_identifier == '55386424'
+    assert deposit1.amount == Decimal('100.0')
+    assert deposit1.original_ldl_acceptance_control_number == '312'
+    assert deposit1.original_if_request_control_number == '323'
+    assert isinstance(deposit2, DepositGroupError)
+    assert deposit2.cnpj == '53753940000118'
+    assert deposit2.participant_identifier == '43075534'
+    assert deposit2.amount == Decimal('88.0')
+    assert deposit2.original_ldl_acceptance_control_number == '132'
+    assert deposit2.original_if_request_control_number == '322'
+
+
+def test_ldl0014e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0014E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <LDL0014E>
+                <CodMsg>LDL0014</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <NumCtrlLDLOr>321</NumCtrlLDLOr>
+                <ISPBIF>31680151</ISPBIF>
+                <ISPBLDL CodErro="EGEN0051">31680153</ISPBLDL>
+                <VlrLanc>188.0</VlrLanc>
+                <Grupo_LDL0014_Dep>
+                    <CNPJNLiqdant>50214141000185</CNPJNLiqdant>
+                    <IdentdPartCamr>55386424</IdentdPartCamr>
+                    <VlrNLiqdant>100.0</VlrNLiqdant>
+                    <NumCtrlActeLDLOr>312</NumCtrlActeLDLOr>
+                    <NumCtrlReqIFOr>323</NumCtrlReqIFOr>
+                </Grupo_LDL0014_Dep>
+                <Grupo_LDL0014_Dep>
+                    <CNPJNLiqdant>53753940000118</CNPJNLiqdant>
+                    <IdentdPartCamr CodErro="ELDL0019">43075534</IdentdPartCamr>
+                    <VlrNLiqdant>88.0</VlrNLiqdant>
+                    <NumCtrlActeLDLOr>132</NumCtrlActeLDLOr>
+                    <NumCtrlReqIFOr>322</NumCtrlReqIFOr>
+                </Grupo_LDL0014_Dep>
+                <DtMovto>2025-12-10</DtMovto>
+            </LDL0014E>
+        </SISMSG>
+    </DOC>
+    """
+
+    ldl0014e = LDL0014E.from_xml(xml)
+
+    assert isinstance(ldl0014e, LDL0014E)
+    assert ldl0014e.from_ispb == '31680151'
+    assert ldl0014e.to_ispb == '00038166'
+    assert ldl0014e.system_domain == 'SPB01'
+    assert ldl0014e.operation_number == '316801512509080000001'
+    assert ldl0014e.message_code == 'LDL0014'
+    assert ldl0014e.institution_control_number == '123'
+    assert ldl0014e.original_ldl_control_number == '321'
+    assert ldl0014e.institution_ispb == '31680151'
+    assert ldl0014e.ldl_ispb == '31680153'
+    assert ldl0014e.amount == Decimal('188.0')
+    assert ldl0014e.settlement_date == date(2025, 12, 10)
+    assert ldl0014e.ldl_ispb_error_code == 'EGEN0051'
+
+    assert len(ldl0014e.deposit_group) == DEPOSIT_GROUP_SIZE
+    deposit1 = ldl0014e.deposit_group[0]
+    deposit2 = ldl0014e.deposit_group[1]
+    assert isinstance(deposit1, DepositGroupError)
+    assert deposit1.cnpj == '50214141000185'
+    assert deposit1.participant_identifier == '55386424'
+    assert deposit1.amount == Decimal('100.0')
+    assert deposit1.original_ldl_acceptance_control_number == '312'
+    assert deposit1.original_if_request_control_number == '323'
+    assert isinstance(deposit2, DepositGroupError)
+    assert deposit2.cnpj == '53753940000118'
+    assert deposit2.participant_identifier == '43075534'
+    assert deposit2.amount == Decimal('88.0')
+    assert deposit2.original_ldl_acceptance_control_number == '132'
+    assert deposit2.original_if_request_control_number == '322'
+    assert deposit2.participant_identifier_error_code == 'ELDL0019'
 
 
 def test_ldl0014_roundtrip() -> None:

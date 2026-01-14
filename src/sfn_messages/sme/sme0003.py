@@ -5,14 +5,23 @@ from typing import Annotated, ClassVar, Literal
 from pydantic import Field
 
 from sfn_messages.core.models import BaseMessage, BaseSubMessage, XmlPath
-from sfn_messages.core.types import CreditDebitType, InstitutionControlNumber, Ispb, MessageCode, StrControlNumber
+from sfn_messages.core.types import (
+    CreditDebitType,
+    ErrorCode,
+    InstitutionControlNumber,
+    Ispb,
+    MessageCode,
+    StrControlNumber,
+)
 
 from .types import SmeControlNumber
 
 PATH = 'DOC/SISMSG/SME0003'
 PATH_R1 = 'DOC/SISMSG/SME0003R1'
 PATH_R1_GROUP = 'Grupo_SME0003R1_Lanc'
+PATH_E = 'DOC/SISMSG/SME0003E'
 XML_NAMESPACE = 'http://www.bcb.gov.br/SME/SME0003.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SME/SME0003E.xsd'
 
 
 class SME0003(BaseMessage):
@@ -50,3 +59,17 @@ class SME0003R1(BaseMessage):
     final_amount: Annotated[Decimal, XmlPath(f'{PATH_R1}/SldFinl/text()')]
     vendor_timestamp: Annotated[datetime, XmlPath(f'{PATH_R1}/DtHrBC/text()')]
     settlement_date: Annotated[date, XmlPath(f'{PATH_R1}/DtMovto/text()')]
+
+
+class SME0003E(BaseMessage):
+    XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
+
+    message_code: Annotated[Literal['SME0003'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'SME0003'
+    ieme_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIEME/text()')]
+    ieme_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIEME/text()')]
+    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+
+    general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
+    ieme_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIEME/@CodErro')] = None
+    ieme_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBIEME/@CodErro')] = None
+    settlement_date_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/DtMovto/@CodErro')] = None
