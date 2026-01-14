@@ -7,6 +7,7 @@ from sfn_messages.core.types import (
     AccountNumber,
     Branch,
     Cnpj,
+    ErrorCode,
     InstitutionControlNumber,
     Ispb,
     StrControlNumber,
@@ -17,7 +18,9 @@ PATH = 'DOC/SISMSG/SME0002'
 PATH_GROUP = 'Grupo_SME0002_CtCredtd'
 PATH_R1 = 'DOC/SISMSG/SME0002R1'
 PATH_R2 = 'DOC/SISMSG/SME0002R2'
+PATH_E = 'DOC/SISMSG/SME0002E'
 XML_NAMESPACE = 'http://www.bcb.gov.br/SME/SME0002.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SME/SME0002E.xsd'
 
 
 class CreditorGroup(BaseSubMessage):
@@ -61,3 +64,30 @@ class SME0002R2(BaseMessage):
     creditor_account_number: Annotated[AccountNumber, XmlPath(f'{PATH_R2}/CtCredtd/text()')]
     creditor_cnpj: Annotated[Cnpj, XmlPath(f'{PATH_R2}/CNPJCliCredtd/text()')]
     settlement_date: Annotated[date, XmlPath(f'{PATH_R2}/DtMovto/text()')]
+
+
+class CreditorGroupError(BaseSubMessage):
+    institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_GROUP}/ISPBIFCredtd/text()')]
+    branch: Annotated[Branch, XmlPath(f'{PATH_GROUP}/AgCredtd/text()')]
+    account_number: Annotated[AccountNumber, XmlPath(f'{PATH_GROUP}/CtCredtd/text()')]
+    cnpj: Annotated[Cnpj, XmlPath(f'{PATH_GROUP}/CNPJCliCredtd/text()')]
+
+    institution_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_GROUP}/ISPBIFCredtd/@CodErro')] = None
+    branch_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_GROUP}/AgCredtd/@CodErro')] = None
+    account_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_GROUP}/CtCredtd/@CodErro')] = None
+    cnpj_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_GROUP}/CNPJCliCredtd/@CodErro')] = None
+
+
+class SME0002E(BaseMessage):
+    XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
+
+    message_code: Annotated[Literal['SME0002'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'SME0002'
+    ieme_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIEME/text()')]
+    creditor_account_group: Annotated[CreditorGroupError | None, XmlPath(f'{PATH_E}')] = None
+    amount: Annotated[Decimal, XmlPath(f'{PATH_E}/VlrLanc/text()')]
+    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+
+    general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
+    ieme_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBIEME/@CodErro')] = None
+    amount_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/VlrLanc/@CodErro')] = None
+    settlement_date_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/DtMovto/@CodErro')] = None

@@ -6,7 +6,7 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.core.types import CreditDebitType
-from sfn_messages.sme.sme0003 import SME0003, SME0003R1, LaunchGroup
+from sfn_messages.sme.sme0003 import SME0003, SME0003E, SME0003R1, LaunchGroup
 from tests.conftest import extract_missing_fields, normalize_xml
 
 LAUNCH_GROUP_SIZE = 2
@@ -61,6 +61,26 @@ def make_valid_sme0003r1_params() -> dict[str, Any]:
         'vendor_timestamp': '2025-12-03T12:22:00+00:00',
         'settlement_date': '2025-12-03',
     }
+
+
+def make_valid_sme0003e_params(*, general_error: bool = False) -> dict[str, Any]:
+    sme0003e = {
+        'from_ispb': '31680151',
+        'to_ispb': '00038166',
+        'system_domain': 'SPB01',
+        'operation_number': '316801512509080000001',
+        'message_code': 'SME0003',
+        'ieme_control_number': '123',
+        'ieme_ispb': '31680153',
+        'settlement_date': '2025-12-03',
+    }
+
+    if general_error:
+        sme0003e['general_error_code'] = 'EGEN0050'
+    else:
+        sme0003e['ieme_ispb_error_code'] = 'EGEN0051'
+
+    return sme0003e
 
 
 def test_sme0003_valid_model() -> None:
@@ -118,6 +138,38 @@ def test_sme0003r1_valid_model() -> None:
     assert launch2.settlement_timestamp == datetime(2025, 12, 3, 12, 20, tzinfo=UTC)
     assert launch2.credit_debit_type == CreditDebitType.CREDIT
     assert launch2.amount == Decimal('62.73')
+
+
+def test_sme0003e_general_error_valid_model() -> None:
+    params = make_valid_sme0003e_params(general_error=True)
+    sme0003e = SME0003E.model_validate(params)
+
+    assert isinstance(sme0003e, SME0003E)
+    assert sme0003e.from_ispb == '31680151'
+    assert sme0003e.to_ispb == '00038166'
+    assert sme0003e.system_domain == 'SPB01'
+    assert sme0003e.operation_number == '316801512509080000001'
+    assert sme0003e.message_code == 'SME0003'
+    assert sme0003e.ieme_control_number == '123'
+    assert sme0003e.ieme_ispb == '31680153'
+    assert sme0003e.settlement_date == date(2025, 12, 3)
+    assert sme0003e.general_error_code == 'EGEN0050'
+
+
+def test_sme0003e_tag_error_valid_model() -> None:
+    params = make_valid_sme0003e_params()
+    sme0003e = SME0003E.model_validate(params)
+
+    assert isinstance(sme0003e, SME0003E)
+    assert sme0003e.from_ispb == '31680151'
+    assert sme0003e.to_ispb == '00038166'
+    assert sme0003e.system_domain == 'SPB01'
+    assert sme0003e.operation_number == '316801512509080000001'
+    assert sme0003e.message_code == 'SME0003'
+    assert sme0003e.ieme_control_number == '123'
+    assert sme0003e.ieme_ispb == '31680153'
+    assert sme0003e.settlement_date == date(2025, 12, 3)
+    assert sme0003e.ieme_ispb_error_code == 'EGEN0051'
 
 
 def test_sme0003_missing_required_fields() -> None:
@@ -226,6 +278,60 @@ def test_sme0003r1_to_xml() -> None:
                 <DtHrBC>2025-12-03 12:22:00+00:00</DtHrBC>
                 <DtMovto>2025-12-03</DtMovto>
             </SME0003R1>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_sme0003e_general_error_to_xml() -> None:
+    params = make_valid_sme0003e_params(general_error=True)
+    sme0003e = SME0003E.model_validate(params)
+
+    xml = sme0003e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SME/SME0003E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <SME0003E CodErro="EGEN0050">
+                <CodMsg>SME0003</CodMsg>
+                <NumCtrlIEME>123</NumCtrlIEME>
+                <ISPBIEME>31680153</ISPBIEME>
+                <DtMovto>2025-12-03</DtMovto>
+            </SME0003E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_sme0003e_tag_error_to_xml() -> None:
+    params = make_valid_sme0003e_params()
+    sme0003e = SME0003E.model_validate(params)
+
+    xml = sme0003e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SME/SME0003E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <SME0003E>
+                <CodMsg>SME0003</CodMsg>
+                <NumCtrlIEME>123</NumCtrlIEME>
+                <ISPBIEME CodErro="EGEN0051">31680153</ISPBIEME>
+                <DtMovto>2025-12-03</DtMovto>
+            </SME0003E>
         </SISMSG>
     </DOC>
     """
@@ -346,6 +452,74 @@ def test_sme0003r1_from_xml() -> None:
     assert launch2.settlement_timestamp == datetime(2025, 12, 3, 12, 20, tzinfo=UTC)
     assert launch2.credit_debit_type == CreditDebitType.CREDIT
     assert launch2.amount == Decimal('62.73')
+
+
+def test_sme0003e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SME/SME0003E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <SME0003E CodErro="EGEN0050">
+                <CodMsg>SME0003</CodMsg>
+                <NumCtrlIEME>123</NumCtrlIEME>
+                <ISPBIEME>31680153</ISPBIEME>
+                <DtMovto>2025-12-03</DtMovto>
+            </SME0003E>
+        </SISMSG>
+    </DOC>
+    """
+
+    sme0003e = SME0003E.from_xml(xml)
+
+    assert isinstance(sme0003e, SME0003E)
+    assert sme0003e.from_ispb == '31680151'
+    assert sme0003e.to_ispb == '00038166'
+    assert sme0003e.system_domain == 'SPB01'
+    assert sme0003e.operation_number == '316801512509080000001'
+    assert sme0003e.message_code == 'SME0003'
+    assert sme0003e.ieme_control_number == '123'
+    assert sme0003e.ieme_ispb == '31680153'
+    assert sme0003e.settlement_date == date(2025, 12, 3)
+    assert sme0003e.general_error_code == 'EGEN0050'
+
+
+def test_sme0003e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SME/SME0003E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <SME0003E>
+                <CodMsg>SME0003</CodMsg>
+                <NumCtrlIEME>123</NumCtrlIEME>
+                <ISPBIEME CodErro="EGEN0051">31680153</ISPBIEME>
+                <DtMovto>2025-12-03</DtMovto>
+            </SME0003E>
+        </SISMSG>
+    </DOC>
+    """
+
+    sme0003e = SME0003E.from_xml(xml)
+
+    assert isinstance(sme0003e, SME0003E)
+    assert sme0003e.from_ispb == '31680151'
+    assert sme0003e.to_ispb == '00038166'
+    assert sme0003e.system_domain == 'SPB01'
+    assert sme0003e.operation_number == '316801512509080000001'
+    assert sme0003e.message_code == 'SME0003'
+    assert sme0003e.ieme_control_number == '123'
+    assert sme0003e.ieme_ispb == '31680153'
+    assert sme0003e.settlement_date == date(2025, 12, 3)
+    assert sme0003e.ieme_ispb_error_code == 'EGEN0051'
 
 
 def test_sme0003_roundtrip() -> None:
