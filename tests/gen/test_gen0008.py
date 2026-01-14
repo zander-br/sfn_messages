@@ -4,7 +4,7 @@ from typing import Any
 import pytest
 from pydantic import ValidationError
 
-from sfn_messages.gen.gen0008 import GEN0008, GEN0008R1
+from sfn_messages.gen.gen0008 import GEN0008, GEN0008E, GEN0008R1
 from tests.conftest import extract_missing_fields, normalize_xml
 
 
@@ -37,6 +37,27 @@ def make_valid_gen0008r1_params() -> dict[str, Any]:
     }
 
 
+def make_valid_gen0008e_params(*, general_error: bool = False) -> dict[str, Any]:
+    gen0008e = {
+        'from_ispb': '31680151',
+        'to_ispb': '00038166',
+        'system_domain': 'SPB01',
+        'operation_number': '316801512509080000001',
+        'message_code': 'GEN0008',
+        'institution_control_number': '123',
+        'institution_ispb': '31680151',
+        'instituition_certificate': '31680151',
+        'settlement_date': '2025-11-26',
+    }
+
+    if general_error:
+        gen0008e['general_error_code'] = 'EGEN0050'
+    else:
+        gen0008e['institution_ispb_error_code'] = 'EGEN0051'
+
+    return gen0008e
+
+
 def test_gen0008_valid_model() -> None:
     params = make_valid_gen0008_params()
     gen0008 = GEN0008.model_validate(params)
@@ -60,6 +81,32 @@ def test_gen0008r1_valid_model() -> None:
     assert gen0008r1.instituition_certificate == '31680151'
     assert gen0008r1.settlement_date == date(2025, 11, 26)
     assert gen0008r1.vendor_timestamp == datetime(2025, 11, 26, 14, 2, tzinfo=UTC)
+
+
+def test_gen0008e_general_error_valid_model() -> None:
+    params = make_valid_gen0008e_params(general_error=True)
+    gen0008e = GEN0008E.model_validate(params)
+
+    assert isinstance(gen0008e, GEN0008E)
+    assert gen0008e.from_ispb == '31680151'
+    assert gen0008e.to_ispb == '00038166'
+    assert gen0008e.message_code == 'GEN0008'
+    assert gen0008e.instituition_certificate == '31680151'
+    assert gen0008e.settlement_date == date(2025, 11, 26)
+    assert gen0008e.general_error_code == 'EGEN0050'
+
+
+def test_gen0008e_tag_error_valid_model() -> None:
+    params = make_valid_gen0008e_params()
+    gen0008e = GEN0008E.model_validate(params)
+
+    assert isinstance(gen0008e, GEN0008E)
+    assert gen0008e.from_ispb == '31680151'
+    assert gen0008e.to_ispb == '00038166'
+    assert gen0008e.message_code == 'GEN0008'
+    assert gen0008e.instituition_certificate == '31680151'
+    assert gen0008e.settlement_date == date(2025, 11, 26)
+    assert gen0008e.institution_ispb_error_code == 'EGEN0051'
 
 
 def test_gen0008_missing_required_fields() -> None:
@@ -153,6 +200,62 @@ def test_gen0008r1_to_xml() -> None:
     assert normalize_xml(expected_xml) == normalize_xml(xml)
 
 
+def test_gen0008e_general_error_to_xml() -> None:
+    params = make_valid_gen0008e_params(general_error=True)
+    gen0008e = GEN0008E.model_validate(params)
+
+    xml = gen0008e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0008E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <GEN0008E CodErro="EGEN0050">
+                <CodMsg>GEN0008</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <ISPBIFCertif>31680151</ISPBIFCertif>
+                <DtMovto>2025-11-26</DtMovto>
+            </GEN0008E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_gen0008e_tag_error_to_xml() -> None:
+    params = make_valid_gen0008e_params()
+    gen0008e = GEN0008E.model_validate(params)
+
+    xml = gen0008e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0008E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <GEN0008E>
+                <CodMsg>GEN0008</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF CodErro="EGEN0051">31680151</ISPBIF>
+                <ISPBIFCertif>31680151</ISPBIFCertif>
+                <DtMovto>2025-11-26</DtMovto>
+            </GEN0008E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
 def test_gen0008_from_xml() -> None:
     xml = """<?xml version="1.0"?>
     <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0008.xsd">
@@ -215,6 +318,70 @@ def test_gen0008r1_from_xml() -> None:
     assert gen0008r1.instituition_certificate == '31680151'
     assert gen0008r1.settlement_date == date(2025, 11, 26)
     assert gen0008r1.vendor_timestamp == datetime(2025, 11, 26, 14, 2, tzinfo=UTC)
+
+
+def test_gen0008e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0008E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <GEN0008E CodErro="EGEN0050">
+                <CodMsg>GEN0008</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <ISPBIFCertif>31680151</ISPBIFCertif>
+                <DtMovto>2025-11-26</DtMovto>
+            </GEN0008E>
+        </SISMSG>
+    </DOC>
+    """
+
+    gen0008e = GEN0008E.from_xml(xml)
+
+    assert isinstance(gen0008e, GEN0008E)
+    assert gen0008e.from_ispb == '31680151'
+    assert gen0008e.to_ispb == '00038166'
+    assert gen0008e.message_code == 'GEN0008'
+    assert gen0008e.instituition_certificate == '31680151'
+    assert gen0008e.settlement_date == date(2025, 11, 26)
+    assert gen0008e.general_error_code == 'EGEN0050'
+
+
+def test_gen0008e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0008E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <GEN0008E>
+                <CodMsg>GEN0008</CodMsg>
+                <NumCtrlIF>123</NumCtrlIF>
+                <ISPBIF CodErro="EGEN0051">31680151</ISPBIF>
+                <ISPBIFCertif>31680151</ISPBIFCertif>
+                <DtMovto>2025-11-26</DtMovto>
+            </GEN0008E>
+        </SISMSG>
+    </DOC>
+    """
+
+    gen0008e = GEN0008E.from_xml(xml)
+
+    assert isinstance(gen0008e, GEN0008E)
+    assert gen0008e.from_ispb == '31680151'
+    assert gen0008e.to_ispb == '00038166'
+    assert gen0008e.message_code == 'GEN0008'
+    assert gen0008e.instituition_certificate == '31680151'
+    assert gen0008e.settlement_date == date(2025, 11, 26)
+    assert gen0008e.institution_ispb_error_code == 'EGEN0051'
 
 
 def test_gen0008_roundtrip() -> None:

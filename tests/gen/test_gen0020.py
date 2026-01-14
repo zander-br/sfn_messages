@@ -4,7 +4,7 @@ from typing import Any
 import pytest
 from pydantic import ValidationError
 
-from sfn_messages.gen.gen0020 import GEN0020, GEN0020R1, Responsible
+from sfn_messages.gen.gen0020 import GEN0020, GEN0020E, GEN0020R1, Responsible
 from tests.conftest import extract_missing_fields, normalize_xml
 
 RESPONSIBLE_SIZE = 2
@@ -61,6 +61,27 @@ def make_valid_gen0020r1_params() -> dict[str, Any]:
     }
 
 
+def make_valid_gen0020e_params(*, general_error: bool = False) -> dict[str, Any]:
+    gen0020e = {
+        'from_ispb': '31680151',
+        'to_ispb': '00038166',
+        'system_domain': 'SPB01',
+        'operation_number': '316801512509080000001',
+        'message_code': 'GEN0020',
+        'participant_institution_control_number': '123',
+        'participant_ispb': '31680151',
+        'parcitipant_consulted_ispb': '00038166',
+        'settlement_date': '2025-11-27',
+    }
+
+    if general_error:
+        gen0020e['general_error_code'] = 'EGEN0050'
+    else:
+        gen0020e['participant_ispb_error_code'] = 'EGEN0051'
+
+    return gen0020e
+
+
 def test_gen0020_valid_model() -> None:
     params = make_valid_gen0020_params()
     gen0020 = GEN0020.model_validate(params)
@@ -104,6 +125,40 @@ def test_gen0020r1_valid_model() -> None:
     assert isinstance(resp2, Responsible)
     assert resp2.cpf == '30288815009'
     assert resp2.telephone_1 == '63987350515'
+
+
+def test_gen0020e_general_error_valid_model() -> None:
+    params = make_valid_gen0020e_params(general_error=True)
+    gen0020e = GEN0020E.model_validate(params)
+
+    assert isinstance(gen0020e, GEN0020E)
+    assert gen0020e.from_ispb == '31680151'
+    assert gen0020e.to_ispb == '00038166'
+    assert gen0020e.system_domain == 'SPB01'
+    assert gen0020e.operation_number == '316801512509080000001'
+    assert gen0020e.message_code == 'GEN0020'
+    assert gen0020e.participant_institution_control_number == '123'
+    assert gen0020e.participant_ispb == '31680151'
+    assert gen0020e.parcitipant_consulted_ispb == '00038166'
+    assert gen0020e.settlement_date == date(2025, 11, 27)
+    assert gen0020e.general_error_code == 'EGEN0050'
+
+
+def test_gen0020e_tag_error_valid_model() -> None:
+    params = make_valid_gen0020e_params()
+    gen0020e = GEN0020E.model_validate(params)
+
+    assert isinstance(gen0020e, GEN0020E)
+    assert gen0020e.from_ispb == '31680151'
+    assert gen0020e.to_ispb == '00038166'
+    assert gen0020e.system_domain == 'SPB01'
+    assert gen0020e.operation_number == '316801512509080000001'
+    assert gen0020e.message_code == 'GEN0020'
+    assert gen0020e.participant_institution_control_number == '123'
+    assert gen0020e.participant_ispb == '31680151'
+    assert gen0020e.parcitipant_consulted_ispb == '00038166'
+    assert gen0020e.settlement_date == date(2025, 11, 27)
+    assert gen0020e.participant_ispb_error_code == 'EGEN0051'
 
 
 def test_gen0020_missing_required_fields() -> None:
@@ -216,6 +271,62 @@ def test_gen0020r1_to_xml() -> None:
     assert normalize_xml(expected_xml) == normalize_xml(xml)
 
 
+def test_gen0020e_general_error_to_xml() -> None:
+    params = make_valid_gen0020e_params(general_error=True)
+    gen0020e = GEN0020E.model_validate(params)
+
+    xml = gen0020e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0020E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <GEN0020E CodErro="EGEN0050">
+                <CodMsg>GEN0020</CodMsg>
+                <NumCtrlPart>123</NumCtrlPart>
+                <ISPBPart>31680151</ISPBPart>
+                <ISPBPartConsd>00038166</ISPBPartConsd>
+                <DtMovto>2025-11-27</DtMovto>
+            </GEN0020E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_gen0020e_tag_error_to_xml() -> None:
+    params = make_valid_gen0020e_params()
+    gen0020e = GEN0020E.model_validate(params)
+
+    xml = gen0020e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0020E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <GEN0020E>
+                <CodMsg>GEN0020</CodMsg>
+                <NumCtrlPart>123</NumCtrlPart>
+                <ISPBPart CodErro="EGEN0051">31680151</ISPBPart>
+                <ISPBPartConsd>00038166</ISPBPartConsd>
+                <DtMovto>2025-11-27</DtMovto>
+            </GEN0020E>
+        </SISMSG>
+    </DOC>
+    """
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
 def test_gen0020_from_xml() -> None:
     xml = """<?xml version="1.0"?>
     <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0020.xsd">
@@ -318,6 +429,78 @@ def test_gen0020r1_from_xml() -> None:
     assert isinstance(resp2, Responsible)
     assert resp2.cpf == '30288815009'
     assert resp2.telephone_1 == '63987350515'
+
+
+def test_gen0020e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0020E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <GEN0020E CodErro="EGEN0050">
+                <CodMsg>GEN0020</CodMsg>
+                <NumCtrlPart>123</NumCtrlPart>
+                <ISPBPart>31680151</ISPBPart>
+                <ISPBPartConsd>00038166</ISPBPartConsd>
+                <DtMovto>2025-11-27</DtMovto>
+            </GEN0020E>
+        </SISMSG>
+    </DOC>
+    """
+
+    gen0020e = GEN0020E.from_xml(xml)
+
+    assert isinstance(gen0020e, GEN0020E)
+    assert gen0020e.from_ispb == '31680151'
+    assert gen0020e.to_ispb == '00038166'
+    assert gen0020e.system_domain == 'SPB01'
+    assert gen0020e.operation_number == '316801512509080000001'
+    assert gen0020e.message_code == 'GEN0020'
+    assert gen0020e.participant_institution_control_number == '123'
+    assert gen0020e.participant_ispb == '31680151'
+    assert gen0020e.parcitipant_consulted_ispb == '00038166'
+    assert gen0020e.settlement_date == date(2025, 11, 27)
+    assert gen0020e.general_error_code == 'EGEN0050'
+
+
+def test_gen0020e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/GEN/GEN0020E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <GEN0020E>
+                <CodMsg>GEN0020</CodMsg>
+                <NumCtrlPart>123</NumCtrlPart>
+                <ISPBPart CodErro="EGEN0051">31680151</ISPBPart>
+                <ISPBPartConsd>00038166</ISPBPartConsd>
+                <DtMovto>2025-11-27</DtMovto>
+            </GEN0020E>
+        </SISMSG>
+    </DOC>
+    """
+
+    gen0020e = GEN0020E.from_xml(xml)
+
+    assert isinstance(gen0020e, GEN0020E)
+    assert gen0020e.from_ispb == '31680151'
+    assert gen0020e.to_ispb == '00038166'
+    assert gen0020e.system_domain == 'SPB01'
+    assert gen0020e.operation_number == '316801512509080000001'
+    assert gen0020e.message_code == 'GEN0020'
+    assert gen0020e.participant_institution_control_number == '123'
+    assert gen0020e.participant_ispb == '31680151'
+    assert gen0020e.parcitipant_consulted_ispb == '00038166'
+    assert gen0020e.settlement_date == date(2025, 11, 27)
+    assert gen0020e.participant_ispb_error_code == 'EGEN0051'
 
 
 def test_gen0020_roundtrip() -> None:
