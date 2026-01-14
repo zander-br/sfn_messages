@@ -6,7 +6,7 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.core.types import AccountType, PersonType, Priority, StrSettlementStatus
-from sfn_messages.str.str0025 import STR0025, STR0025R1, STR0025R2
+from sfn_messages.str.str0025 import STR0025, STR0025E, STR0025R1, STR0025R2
 from tests.conftest import extract_missing_fields, normalize_xml
 
 
@@ -71,6 +71,37 @@ def make_valid_str0025r2_params() -> dict[str, Any]:
     }
 
 
+def make_valid_str0025e_params(*, general_error: bool = False) -> dict[str, Any]:
+    str0025e = {
+        'from_ispb': '31680151',
+        'operation_number': '316801512509080000001',
+        'system_domain': 'SPB01',
+        'to_ispb': '00038166',
+        'institution_control_number': '31680151202509090425',
+        'debtor_institution_ispb': '31680151',
+        'debtor_branch': '0001',
+        'debtor_account_type': 'CURRENT',
+        'debtor_account_number': '12345678',
+        'creditor_name': 'John Doe',
+        'creditor_type': 'INDIVIDUAL',
+        'creditor_document': '69327934075',
+        'creditor_institution_ispb': '00038166',
+        'amount': 100.00,
+        'priority': 'MEDIUM',
+        'deposit_identifier': '012345678901234567',
+        'scheduled_date': '2025-09-09',
+        'scheduled_time': '15:30:00',
+        'settlement_date': '2025-09-08',
+    }
+
+    if general_error:
+        str0025e['general_error_code'] = 'EGEN0050'
+    else:
+        str0025e['debtor_institution_ispb_error_code'] = 'EGEN0051'
+
+    return str0025e
+
+
 def test_str0025_valid_model() -> None:
     params = make_valid_str0025_params()
     str0025 = STR0025.model_validate(params)
@@ -91,6 +122,52 @@ def test_str0025_valid_model() -> None:
     assert str0025.scheduled_time == time(15, 30)
     assert str0025.settlement_date == date(2025, 9, 8)
     assert str0025.message_code == 'STR0025'
+
+
+def test_str0025e_general_error_valid_model() -> None:
+    params = make_valid_str0025e_params(general_error=True)
+    str0025e = STR0025E.model_validate(params)
+    assert isinstance(str0025e, STR0025E)
+    assert str0025e.institution_control_number == '31680151202509090425'
+    assert str0025e.debtor_institution_ispb == '31680151'
+    assert str0025e.debtor_branch == '0001'
+    assert str0025e.debtor_account_type == AccountType.CURRENT
+    assert str0025e.debtor_account_number == '12345678'
+    assert str0025e.creditor_name == 'John Doe'
+    assert str0025e.creditor_type == PersonType.INDIVIDUAL
+    assert str0025e.creditor_document == '69327934075'
+    assert str0025e.creditor_institution_ispb == '00038166'
+    assert str0025e.amount == Decimal('100.00')
+    assert str0025e.priority == Priority.MEDIUM
+    assert str0025e.deposit_identifier == '012345678901234567'
+    assert str0025e.scheduled_date == date(2025, 9, 9)
+    assert str0025e.scheduled_time == time(15, 30)
+    assert str0025e.settlement_date == date(2025, 9, 8)
+    assert str0025e.message_code == 'STR0025'
+    assert str0025e.general_error_code == 'EGEN0050'
+
+
+def test_str0025e_tag_error_valid_model() -> None:
+    params = make_valid_str0025e_params()
+    str0025e = STR0025E.model_validate(params)
+    assert isinstance(str0025e, STR0025E)
+    assert str0025e.institution_control_number == '31680151202509090425'
+    assert str0025e.debtor_institution_ispb == '31680151'
+    assert str0025e.debtor_branch == '0001'
+    assert str0025e.debtor_account_type == AccountType.CURRENT
+    assert str0025e.debtor_account_number == '12345678'
+    assert str0025e.creditor_name == 'John Doe'
+    assert str0025e.creditor_type == PersonType.INDIVIDUAL
+    assert str0025e.creditor_document == '69327934075'
+    assert str0025e.creditor_institution_ispb == '00038166'
+    assert str0025e.amount == Decimal('100.00')
+    assert str0025e.priority == Priority.MEDIUM
+    assert str0025e.deposit_identifier == '012345678901234567'
+    assert str0025e.scheduled_date == date(2025, 9, 9)
+    assert str0025e.scheduled_time == time(15, 30)
+    assert str0025e.settlement_date == date(2025, 9, 8)
+    assert str0025e.message_code == 'STR0025'
+    assert str0025e.debtor_institution_ispb_error_code == 'EGEN0051'
 
 
 def test_str0025_missing_required_fields() -> None:
@@ -196,6 +273,84 @@ def test_str0025_to_xml() -> None:
     assert normalize_xml(expected_xml) == normalize_xml(xml)
 
 
+def test_str0025e_general_error_to_xml() -> None:
+    params = make_valid_str0025e_params(general_error=True)
+    str0025e = STR0025E.model_validate(params)
+    xml = str0025e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0025E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0025E CodErro="EGEN0050">
+                <CodMsg>STR0025</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <AgDebtd>0001</AgDebtd>
+                <TpCtDebtd>CC</TpCtDebtd>
+                <CtDebtd>12345678</CtDebtd>
+                <NomCliCredtd>John Doe</NomCliCredtd>
+                <TpPessoaCredtd>F</TpPessoaCredtd>
+                <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
+                <ISPBIFCredtd>00038166</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <NivelPref>C</NivelPref>
+                <IdentcDep>012345678901234567</IdentcDep>
+                <DtAgendt>2025-09-09</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0025E>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_str0025e_tag_error_to_xml() -> None:
+    params = make_valid_str0025e_params()
+    str0025e = STR0025E.model_validate(params)
+    xml = str0025e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0025E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0025E>
+                <CodMsg>STR0025</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd CodErro="EGEN0051">31680151</ISPBIFDebtd>
+                <AgDebtd>0001</AgDebtd>
+                <TpCtDebtd>CC</TpCtDebtd>
+                <CtDebtd>12345678</CtDebtd>
+                <NomCliCredtd>John Doe</NomCliCredtd>
+                <TpPessoaCredtd>F</TpPessoaCredtd>
+                <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
+                <ISPBIFCredtd>00038166</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <NivelPref>C</NivelPref>
+                <IdentcDep>012345678901234567</IdentcDep>
+                <DtAgendt>2025-09-09</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0025E>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
 def test_str0025_to_xml_omit_optional_fields() -> None:
     params = make_valid_str0025_params()
     del params['priority']
@@ -286,6 +441,112 @@ def test_str0025_from_xml() -> None:
     assert str0025.scheduled_time == time(15, 30)
     assert str0025.settlement_date == date(2025, 9, 8)
     assert str0025.message_code == 'STR0025'
+
+
+def test_str0025e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0025E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0025E CodErro="EGEN0050">
+                <CodMsg>STR0025</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <AgDebtd>0001</AgDebtd>
+                <TpCtDebtd>CC</TpCtDebtd>
+                <CtDebtd>12345678</CtDebtd>
+                <NomCliCredtd>John Doe</NomCliCredtd>
+                <TpPessoaCredtd>F</TpPessoaCredtd>
+                <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
+                <ISPBIFCredtd>00038166</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <NivelPref>C</NivelPref>
+                <IdentcDep>012345678901234567</IdentcDep>
+                <DtAgendt>2025-09-09</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0025E>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0025e = STR0025E.from_xml(xml)
+    assert isinstance(str0025e, STR0025E)
+    assert str0025e.institution_control_number == '31680151202509090425'
+    assert str0025e.debtor_institution_ispb == '31680151'
+    assert str0025e.debtor_branch == '0001'
+    assert str0025e.debtor_account_type == AccountType.CURRENT
+    assert str0025e.debtor_account_number == '12345678'
+    assert str0025e.creditor_name == 'John Doe'
+    assert str0025e.creditor_type == PersonType.INDIVIDUAL
+    assert str0025e.creditor_document == '69327934075'
+    assert str0025e.creditor_institution_ispb == '00038166'
+    assert str0025e.amount == Decimal('100.0')
+    assert str0025e.priority == Priority.MEDIUM
+    assert str0025e.deposit_identifier == '012345678901234567'
+    assert str0025e.scheduled_date == date(2025, 9, 9)
+    assert str0025e.scheduled_time == time(15, 30)
+    assert str0025e.settlement_date == date(2025, 9, 8)
+    assert str0025e.message_code == 'STR0025'
+    assert str0025e.general_error_code == 'EGEN0050'
+
+
+def test_str0025e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0025E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>316801512509080000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0025E>
+                <CodMsg>STR0025</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd CodErro="EGEN0051">31680151</ISPBIFDebtd>
+                <AgDebtd>0001</AgDebtd>
+                <TpCtDebtd>CC</TpCtDebtd>
+                <CtDebtd>12345678</CtDebtd>
+                <NomCliCredtd>John Doe</NomCliCredtd>
+                <TpPessoaCredtd>F</TpPessoaCredtd>
+                <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
+                <ISPBIFCredtd>00038166</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <NivelPref>C</NivelPref>
+                <IdentcDep>012345678901234567</IdentcDep>
+                <DtAgendt>2025-09-09</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0025E>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0025e = STR0025E.from_xml(xml)
+    assert isinstance(str0025e, STR0025E)
+    assert str0025e.institution_control_number == '31680151202509090425'
+    assert str0025e.debtor_institution_ispb == '31680151'
+    assert str0025e.debtor_branch == '0001'
+    assert str0025e.debtor_account_type == AccountType.CURRENT
+    assert str0025e.debtor_account_number == '12345678'
+    assert str0025e.creditor_name == 'John Doe'
+    assert str0025e.creditor_type == PersonType.INDIVIDUAL
+    assert str0025e.creditor_document == '69327934075'
+    assert str0025e.creditor_institution_ispb == '00038166'
+    assert str0025e.amount == Decimal('100.0')
+    assert str0025e.priority == Priority.MEDIUM
+    assert str0025e.deposit_identifier == '012345678901234567'
+    assert str0025e.scheduled_date == date(2025, 9, 9)
+    assert str0025e.scheduled_time == time(15, 30)
+    assert str0025e.settlement_date == date(2025, 9, 8)
+    assert str0025e.message_code == 'STR0025'
+    assert str0025e.debtor_institution_ispb_error_code == 'EGEN0051'
 
 
 def test_str0025_from_xml_omit_optional_fields() -> None:
