@@ -18,7 +18,7 @@ jobs:
         python-version: ["3.14"]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Generate cachetag
         run: echo "lint-$(date +%U)" > cachetag
@@ -47,7 +47,7 @@ jobs:
         python-version: ["3.14"]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Generate cachetag
         run: echo "test-$(date +%U)" > cachetag
