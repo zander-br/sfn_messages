@@ -4,7 +4,7 @@ set -xe
 
 # Config uv
 pipx install uv==0.9.10
-[ -e .venv ] || (uv venv --python /usr/local/bin/python .venv && uv sync --locked)
+[ -e .venv ] || (uv venv --python /usr/local/bin/python .venv && uv sync)
 
 # Completion
 pipx install argcomplete
