@@ -14,14 +14,14 @@ def make_valid_gen0012_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'GEN0012',
         'institution_control_number': '123',
         'institution_ispb': '31680151',
         'recipient_ispb': '31680151',
         'transmission_type': 'EXTERNAL',
         'institution_origin_control_number': '123',
-        'original_operation_number': '316801512509080000001',
+        'original_operation_number': '31680151250908000000001',
         'settlement_date': '2025-11-26',
     }
 
@@ -31,7 +31,7 @@ def make_valid_gen0012r1_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'GEN0012R1',
         'institution_control_number': '123',
         'institution_ispb': '31680151',
@@ -46,14 +46,14 @@ def make_valid_gen0012e_params(*, general_error: bool = False) -> dict[str, Any]
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'GEN0012',
         'institution_control_number': '123',
         'institution_ispb': '31680151',
         'recipient_ispb': '31680151',
         'transmission_type': 'EXTERNAL',
         'institution_origin_control_number': '123',
-        'original_operation_number': '316801512509080000001',
+        'original_operation_number': '31680151250908000000001',
         'settlement_date': '2025-11-26',
     }
 
@@ -78,7 +78,7 @@ def test_gen0012_valid_model() -> None:
     assert gen0012.recipient_ispb == '31680151'
     assert gen0012.transmission_type == TransmissionType.EXTERNAL
     assert gen0012.institution_origin_control_number == '123'
-    assert gen0012.original_operation_number == '316801512509080000001'
+    assert gen0012.original_operation_number == '31680151250908000000001'
     assert gen0012.settlement_date == date(2025, 11, 26)
 
 
@@ -110,7 +110,7 @@ def test_gen0012e_general_error_valid_model() -> None:
     assert gen0012e.recipient_ispb == '31680151'
     assert gen0012e.transmission_type == TransmissionType.EXTERNAL
     assert gen0012e.institution_origin_control_number == '123'
-    assert gen0012e.original_operation_number == '316801512509080000001'
+    assert gen0012e.original_operation_number == '31680151250908000000001'
     assert gen0012e.settlement_date == date(2025, 11, 26)
     assert gen0012e.general_error_code == 'EGEN0050'
 
@@ -128,7 +128,7 @@ def test_gen0012e_tag_error_valid_model() -> None:
     assert gen0012e.recipient_ispb == '31680151'
     assert gen0012e.transmission_type == TransmissionType.EXTERNAL
     assert gen0012e.institution_origin_control_number == '123'
-    assert gen0012e.original_operation_number == '316801512509080000001'
+    assert gen0012e.original_operation_number == '31680151250908000000001'
     assert gen0012e.settlement_date == date(2025, 11, 26)
     assert gen0012e.institution_ispb_error_code == 'EGEN0051'
 
@@ -180,7 +180,7 @@ def test_gen0012_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0012>
@@ -190,7 +190,7 @@ def test_gen0012_to_xml() -> None:
                 <ISPBDestinatario>31680151</ISPBDestinatario>
                 <TpTransm>E</TpTransm>
                 <NumCtrlSistOr>123</NumCtrlSistOr>
-                <NUOpOr>316801512509080000001</NUOpOr>
+                <NUOpOr>31680151250908000000001</NUOpOr>
                 <DtMovto>2025-11-26</DtMovto>
             </GEN0012>
         </SISMSG>
@@ -211,7 +211,7 @@ def test_gen0012r1_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0012R1>
@@ -240,7 +240,7 @@ def test_gen0012e_general_eror_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0012E CodErro="EGEN0050">
@@ -250,7 +250,7 @@ def test_gen0012e_general_eror_to_xml() -> None:
                 <ISPBDestinatario>31680151</ISPBDestinatario>
                 <TpTransm>E</TpTransm>
                 <NumCtrlSistOr>123</NumCtrlSistOr>
-                <NUOpOr>316801512509080000001</NUOpOr>
+                <NUOpOr>31680151250908000000001</NUOpOr>
                 <DtMovto>2025-11-26</DtMovto>
             </GEN0012E>
         </SISMSG>
@@ -271,7 +271,7 @@ def test_gen0012e_tag_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0012E>
@@ -281,7 +281,7 @@ def test_gen0012e_tag_error_to_xml() -> None:
                 <ISPBDestinatario>31680151</ISPBDestinatario>
                 <TpTransm>E</TpTransm>
                 <NumCtrlSistOr>123</NumCtrlSistOr>
-                <NUOpOr>316801512509080000001</NUOpOr>
+                <NUOpOr>31680151250908000000001</NUOpOr>
                 <DtMovto>2025-11-26</DtMovto>
             </GEN0012E>
         </SISMSG>
@@ -297,7 +297,7 @@ def test_gen0012_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0012>
@@ -307,7 +307,7 @@ def test_gen0012_from_xml() -> None:
                 <ISPBDestinatario>31680151</ISPBDestinatario>
                 <TpTransm>E</TpTransm>
                 <NumCtrlSistOr>123</NumCtrlSistOr>
-                <NUOpOr>316801512509080000001</NUOpOr>
+                <NUOpOr>31680151250908000000001</NUOpOr>
                 <DtMovto>2025-11-26</DtMovto>
             </GEN0012>
         </SISMSG>
@@ -325,7 +325,7 @@ def test_gen0012_from_xml() -> None:
     assert gen0012.recipient_ispb == '31680151'
     assert gen0012.transmission_type == TransmissionType.EXTERNAL
     assert gen0012.institution_origin_control_number == '123'
-    assert gen0012.original_operation_number == '316801512509080000001'
+    assert gen0012.original_operation_number == '31680151250908000000001'
     assert gen0012.settlement_date == date(2025, 11, 26)
 
 
@@ -336,7 +336,7 @@ def test_gen0012r1_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0012R1>
@@ -371,7 +371,7 @@ def test_gen0012e_general_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0012E CodErro="EGEN0050">
@@ -381,7 +381,7 @@ def test_gen0012e_general_error_from_xml() -> None:
                 <ISPBDestinatario>31680151</ISPBDestinatario>
                 <TpTransm>E</TpTransm>
                 <NumCtrlSistOr>123</NumCtrlSistOr>
-                <NUOpOr>316801512509080000001</NUOpOr>
+                <NUOpOr>31680151250908000000001</NUOpOr>
                 <DtMovto>2025-11-26</DtMovto>
             </GEN0012E>
         </SISMSG>
@@ -399,7 +399,7 @@ def test_gen0012e_general_error_from_xml() -> None:
     assert gen0012e.recipient_ispb == '31680151'
     assert gen0012e.transmission_type == TransmissionType.EXTERNAL
     assert gen0012e.institution_origin_control_number == '123'
-    assert gen0012e.original_operation_number == '316801512509080000001'
+    assert gen0012e.original_operation_number == '31680151250908000000001'
     assert gen0012e.settlement_date == date(2025, 11, 26)
     assert gen0012e.general_error_code == 'EGEN0050'
 
@@ -411,7 +411,7 @@ def test_gen0012e_tag_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0012E>
@@ -421,7 +421,7 @@ def test_gen0012e_tag_error_from_xml() -> None:
                 <ISPBDestinatario>31680151</ISPBDestinatario>
                 <TpTransm>E</TpTransm>
                 <NumCtrlSistOr>123</NumCtrlSistOr>
-                <NUOpOr>316801512509080000001</NUOpOr>
+                <NUOpOr>31680151250908000000001</NUOpOr>
                 <DtMovto>2025-11-26</DtMovto>
             </GEN0012E>
         </SISMSG>
@@ -439,7 +439,7 @@ def test_gen0012e_tag_error_from_xml() -> None:
     assert gen0012e.recipient_ispb == '31680151'
     assert gen0012e.transmission_type == TransmissionType.EXTERNAL
     assert gen0012e.institution_origin_control_number == '123'
-    assert gen0012e.original_operation_number == '316801512509080000001'
+    assert gen0012e.original_operation_number == '31680151250908000000001'
     assert gen0012e.settlement_date == date(2025, 11, 26)
     assert gen0012e.institution_ispb_error_code == 'EGEN0051'
 
@@ -471,7 +471,7 @@ def test_gen0012_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0012>
@@ -501,7 +501,7 @@ def test_gen0012r1_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0012R1>

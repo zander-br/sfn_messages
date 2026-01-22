@@ -30,7 +30,7 @@ def make_valid_str0008_params() -> dict[str, Any]:
         'description': 'Payment for services',
         'from_ispb': '31680151',
         'institution_control_number': '31680151202509090425',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'priority': 'MEDIUM',
         'purpose': 'CREDIT_IN_ACCOUNT',
         'scheduled_date': '2025-09-09',
@@ -51,7 +51,7 @@ def make_valid_str0008r1_params() -> dict[str, Any]:
         'str_settlement_status': 'EFFECTIVE',
         'settlement_timestamp': '2025-11-20T15:30:00+00:00',
         'settlement_date': '2025-09-08',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
     }
@@ -76,7 +76,7 @@ def make_valid_str0008r2_params() -> dict[str, Any]:
         'debtor_type': 'BUSINESS',
         'description': 'Payment for services',
         'from_ispb': '31680151',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'purpose': 'CREDIT_IN_ACCOUNT',
         'settlement_date': '2025-09-08',
         'system_domain': 'SPB01',
@@ -107,7 +107,7 @@ def make_valid_str0008e_params(*, general_error: bool = False) -> dict[str, Any]
         'description': 'Payment for services',
         'from_ispb': '31680151',
         'institution_control_number': '31680151202509090425',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'priority': 'MEDIUM',
         'purpose': 'CREDIT_IN_ACCOUNT',
         'scheduled_date': '2025-09-09',
@@ -150,7 +150,7 @@ def test_str0008_valid_model() -> None:
     assert str0008.description == 'Payment for services'
     assert str0008.from_ispb == '31680151'
     assert str0008.institution_control_number == '31680151202509090425'
-    assert str0008.operation_number == '316801512509080000001'
+    assert str0008.operation_number == '31680151250908000000001'
     assert str0008.priority == Priority.MEDIUM
     assert str0008.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
     assert str0008.scheduled_date == date(2025, 9, 9)
@@ -185,7 +185,7 @@ def test_str0008e_general_error_valid_model() -> None:
     assert str0008e.description == 'Payment for services'
     assert str0008e.from_ispb == '31680151'
     assert str0008e.institution_control_number == '31680151202509090425'
-    assert str0008e.operation_number == '316801512509080000001'
+    assert str0008e.operation_number == '31680151250908000000001'
     assert str0008e.priority == Priority.MEDIUM
     assert str0008e.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
     assert str0008e.scheduled_date == date(2025, 9, 9)
@@ -221,7 +221,7 @@ def test_str0008e_tag_error_valid_model() -> None:
     assert str0008e.description == 'Payment for services'
     assert str0008e.from_ispb == '31680151'
     assert str0008e.institution_control_number == '31680151202509090425'
-    assert str0008e.operation_number == '316801512509080000001'
+    assert str0008e.operation_number == '31680151250908000000001'
     assert str0008e.priority == Priority.MEDIUM
     assert str0008e.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
     assert str0008e.scheduled_date == date(2025, 9, 9)
@@ -359,7 +359,7 @@ def test_str0008_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008>
@@ -406,7 +406,7 @@ def test_str0008e_general_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008E CodErro="EGEN0050">
@@ -453,7 +453,7 @@ def test_str0008e_tag_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008E>
@@ -506,7 +506,7 @@ def test_str0008_to_xml_omit_optional_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008>
@@ -544,7 +544,7 @@ def test_str0008_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008>
@@ -599,7 +599,7 @@ def test_str0008_from_xml() -> None:
     assert str0008.description == 'Payment for services'
     assert str0008.from_ispb == '31680151'
     assert str0008.institution_control_number == '31680151202509090425'
-    assert str0008.operation_number == '316801512509080000001'
+    assert str0008.operation_number == '31680151250908000000001'
     assert str0008.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
     assert str0008.priority == Priority.MEDIUM
     assert str0008.scheduled_date == date(2025, 9, 9)
@@ -617,7 +617,7 @@ def test_str0008e_general_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008E CodErro="EGEN0050">
@@ -672,7 +672,7 @@ def test_str0008e_general_error_from_xml() -> None:
     assert str0008e.description == 'Payment for services'
     assert str0008e.from_ispb == '31680151'
     assert str0008e.institution_control_number == '31680151202509090425'
-    assert str0008e.operation_number == '316801512509080000001'
+    assert str0008e.operation_number == '31680151250908000000001'
     assert str0008e.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
     assert str0008e.priority == Priority.MEDIUM
     assert str0008e.scheduled_date == date(2025, 9, 9)
@@ -691,7 +691,7 @@ def test_str0008e_tag_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008E>
@@ -746,7 +746,7 @@ def test_str0008e_tag_error_from_xml() -> None:
     assert str0008e.description == 'Payment for services'
     assert str0008e.from_ispb == '31680151'
     assert str0008e.institution_control_number == '31680151202509090425'
-    assert str0008e.operation_number == '316801512509080000001'
+    assert str0008e.operation_number == '31680151250908000000001'
     assert str0008e.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
     assert str0008e.priority == Priority.MEDIUM
     assert str0008e.scheduled_date == date(2025, 9, 9)
@@ -765,7 +765,7 @@ def test_str0008_from_xml_omit_optional_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008>
@@ -815,7 +815,7 @@ def test_str0008_from_xml_omit_optional_fields() -> None:
     assert str0008.description is None
     assert str0008.from_ispb == '31680151'
     assert str0008.institution_control_number == '31680151202509090425'
-    assert str0008.operation_number == '316801512509080000001'
+    assert str0008.operation_number == '31680151250908000000001'
     assert str0008.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
     assert str0008.priority is None
     assert str0008.scheduled_date is None
@@ -842,7 +842,7 @@ def test_str0008_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008>
@@ -881,7 +881,7 @@ def test_str0008r1_valid_model() -> None:
     assert str0008r1.from_ispb == '31680151'
     assert str0008r1.institution_control_number == '31680151202509090425'
     assert str0008r1.message_code == 'STR0008R1'
-    assert str0008r1.operation_number == '316801512509080000001'
+    assert str0008r1.operation_number == '31680151250908000000001'
     assert str0008r1.settlement_date == date(2025, 9, 8)
     assert str0008r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0008r1.str_control_number == 'STR20250101000000001'
@@ -919,7 +919,7 @@ def test_str0008r1_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008R1>
@@ -945,7 +945,7 @@ def test_str0008r1_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008R1>
@@ -966,7 +966,7 @@ def test_str0008r1_from_xml() -> None:
     assert str0008r1.from_ispb == '31680151'
     assert str0008r1.institution_control_number == '31680151202509090425'
     assert str0008r1.message_code == 'STR0008R1'
-    assert str0008r1.operation_number == '316801512509080000001'
+    assert str0008r1.operation_number == '31680151250908000000001'
     assert str0008r1.settlement_date == date(2025, 9, 8)
     assert str0008r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert str0008r1.str_control_number == 'STR20250101000000001'
@@ -990,7 +990,7 @@ def test_str0008r1_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008R1>
@@ -1036,7 +1036,7 @@ def test_str0008r2_valid_model() -> None:
     assert str0008r2.debtor_type == PersonType.BUSINESS
     assert str0008r2.description == 'Payment for services'
     assert str0008r2.from_ispb == '31680151'
-    assert str0008r2.operation_number == '316801512509080000001'
+    assert str0008r2.operation_number == '31680151250908000000001'
     assert str0008r2.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
     assert str0008r2.settlement_date == date(2025, 9, 8)
     assert str0008r2.system_domain == 'SPB01'
@@ -1175,7 +1175,7 @@ def test_str0008r2_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008R2>
@@ -1223,7 +1223,7 @@ def test_str0008r2_to_xml_omit_optional_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008R2>
@@ -1262,7 +1262,7 @@ def test_str0008r2_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008R2>
@@ -1314,7 +1314,7 @@ def test_str0008r2_from_xml() -> None:
     assert str0008r2.debtor_type == PersonType.BUSINESS
     assert str0008r2.description == 'Payment for services'
     assert str0008r2.from_ispb == '31680151'
-    assert str0008r2.operation_number == '316801512509080000001'
+    assert str0008r2.operation_number == '31680151250908000000001'
     assert str0008r2.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
     assert str0008r2.settlement_date == date(2025, 9, 8)
     assert str0008r2.system_domain == 'SPB01'
@@ -1330,7 +1330,7 @@ def test_str0008r2_from_xml_omit_optional_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008R2>
@@ -1380,7 +1380,7 @@ def test_str0008r2_from_xml_omit_optional_fields() -> None:
     assert str0008r2.debtor_type == PersonType.BUSINESS
     assert str0008r2.description is None
     assert str0008r2.from_ispb == '31680151'
-    assert str0008r2.operation_number == '316801512509080000001'
+    assert str0008r2.operation_number == '31680151250908000000001'
     assert str0008r2.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
     assert str0008r2.settlement_date == date(2025, 9, 8)
     assert str0008r2.system_domain == 'SPB01'
@@ -1404,7 +1404,7 @@ def test_str0008r2_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0008R2>

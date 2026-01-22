@@ -17,7 +17,7 @@ def make_valid_sme0003_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'SME0003',
         'ieme_control_number': '123',
         'ieme_ispb': '31680153',
@@ -30,7 +30,7 @@ def make_valid_sme0003r1_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'SME0003R1',
         'ieme_control_number': '123',
         'ieme_ispb': '31680153',
@@ -68,7 +68,7 @@ def make_valid_sme0003e_params(*, general_error: bool = False) -> dict[str, Any]
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'SME0003',
         'ieme_control_number': '123',
         'ieme_ispb': '31680153',
@@ -91,7 +91,7 @@ def test_sme0003_valid_model() -> None:
     assert sme0003.from_ispb == '31680151'
     assert sme0003.to_ispb == '00038166'
     assert sme0003.system_domain == 'SPB01'
-    assert sme0003.operation_number == '316801512509080000001'
+    assert sme0003.operation_number == '31680151250908000000001'
     assert sme0003.message_code == 'SME0003'
     assert sme0003.ieme_control_number == '123'
     assert sme0003.ieme_ispb == '31680153'
@@ -106,7 +106,7 @@ def test_sme0003r1_valid_model() -> None:
     assert sme0003r1.from_ispb == '31680151'
     assert sme0003r1.to_ispb == '00038166'
     assert sme0003r1.system_domain == 'SPB01'
-    assert sme0003r1.operation_number == '316801512509080000001'
+    assert sme0003r1.operation_number == '31680151250908000000001'
     assert sme0003r1.message_code == 'SME0003R1'
     assert sme0003r1.ieme_control_number == '123'
     assert sme0003r1.ieme_ispb == '31680153'
@@ -148,7 +148,7 @@ def test_sme0003e_general_error_valid_model() -> None:
     assert sme0003e.from_ispb == '31680151'
     assert sme0003e.to_ispb == '00038166'
     assert sme0003e.system_domain == 'SPB01'
-    assert sme0003e.operation_number == '316801512509080000001'
+    assert sme0003e.operation_number == '31680151250908000000001'
     assert sme0003e.message_code == 'SME0003'
     assert sme0003e.ieme_control_number == '123'
     assert sme0003e.ieme_ispb == '31680153'
@@ -164,7 +164,7 @@ def test_sme0003e_tag_error_valid_model() -> None:
     assert sme0003e.from_ispb == '31680151'
     assert sme0003e.to_ispb == '00038166'
     assert sme0003e.system_domain == 'SPB01'
-    assert sme0003e.operation_number == '316801512509080000001'
+    assert sme0003e.operation_number == '31680151250908000000001'
     assert sme0003e.message_code == 'SME0003'
     assert sme0003e.ieme_control_number == '123'
     assert sme0003e.ieme_ispb == '31680153'
@@ -219,7 +219,7 @@ def test_sme0003_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0003>
@@ -246,7 +246,7 @@ def test_sme0003r1_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0003R1>
@@ -296,7 +296,7 @@ def test_sme0003e_general_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0003E CodErro="EGEN0050">
@@ -323,7 +323,7 @@ def test_sme0003e_tag_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0003E>
@@ -345,7 +345,7 @@ def test_sme0003_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0003>
@@ -364,7 +364,7 @@ def test_sme0003_from_xml() -> None:
     assert sme0003.from_ispb == '31680151'
     assert sme0003.to_ispb == '00038166'
     assert sme0003.system_domain == 'SPB01'
-    assert sme0003.operation_number == '316801512509080000001'
+    assert sme0003.operation_number == '31680151250908000000001'
     assert sme0003.message_code == 'SME0003'
     assert sme0003.ieme_control_number == '123'
     assert sme0003.ieme_ispb == '31680153'
@@ -378,7 +378,7 @@ def test_sme0003r1_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0003R1>
@@ -420,7 +420,7 @@ def test_sme0003r1_from_xml() -> None:
     assert sme0003r1.from_ispb == '31680151'
     assert sme0003r1.to_ispb == '00038166'
     assert sme0003r1.system_domain == 'SPB01'
-    assert sme0003r1.operation_number == '316801512509080000001'
+    assert sme0003r1.operation_number == '31680151250908000000001'
     assert sme0003r1.message_code == 'SME0003R1'
     assert sme0003r1.ieme_control_number == '123'
     assert sme0003r1.ieme_ispb == '31680153'
@@ -461,7 +461,7 @@ def test_sme0003e_general_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0003E CodErro="EGEN0050">
@@ -480,7 +480,7 @@ def test_sme0003e_general_error_from_xml() -> None:
     assert sme0003e.from_ispb == '31680151'
     assert sme0003e.to_ispb == '00038166'
     assert sme0003e.system_domain == 'SPB01'
-    assert sme0003e.operation_number == '316801512509080000001'
+    assert sme0003e.operation_number == '31680151250908000000001'
     assert sme0003e.message_code == 'SME0003'
     assert sme0003e.ieme_control_number == '123'
     assert sme0003e.ieme_ispb == '31680153'
@@ -495,7 +495,7 @@ def test_sme0003e_tag_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0003E>
@@ -514,7 +514,7 @@ def test_sme0003e_tag_error_from_xml() -> None:
     assert sme0003e.from_ispb == '31680151'
     assert sme0003e.to_ispb == '00038166'
     assert sme0003e.system_domain == 'SPB01'
-    assert sme0003e.operation_number == '316801512509080000001'
+    assert sme0003e.operation_number == '31680151250908000000001'
     assert sme0003e.message_code == 'SME0003'
     assert sme0003e.ieme_control_number == '123'
     assert sme0003e.ieme_ispb == '31680153'
@@ -539,7 +539,7 @@ def test_sme0003_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0003>

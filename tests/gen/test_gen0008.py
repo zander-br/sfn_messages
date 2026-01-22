@@ -13,7 +13,7 @@ def make_valid_gen0008_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'GEN0008',
         'institution_control_number': '123',
         'institution_ispb': '31680151',
@@ -27,7 +27,7 @@ def make_valid_gen0008r1_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'GEN0008R1',
         'institution_control_number': '123',
         'institution_ispb': '31680151',
@@ -42,7 +42,7 @@ def make_valid_gen0008e_params(*, general_error: bool = False) -> dict[str, Any]
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'GEN0008',
         'institution_control_number': '123',
         'institution_ispb': '31680151',
@@ -155,7 +155,7 @@ def test_gen0008_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0008>
@@ -183,7 +183,7 @@ def test_gen0008r1_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0008R1>
@@ -212,7 +212,7 @@ def test_gen0008e_general_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0008E CodErro="EGEN0050">
@@ -240,7 +240,7 @@ def test_gen0008e_tag_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0008E>
@@ -263,7 +263,7 @@ def test_gen0008_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0008>
@@ -294,7 +294,7 @@ def test_gen0008r1_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0008R1>
@@ -327,7 +327,7 @@ def test_gen0008e_general_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0008E CodErro="EGEN0050">
@@ -359,7 +359,7 @@ def test_gen0008e_tag_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0008E>
@@ -411,7 +411,7 @@ def test_gen0008_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0008>
@@ -440,7 +440,7 @@ def test_gen0008r1_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0008R1>

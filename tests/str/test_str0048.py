@@ -14,7 +14,7 @@ from tests.conftest import extract_missing_fields, normalize_xml
 def make_valid_str0048_params() -> dict[str, Any]:
     return {
         'from_ispb': '31680151',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'system_domain': 'SPB01',
         'to_ispb': '00038166',
         'institution_control_number': '31680151202509090425',
@@ -41,7 +41,7 @@ def make_valid_str0048r1_params() -> dict[str, Any]:
         'str_settlement_status': 'EFFECTIVE',
         'settlement_timestamp': '2025-11-20T15:30:00+00:00',
         'settlement_date': '2025-09-08',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
     }
@@ -50,7 +50,7 @@ def make_valid_str0048r1_params() -> dict[str, Any]:
 def make_valid_str0048r2_params() -> dict[str, Any]:
     return {
         'from_ispb': '31680151',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'system_domain': 'SPB01',
         'to_ispb': '00038166',
         'str_control_number': 'STR20250101000000002',
@@ -69,7 +69,7 @@ def make_valid_str0048r2_params() -> dict[str, Any]:
 def make_valid_str0048e_params(*, general_error: bool = False) -> dict[str, Any]:
     str0048e = {
         'from_ispb': '31680151',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'system_domain': 'SPB01',
         'to_ispb': '00038166',
         'institution_control_number': '31680151202509090425',
@@ -99,7 +99,7 @@ def test_str0048_valid_params() -> None:
     str0048 = STR0048.model_validate(params)
     assert isinstance(str0048, STR0048)
     assert str0048.from_ispb == '31680151'
-    assert str0048.operation_number == '316801512509080000001'
+    assert str0048.operation_number == '31680151250908000000001'
     assert str0048.system_domain == 'SPB01'
     assert str0048.to_ispb == '00038166'
     assert str0048.institution_control_number == '31680151202509090425'
@@ -121,7 +121,7 @@ def test_str0048e_general_error_valid_params() -> None:
     str0048e = STR0048E.model_validate(params)
     assert isinstance(str0048e, STR0048E)
     assert str0048e.from_ispb == '31680151'
-    assert str0048e.operation_number == '316801512509080000001'
+    assert str0048e.operation_number == '31680151250908000000001'
     assert str0048e.system_domain == 'SPB01'
     assert str0048e.to_ispb == '00038166'
     assert str0048e.institution_control_number == '31680151202509090425'
@@ -144,7 +144,7 @@ def test_str0048e_tag_error_valid_params() -> None:
     str0048e = STR0048E.model_validate(params)
     assert isinstance(str0048e, STR0048E)
     assert str0048e.from_ispb == '31680151'
-    assert str0048e.operation_number == '316801512509080000001'
+    assert str0048e.operation_number == '31680151250908000000001'
     assert str0048e.system_domain == 'SPB01'
     assert str0048e.to_ispb == '00038166'
     assert str0048e.institution_control_number == '31680151202509090425'
@@ -194,7 +194,7 @@ def test_str0048_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048>
@@ -230,7 +230,7 @@ def test_str0048e_general_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048E CodErro="EGEN0050">
@@ -266,7 +266,7 @@ def test_str0048e_tag_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048E>
@@ -307,7 +307,7 @@ def test_str0048_to_xml_omit_optional_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048>
@@ -335,7 +335,7 @@ def test_str0048_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048>
@@ -360,7 +360,7 @@ def test_str0048_from_xml() -> None:
     str0048 = STR0048.from_xml(xml)
     assert isinstance(str0048, STR0048)
     assert str0048.from_ispb == '31680151'
-    assert str0048.operation_number == '316801512509080000001'
+    assert str0048.operation_number == '31680151250908000000001'
     assert str0048.system_domain == 'SPB01'
     assert str0048.to_ispb == '00038166'
     assert str0048.institution_control_number == '31680151202509090425'
@@ -384,7 +384,7 @@ def test_str0048e_general_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048E CodErro="EGEN0050">
@@ -409,7 +409,7 @@ def test_str0048e_general_error_from_xml() -> None:
     str0048e = STR0048E.from_xml(xml)
     assert isinstance(str0048e, STR0048E)
     assert str0048e.from_ispb == '31680151'
-    assert str0048e.operation_number == '316801512509080000001'
+    assert str0048e.operation_number == '31680151250908000000001'
     assert str0048e.system_domain == 'SPB01'
     assert str0048e.to_ispb == '00038166'
     assert str0048e.institution_control_number == '31680151202509090425'
@@ -434,7 +434,7 @@ def test_str0048e_tag_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048E>
@@ -459,7 +459,7 @@ def test_str0048e_tag_error_from_xml() -> None:
     str0048e = STR0048E.from_xml(xml)
     assert isinstance(str0048e, STR0048E)
     assert str0048e.from_ispb == '31680151'
-    assert str0048e.operation_number == '316801512509080000001'
+    assert str0048e.operation_number == '31680151250908000000001'
     assert str0048e.system_domain == 'SPB01'
     assert str0048e.to_ispb == '00038166'
     assert str0048e.institution_control_number == '31680151202509090425'
@@ -484,7 +484,7 @@ def test_str0048_from_xml_missing_optional_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048>
@@ -505,7 +505,7 @@ def test_str0048_from_xml_missing_optional_fields() -> None:
     str0048 = STR0048.from_xml(xml)
     assert isinstance(str0048, STR0048)
     assert str0048.from_ispb == '31680151'
-    assert str0048.operation_number == '316801512509080000001'
+    assert str0048.operation_number == '31680151250908000000001'
     assert str0048.system_domain == 'SPB01'
     assert str0048.to_ispb == '00038166'
     assert str0048.institution_control_number == '31680151202509090425'
@@ -537,7 +537,7 @@ def test_str0048_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048>
@@ -605,7 +605,7 @@ def test_str0048r1_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048R1>
@@ -631,7 +631,7 @@ def test_str0048r1_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048R1>
@@ -672,7 +672,7 @@ def test_str0048r1_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048R1>
@@ -745,7 +745,7 @@ def test_str0048r2_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048R2>
@@ -781,7 +781,7 @@ def test_str0048r2_to_xml_omit_optional_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048R2>
@@ -810,7 +810,7 @@ def test_str0048r2_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048R2>
@@ -851,7 +851,7 @@ def test_str0048r2_from_xml_missing_optional_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048R2>
@@ -899,7 +899,7 @@ def test_str0048r2_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0048R2>

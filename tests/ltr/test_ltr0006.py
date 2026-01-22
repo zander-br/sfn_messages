@@ -15,7 +15,7 @@ def make_valid_ltr0006_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'LTR0006',
         'institution_or_ltr_control_number': '123',
         'debtor_institution_or_ltr_ispb': '31680151',
@@ -32,7 +32,7 @@ def make_valid_ltr0006r1_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'LTR0006R1',
         'institution_or_ltr_control_number': '123',
         'debtor_institution_or_ltr_ispb': '31680151',
@@ -48,7 +48,7 @@ def make_valid_ltr0006r2_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'LTR0006R2',
         'str_control_number': 'STR20250101000000001',
         'debtor_institution_or_ltr_ispb': '31680151',
@@ -66,7 +66,7 @@ def make_valid_ltr0006e_params(*, general_error: bool = False) -> dict[str, Any]
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'LTR0006',
         'institution_or_ltr_control_number': '123',
         'debtor_institution_or_ltr_ispb': '31680151',
@@ -93,7 +93,7 @@ def test_ltr0006_valid_model() -> None:
     assert ltr0006.from_ispb == '31680151'
     assert ltr0006.to_ispb == '00038166'
     assert ltr0006.system_domain == 'SPB01'
-    assert ltr0006.operation_number == '316801512509080000001'
+    assert ltr0006.operation_number == '31680151250908000000001'
     assert ltr0006.message_code == 'LTR0006'
     assert ltr0006.institution_or_ltr_control_number == '123'
     assert ltr0006.debtor_institution_or_ltr_ispb == '31680151'
@@ -112,7 +112,7 @@ def test_ltr0006r1_valid_model() -> None:
     assert ltr0006r1.from_ispb == '31680151'
     assert ltr0006r1.to_ispb == '00038166'
     assert ltr0006r1.system_domain == 'SPB01'
-    assert ltr0006r1.operation_number == '316801512509080000001'
+    assert ltr0006r1.operation_number == '31680151250908000000001'
     assert ltr0006r1.message_code == 'LTR0006R1'
     assert ltr0006r1.institution_or_ltr_control_number == '123'
     assert ltr0006r1.debtor_institution_or_ltr_ispb == '31680151'
@@ -130,7 +130,7 @@ def test_ltr0006r2_valid_model() -> None:
     assert ltr0006r2.from_ispb == '31680151'
     assert ltr0006r2.to_ispb == '00038166'
     assert ltr0006r2.system_domain == 'SPB01'
-    assert ltr0006r2.operation_number == '316801512509080000001'
+    assert ltr0006r2.operation_number == '31680151250908000000001'
     assert ltr0006r2.message_code == 'LTR0006R2'
     assert ltr0006r2.str_control_number == 'STR20250101000000001'
     assert ltr0006r2.debtor_institution_or_ltr_ispb == '31680151'
@@ -150,7 +150,7 @@ def test_ltr0006e_general_error_valid_model() -> None:
     assert ltr0006e.from_ispb == '31680151'
     assert ltr0006e.to_ispb == '00038166'
     assert ltr0006e.system_domain == 'SPB01'
-    assert ltr0006e.operation_number == '316801512509080000001'
+    assert ltr0006e.operation_number == '31680151250908000000001'
     assert ltr0006e.message_code == 'LTR0006'
     assert ltr0006e.institution_or_ltr_control_number == '123'
     assert ltr0006e.debtor_institution_or_ltr_ispb == '31680151'
@@ -171,7 +171,7 @@ def test_ltr0006e_tag_error_valid_model() -> None:
     assert ltr0006e.from_ispb == '31680151'
     assert ltr0006e.to_ispb == '00038166'
     assert ltr0006e.system_domain == 'SPB01'
-    assert ltr0006e.operation_number == '316801512509080000001'
+    assert ltr0006e.operation_number == '31680151250908000000001'
     assert ltr0006e.message_code == 'LTR0006'
     assert ltr0006e.institution_or_ltr_control_number == '123'
     assert ltr0006e.debtor_institution_or_ltr_ispb == '31680151'
@@ -254,7 +254,7 @@ def test_ltr0006_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LTR0006>
@@ -285,7 +285,7 @@ def test_ltr0006r1_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LTR0006R1>
@@ -316,7 +316,7 @@ def test_ltr0006r2_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LTR0006R2>
@@ -348,7 +348,7 @@ def test_ltr0006e_general_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LTR0006E CodErro="EGEN0050">
@@ -379,7 +379,7 @@ def test_ltr0006e_tag_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LTR0006E>
@@ -405,7 +405,7 @@ def test_ltr0006_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LTR0006>
@@ -428,7 +428,7 @@ def test_ltr0006_from_xml() -> None:
     assert ltr0006.from_ispb == '31680151'
     assert ltr0006.to_ispb == '00038166'
     assert ltr0006.system_domain == 'SPB01'
-    assert ltr0006.operation_number == '316801512509080000001'
+    assert ltr0006.operation_number == '31680151250908000000001'
     assert ltr0006.message_code == 'LTR0006'
     assert ltr0006.institution_or_ltr_control_number == '123'
     assert ltr0006.debtor_institution_or_ltr_ispb == '31680151'
@@ -446,7 +446,7 @@ def test_ltr0006r1_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LTR0006R1>
@@ -468,7 +468,7 @@ def test_ltr0006r1_from_xml() -> None:
     assert ltr0006r1.from_ispb == '31680151'
     assert ltr0006r1.to_ispb == '00038166'
     assert ltr0006r1.system_domain == 'SPB01'
-    assert ltr0006r1.operation_number == '316801512509080000001'
+    assert ltr0006r1.operation_number == '31680151250908000000001'
     assert ltr0006r1.message_code == 'LTR0006R1'
     assert ltr0006r1.institution_or_ltr_control_number == '123'
     assert ltr0006r1.debtor_institution_or_ltr_ispb == '31680151'
@@ -485,7 +485,7 @@ def test_ltr0006r2_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LTR0006R2>
@@ -509,7 +509,7 @@ def test_ltr0006r2_from_xml() -> None:
     assert ltr0006r2.from_ispb == '31680151'
     assert ltr0006r2.to_ispb == '00038166'
     assert ltr0006r2.system_domain == 'SPB01'
-    assert ltr0006r2.operation_number == '316801512509080000001'
+    assert ltr0006r2.operation_number == '31680151250908000000001'
     assert ltr0006r2.message_code == 'LTR0006R2'
     assert ltr0006r2.str_control_number == 'STR20250101000000001'
     assert ltr0006r2.debtor_institution_or_ltr_ispb == '31680151'
@@ -528,7 +528,7 @@ def test_ltr0006e_general_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LTR0006E CodErro="EGEN0050">
@@ -551,7 +551,7 @@ def test_ltr0006e_general_error_from_xml() -> None:
     assert ltr0006e.from_ispb == '31680151'
     assert ltr0006e.to_ispb == '00038166'
     assert ltr0006e.system_domain == 'SPB01'
-    assert ltr0006e.operation_number == '316801512509080000001'
+    assert ltr0006e.operation_number == '31680151250908000000001'
     assert ltr0006e.message_code == 'LTR0006'
     assert ltr0006e.institution_or_ltr_control_number == '123'
     assert ltr0006e.debtor_institution_or_ltr_ispb == '31680151'
@@ -571,7 +571,7 @@ def test_ltr0006e_tag_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LTR0006E>
@@ -594,7 +594,7 @@ def test_ltr0006e_tag_error_from_xml() -> None:
     assert ltr0006e.from_ispb == '31680151'
     assert ltr0006e.to_ispb == '00038166'
     assert ltr0006e.system_domain == 'SPB01'
-    assert ltr0006e.operation_number == '316801512509080000001'
+    assert ltr0006e.operation_number == '31680151250908000000001'
     assert ltr0006e.message_code == 'LTR0006'
     assert ltr0006e.institution_or_ltr_control_number == '123'
     assert ltr0006e.debtor_institution_or_ltr_ispb == '31680151'

@@ -395,7 +395,7 @@ class TestBaseMessage:
                 <IdentdEmissor>12345ABC</IdentdEmissor>
                 <IdentdDestinatario>67890XYZ</IdentdDestinatario>
                 <DomSist>MES01</DomSist>
-                <NUOp>123456781234567890123</NUOp>
+                <NUOp>12345678123456789000123</NUOp>
             </BCMSG>
             <SISMSG>
                 <Test>
@@ -422,7 +422,7 @@ class TestBaseMessage:
             from_ispb='12345abc',
             to_ispb='67890xyz',
             system_domain=SystemDomain.MES01,
-            operation_number='123456781234567890123',
+            operation_number='12345678123456789000123',
             field1='value1',
             field2=SubSut(f1='v1', f2='v2'),
         )
@@ -437,7 +437,7 @@ class TestBaseMessage:
                 <IdentdEmissor>12345ABC</IdentdEmissor>
                 <IdentdDestinatario>67890XYZ</IdentdDestinatario>
                 <DomSist>MES01</DomSist>
-                <NUOp>123456781234567890123</NUOp>
+                <NUOp>12345678123456789000123</NUOp>
             </BCMSG>
             <SISMSG>
                 <Test>
@@ -466,7 +466,7 @@ class TestBaseMessage:
             from_ispb='12345abc',
             to_ispb='67890xyz',
             system_domain=SystemDomain.MES01,
-            operation_number='123456781234567890123',
+            operation_number='12345678123456789000123',
             field1='value1',
             field2=SubSut(f1='v1', f2='v2'),
         )

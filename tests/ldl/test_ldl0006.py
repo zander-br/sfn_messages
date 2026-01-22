@@ -25,7 +25,7 @@ def make_valid_ldl0006_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'LDL0006',
         'institution_or_ldl_control_number': '123',
         'debitor_institution_ispb': '31680151',
@@ -62,7 +62,7 @@ def make_valid_ldl0006r1_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'LDL0006R1',
         'institution_or_ldl_control_number': '123',
         'debitor_institution_ispb': '31680151',
@@ -78,7 +78,7 @@ def make_valid_ldl0006r2_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'LDL0006R2',
         'str_control_number': 'STR20250101000000001',
         'vendor_timestamp': '2025-12-09T09:00:00+00:00',
@@ -116,7 +116,7 @@ def make_valid_ldl0006e_params(*, general_error: bool = False) -> dict[str, Any]
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'LDL0006',
         'institution_or_ldl_control_number': '123',
         'debitor_institution_ispb': '31680151',
@@ -163,7 +163,7 @@ def test_ldl0006_valid_model() -> None:
     assert ldl0006.from_ispb == '31680151'
     assert ldl0006.to_ispb == '00038166'
     assert ldl0006.system_domain == 'SPB01'
-    assert ldl0006.operation_number == '316801512509080000001'
+    assert ldl0006.operation_number == '31680151250908000000001'
     assert ldl0006.message_code == 'LDL0006'
     assert ldl0006.institution_or_ldl_control_number == '123'
     assert ldl0006.debitor_institution_ispb == '31680151'
@@ -203,7 +203,7 @@ def test_ldl0006r1_valid_model() -> None:
     assert ldl0006r1.from_ispb == '31680151'
     assert ldl0006r1.to_ispb == '00038166'
     assert ldl0006r1.system_domain == 'SPB01'
-    assert ldl0006r1.operation_number == '316801512509080000001'
+    assert ldl0006r1.operation_number == '31680151250908000000001'
     assert ldl0006r1.message_code == 'LDL0006R1'
     assert ldl0006r1.institution_or_ldl_control_number == '123'
     assert ldl0006r1.debitor_institution_ispb == '31680151'
@@ -221,7 +221,7 @@ def test_ldl0006r2_valid_model() -> None:
     assert ldl0006r2.from_ispb == '31680151'
     assert ldl0006r2.to_ispb == '00038166'
     assert ldl0006r2.system_domain == 'SPB01'
-    assert ldl0006r2.operation_number == '316801512509080000001'
+    assert ldl0006r2.operation_number == '31680151250908000000001'
     assert ldl0006r2.message_code == 'LDL0006R2'
     assert ldl0006r2.str_control_number == 'STR20250101000000001'
     assert ldl0006r2.vendor_timestamp == datetime(2025, 12, 9, 9, 0, tzinfo=UTC)
@@ -261,7 +261,7 @@ def test_ldl0006e_valid_model() -> None:
     assert ldl0006e.from_ispb == '31680151'
     assert ldl0006e.to_ispb == '00038166'
     assert ldl0006e.system_domain == 'SPB01'
-    assert ldl0006e.operation_number == '316801512509080000001'
+    assert ldl0006e.operation_number == '31680151250908000000001'
     assert ldl0006e.message_code == 'LDL0006'
     assert ldl0006e.institution_or_ldl_control_number == '123'
     assert ldl0006e.debitor_institution_ispb == '31680151'
@@ -365,7 +365,7 @@ def test_ldl0006_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0006>
@@ -414,7 +414,7 @@ def test_ldl0006r1_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0006R1>
@@ -444,7 +444,7 @@ def test_ldl0006r2_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0006R2>
@@ -494,7 +494,7 @@ def test_ldl0006e_general_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0006E CodErro="EGEN0050">
@@ -543,7 +543,7 @@ def test_ldl0006e_tag_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0006E>
@@ -587,7 +587,7 @@ def test_ldl0006_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0006>
@@ -628,7 +628,7 @@ def test_ldl0006_from_xml() -> None:
     assert ldl0006.from_ispb == '31680151'
     assert ldl0006.to_ispb == '00038166'
     assert ldl0006.system_domain == 'SPB01'
-    assert ldl0006.operation_number == '316801512509080000001'
+    assert ldl0006.operation_number == '31680151250908000000001'
     assert ldl0006.message_code == 'LDL0006'
     assert ldl0006.institution_or_ldl_control_number == '123'
     assert ldl0006.debitor_institution_ispb == '31680151'
@@ -667,7 +667,7 @@ def test_ldl0006r1_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0006R1>
@@ -689,7 +689,7 @@ def test_ldl0006r1_from_xml() -> None:
     assert ldl0006r1.from_ispb == '31680151'
     assert ldl0006r1.to_ispb == '00038166'
     assert ldl0006r1.system_domain == 'SPB01'
-    assert ldl0006r1.operation_number == '316801512509080000001'
+    assert ldl0006r1.operation_number == '31680151250908000000001'
     assert ldl0006r1.message_code == 'LDL0006R1'
     assert ldl0006r1.institution_or_ldl_control_number == '123'
     assert ldl0006r1.debitor_institution_ispb == '31680151'
@@ -706,7 +706,7 @@ def test_ldl0006r2_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0006R2>
@@ -748,7 +748,7 @@ def test_ldl0006r2_from_xml() -> None:
     assert ldl0006r2.from_ispb == '31680151'
     assert ldl0006r2.to_ispb == '00038166'
     assert ldl0006r2.system_domain == 'SPB01'
-    assert ldl0006r2.operation_number == '316801512509080000001'
+    assert ldl0006r2.operation_number == '31680151250908000000001'
     assert ldl0006r2.message_code == 'LDL0006R2'
     assert ldl0006r2.str_control_number == 'STR20250101000000001'
     assert ldl0006r2.vendor_timestamp == datetime(2025, 12, 9, 9, 0, tzinfo=UTC)
@@ -787,7 +787,7 @@ def test_ldl0006e_general_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0006E CodErro="EGEN0050">
@@ -828,7 +828,7 @@ def test_ldl0006e_general_error_from_xml() -> None:
     assert ldl0006e.from_ispb == '31680151'
     assert ldl0006e.to_ispb == '00038166'
     assert ldl0006e.system_domain == 'SPB01'
-    assert ldl0006e.operation_number == '316801512509080000001'
+    assert ldl0006e.operation_number == '31680151250908000000001'
     assert ldl0006e.message_code == 'LDL0006'
     assert ldl0006e.institution_or_ldl_control_number == '123'
     assert ldl0006e.debitor_institution_ispb == '31680151'
@@ -869,7 +869,7 @@ def test_ldl0006e_tag_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0006E>
@@ -910,7 +910,7 @@ def test_ldl0006e_tag_error_from_xml() -> None:
     assert ldl0006e.from_ispb == '31680151'
     assert ldl0006e.to_ispb == '00038166'
     assert ldl0006e.system_domain == 'SPB01'
-    assert ldl0006e.operation_number == '316801512509080000001'
+    assert ldl0006e.operation_number == '31680151250908000000001'
     assert ldl0006e.message_code == 'LDL0006'
     assert ldl0006e.institution_or_ldl_control_number == '123'
     assert ldl0006e.debitor_institution_ispb == '31680151'
@@ -981,7 +981,7 @@ def test_ldl0006_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0001>

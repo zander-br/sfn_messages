@@ -300,11 +300,11 @@ def test_ispb_rejects_invalid_values(ispb: str) -> None:
 @pytest.mark.parametrize(
     'operation_number',
     [
-        'ABCDEFGH1234567890123',
-        '1234567A1234567890123',
-        'A1B2C3D41234567890123',
-        'HGFEDCBA9876543210123',
-        '4D3C2B1A0000000000000',
+        'ABCDEFGH123456789000123',
+        '1234567A123456789000123',
+        'A1B2C3D4123456789000123',
+        'HGFEDCBA987654321000123',
+        '4D3C2B1A000000000000000',
     ],
 )
 def test_operation_number_accepts_valid_values(operation_number: str) -> None:
@@ -313,8 +313,8 @@ def test_operation_number_accepts_valid_values(operation_number: str) -> None:
 
 
 def test_operation_number_accepts_whitespace() -> None:
-    model = OperationNumberModel(operation_number='  ABCDEFGH1234567890123  ')
-    assert model.operation_number == 'ABCDEFGH1234567890123'
+    model = OperationNumberModel(operation_number='  ABCDEFGH123456789000123  ')
+    assert model.operation_number == 'ABCDEFGH123456789000123'
 
 
 @pytest.mark.parametrize(
@@ -332,7 +332,7 @@ def test_operation_number_accepts_whitespace() -> None:
 def test_operation_number_rejects_invalid_values(operation_number: str) -> None:
     with pytest.raises(ValidationError) as exc:
         OperationNumberModel(operation_number=operation_number)
-    assert "String should match pattern '^[0-9A-Z]{8}[0-9]{13}$'" in str(exc.value)
+    assert "String should match pattern '^[0-9A-Z]{8}[0-9]{15}$'" in str(exc.value)
 
 
 @pytest.mark.parametrize(

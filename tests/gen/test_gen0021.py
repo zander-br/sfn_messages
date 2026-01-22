@@ -16,7 +16,7 @@ def make_valid_gen0021_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'GEN0021',
         'provider_ispb': '31680151',
         'product_code': 'VISA_INTL_CREDIT_PURCHASE',
@@ -45,7 +45,7 @@ def make_valid_gen0021e_params(*, general_error: bool = False) -> dict[str, Any]
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'GEN0021',
         'provider_ispb': '31680151',
         'product_code': 'VISA_INTL_CREDIT_PURCHASE',
@@ -85,7 +85,7 @@ def test_gen0021_valid_model() -> None:
     assert gen0021.from_ispb == '31680151'
     assert gen0021.to_ispb == '00038166'
     assert gen0021.system_domain == 'SPB01'
-    assert gen0021.operation_number == '316801512509080000001'
+    assert gen0021.operation_number == '31680151250908000000001'
     assert gen0021.message_code == 'GEN0021'
     assert gen0021.provider_ispb == '31680151'
     assert gen0021.product_code == ProductCode.VISA_INTL_CREDIT_PURCHASE
@@ -116,7 +116,7 @@ def test_gen0021e_general_error_valid_model() -> None:
     assert gen0021e.from_ispb == '31680151'
     assert gen0021e.to_ispb == '00038166'
     assert gen0021e.system_domain == 'SPB01'
-    assert gen0021e.operation_number == '316801512509080000001'
+    assert gen0021e.operation_number == '31680151250908000000001'
     assert gen0021e.message_code == 'GEN0021'
     assert gen0021e.provider_ispb == '31680151'
     assert gen0021e.product_code == ProductCode.VISA_INTL_CREDIT_PURCHASE
@@ -148,7 +148,7 @@ def test_gen0021e_tag_error_valid_model() -> None:
     assert gen0021e.from_ispb == '31680151'
     assert gen0021e.to_ispb == '00038166'
     assert gen0021e.system_domain == 'SPB01'
-    assert gen0021e.operation_number == '316801512509080000001'
+    assert gen0021e.operation_number == '31680151250908000000001'
     assert gen0021e.message_code == 'GEN0021'
     assert gen0021e.provider_ispb == '31680151'
     assert gen0021e.product_code == ProductCode.VISA_INTL_CREDIT_PURCHASE
@@ -203,7 +203,7 @@ def test_gen0021_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0021>
@@ -244,7 +244,7 @@ def test_gen0021e_general_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0021E CodErro="EGEN0050">
@@ -285,7 +285,7 @@ def test_gen0021e_tag_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0021E>
@@ -321,7 +321,7 @@ def test_gen0021_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0021>
@@ -356,7 +356,7 @@ def test_gen0021_from_xml() -> None:
     assert gen0021.from_ispb == '31680151'
     assert gen0021.to_ispb == '00038166'
     assert gen0021.system_domain == 'SPB01'
-    assert gen0021.operation_number == '316801512509080000001'
+    assert gen0021.operation_number == '31680151250908000000001'
     assert gen0021.message_code == 'GEN0021'
     assert gen0021.provider_ispb == '31680151'
     assert gen0021.product_code == ProductCode.VISA_INTL_CREDIT_PURCHASE
@@ -386,7 +386,7 @@ def test_gen0021e_general_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0021E CodErro="EGEN0050">
@@ -419,7 +419,7 @@ def test_gen0021e_general_error_from_xml() -> None:
     assert gen0021e.from_ispb == '31680151'
     assert gen0021e.to_ispb == '00038166'
     assert gen0021e.system_domain == 'SPB01'
-    assert gen0021e.operation_number == '316801512509080000001'
+    assert gen0021e.operation_number == '31680151250908000000001'
     assert gen0021e.message_code == 'GEN0021'
     assert gen0021e.provider_ispb == '31680151'
     assert gen0021e.product_code == ProductCode.VISA_INTL_CREDIT_PURCHASE
@@ -450,7 +450,7 @@ def test_gen0021e_tag_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0021E>
@@ -483,7 +483,7 @@ def test_gen0021e_tag_error_from_xml() -> None:
     assert gen0021e.from_ispb == '31680151'
     assert gen0021e.to_ispb == '00038166'
     assert gen0021e.system_domain == 'SPB01'
-    assert gen0021e.operation_number == '316801512509080000001'
+    assert gen0021e.operation_number == '31680151250908000000001'
     assert gen0021e.message_code == 'GEN0021'
     assert gen0021e.provider_ispb == '31680151'
     assert gen0021e.product_code == ProductCode.VISA_INTL_CREDIT_PURCHASE
@@ -515,7 +515,7 @@ def test_gen0021_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0021>

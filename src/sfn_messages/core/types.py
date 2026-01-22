@@ -539,7 +539,7 @@ type OperationNumber = Annotated[
     str,
     GetPydanticSchema(
         lambda _tp, _handler: core_schema.str_schema(
-            pattern=r'^[0-9A-Z]{8}[0-9]{13}$',
+            pattern=r'^[0-9A-Z]{8}[0-9]{15}$',
             strip_whitespace=True,
             to_upper=True,
         )

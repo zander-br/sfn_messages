@@ -11,7 +11,7 @@ from tests.conftest import extract_missing_fields, normalize_xml
 def make_valid_str0017_params() -> dict[str, Any]:
     return {
         'from_ispb': '31680151',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'system_domain': 'SPB01',
         'to_ispb': '00038166',
         'institution_ispb': '31680151',
@@ -24,7 +24,7 @@ def make_valid_str0017_params() -> dict[str, Any]:
 def make_valid_str0017e_params(*, general_error: bool = False) -> dict[str, Any]:
     str0017e = {
         'from_ispb': '31680151',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'system_domain': 'SPB01',
         'to_ispb': '00038166',
         'institution_ispb': '31680151',
@@ -50,7 +50,7 @@ def test_str0017_model_valid() -> None:
     assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0, tzinfo=UTC)
     assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert message.message_code == 'STR0017'
-    assert message.operation_number == '316801512509080000001'
+    assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
     assert message.to_ispb == '00038166'
 
@@ -64,7 +64,7 @@ def test_str0017e_general_error_model_valid() -> None:
     assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0, tzinfo=UTC)
     assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert message.message_code == 'STR0017'
-    assert message.operation_number == '316801512509080000001'
+    assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
     assert message.to_ispb == '00038166'
     assert message.general_error_code == 'EGEN0050'
@@ -79,7 +79,7 @@ def test_str0017e_tag_error_model_valid() -> None:
     assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0, tzinfo=UTC)
     assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert message.message_code == 'STR0017'
-    assert message.operation_number == '316801512509080000001'
+    assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
     assert message.to_ispb == '00038166'
     assert message.opening_timestamp_error_code == 'EGEN0023'
@@ -111,7 +111,7 @@ def test_str0017_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0017>
@@ -138,7 +138,7 @@ def test_str0017e_general_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0017E CodErro="EGEN0050">
@@ -165,7 +165,7 @@ def test_str0017e_tag_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0017E>
@@ -188,7 +188,7 @@ def test_str0017_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0017>
@@ -208,7 +208,7 @@ def test_str0017_from_xml() -> None:
     assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0, tzinfo=UTC)
     assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert message.message_code == 'STR0017'
-    assert message.operation_number == '316801512509080000001'
+    assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
     assert message.to_ispb == '00038166'
 
@@ -220,7 +220,7 @@ def test_str0017e_general_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0017E CodErro="EGEN0050">
@@ -240,7 +240,7 @@ def test_str0017e_general_error_from_xml() -> None:
     assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0, tzinfo=UTC)
     assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert message.message_code == 'STR0017'
-    assert message.operation_number == '316801512509080000001'
+    assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
     assert message.to_ispb == '00038166'
     assert message.general_error_code == 'EGEN0050'
@@ -253,7 +253,7 @@ def test_str0017e_tag_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0017E>
@@ -273,7 +273,7 @@ def test_str0017e_tag_error_from_xml() -> None:
     assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0, tzinfo=UTC)
     assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
     assert message.message_code == 'STR0017'
-    assert message.operation_number == '316801512509080000001'
+    assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
     assert message.to_ispb == '00038166'
     assert message.opening_timestamp_error_code == 'EGEN0023'
@@ -294,7 +294,7 @@ def test_str0017_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0017>

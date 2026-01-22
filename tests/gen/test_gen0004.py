@@ -13,13 +13,13 @@ def make_valid_gen0004_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'GEN0004',
         'generic_error': 'EGEN0050',
         'issuing_ispb': '31680151',
         'recipient_ispb': '00038166',
         'mq_number': '0123456789ABCDEF00000000',
-        'unique_operation_number': '316801512509080000001',
+        'unique_operation_number': '31680151250908000000001',
         'original_protocol_sta_number': '123456789012345678',
         'description': 'Generic error description',
         'participant_datetime': '2026-01-12T10:30:00+00:00',
@@ -36,7 +36,7 @@ def test_gen0004_valid_model() -> None:
     assert gen0004.issuing_ispb == '31680151'
     assert gen0004.recipient_ispb == '00038166'
     assert gen0004.mq_number == '0123456789ABCDEF00000000'
-    assert gen0004.unique_operation_number == '316801512509080000001'
+    assert gen0004.unique_operation_number == '31680151250908000000001'
     assert gen0004.original_protocol_sta_number == '123456789012345678'
     assert gen0004.description == 'Generic error description'
     assert gen0004.participant_datetime == datetime(2026, 1, 12, 10, 30, tzinfo=UTC)
@@ -71,7 +71,7 @@ def test_gen0004_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0004>
@@ -80,7 +80,7 @@ def test_gen0004_to_xml() -> None:
                 <ISPBEmissor>31680151</ISPBEmissor>
                 <ISPBDestinatario>00038166</ISPBDestinatario>
                 <NumMQ>0123456789ABCDEF00000000</NumMQ>
-                <NUOpOr>316801512509080000001</NUOpOr>
+                <NUOpOr>31680151250908000000001</NUOpOr>
                 <NumProtSTAOr>123456789012345678</NumProtSTAOr>
                 <Hist>Generic error description</Hist>
                 <DtHrPart>2026-01-12 10:30:00+00:00</DtHrPart>
@@ -99,7 +99,7 @@ def test_gen0004_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0004>
@@ -108,7 +108,7 @@ def test_gen0004_from_xml() -> None:
                 <ISPBEmissor>31680151</ISPBEmissor>
                 <ISPBDestinatario>00038166</ISPBDestinatario>
                 <NumMQ>0123456789ABCDEF00000000</NumMQ>
-                <NUOpOr>316801512509080000001</NUOpOr>
+                <NUOpOr>31680151250908000000001</NUOpOr>
                 <NumProtSTAOr>123456789012345678</NumProtSTAOr>
                 <Hist>Generic error description</Hist>
                 <DtHrPart>2026-01-12 10:30:00+00:00</DtHrPart>
@@ -125,7 +125,7 @@ def test_gen0004_from_xml() -> None:
     assert gen0004.issuing_ispb == '31680151'
     assert gen0004.recipient_ispb == '00038166'
     assert gen0004.mq_number == '0123456789ABCDEF00000000'
-    assert gen0004.unique_operation_number == '316801512509080000001'
+    assert gen0004.unique_operation_number == '31680151250908000000001'
     assert gen0004.original_protocol_sta_number == '123456789012345678'
     assert gen0004.description == 'Generic error description'
     assert gen0004.participant_datetime == datetime(2026, 1, 12, 10, 30, tzinfo=UTC)
@@ -148,7 +148,7 @@ def test_gen0004_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0004>

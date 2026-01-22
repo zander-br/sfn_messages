@@ -16,7 +16,7 @@ def make_valid_slb0002_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'SLB0002',
         'participant_institution_control_number': '123',
         'participant_ispb': '31680153',
@@ -32,7 +32,7 @@ def make_valid_slb0002r1_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'SLB0002R1',
         'participant_institution_control_number': '123',
         'participant_ispb': '31680153',
@@ -48,7 +48,7 @@ def make_valid_slb0002e_params(*, general_error: bool = False) -> dict[str, Any]
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'SLB0002',
         'participant_institution_control_number': '123',
         'participant_ispb': '31680153',
@@ -74,7 +74,7 @@ def test_slb0002_valid_model() -> None:
     assert slb0002.from_ispb == '31680151'
     assert slb0002.to_ispb == '00038166'
     assert slb0002.system_domain == 'SPB01'
-    assert slb0002.operation_number == '316801512509080000001'
+    assert slb0002.operation_number == '31680151250908000000001'
     assert slb0002.message_code == 'SLB0002'
     assert slb0002.participant_institution_control_number == '123'
     assert slb0002.participant_ispb == '31680153'
@@ -92,7 +92,7 @@ def test_slb0002r1_valid_model() -> None:
     assert slb0002r1.from_ispb == '31680151'
     assert slb0002r1.to_ispb == '00038166'
     assert slb0002r1.system_domain == 'SPB01'
-    assert slb0002r1.operation_number == '316801512509080000001'
+    assert slb0002r1.operation_number == '31680151250908000000001'
     assert slb0002r1.message_code == 'SLB0002R1'
     assert slb0002r1.participant_institution_control_number == '123'
     assert slb0002r1.participant_ispb == '31680153'
@@ -110,7 +110,7 @@ def test_slb0002e_general_error_valid_model() -> None:
     assert slb0002e.from_ispb == '31680151'
     assert slb0002e.to_ispb == '00038166'
     assert slb0002e.system_domain == 'SPB01'
-    assert slb0002e.operation_number == '316801512509080000001'
+    assert slb0002e.operation_number == '31680151250908000000001'
     assert slb0002e.message_code == 'SLB0002'
     assert slb0002e.participant_institution_control_number == '123'
     assert slb0002e.participant_ispb == '31680153'
@@ -130,7 +130,7 @@ def test_slb0002e_tag_error_valid_model() -> None:
     assert slb0002e.from_ispb == '31680151'
     assert slb0002e.to_ispb == '00038166'
     assert slb0002e.system_domain == 'SPB01'
-    assert slb0002e.operation_number == '316801512509080000001'
+    assert slb0002e.operation_number == '31680151250908000000001'
     assert slb0002e.message_code == 'SLB0002'
     assert slb0002e.participant_institution_control_number == '123'
     assert slb0002e.participant_ispb == '31680153'
@@ -190,7 +190,7 @@ def test_slb0002_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SLB0002>
@@ -220,7 +220,7 @@ def test_slb0002r1_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SLB0002R1>
@@ -250,7 +250,7 @@ def test_slb0002e_general_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SLB0002E CodErro="EGEN0050">
@@ -280,7 +280,7 @@ def test_slb0002e_tag_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SLB0002E>
@@ -305,7 +305,7 @@ def test_slb0002_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SLB0002>
@@ -327,7 +327,7 @@ def test_slb0002_from_xml() -> None:
     assert slb0002.from_ispb == '31680151'
     assert slb0002.to_ispb == '00038166'
     assert slb0002.system_domain == 'SPB01'
-    assert slb0002.operation_number == '316801512509080000001'
+    assert slb0002.operation_number == '31680151250908000000001'
     assert slb0002.message_code == 'SLB0002'
     assert slb0002.participant_institution_control_number == '123'
     assert slb0002.participant_ispb == '31680153'
@@ -344,7 +344,7 @@ def test_slb0002r1_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SLB0002R1>
@@ -366,7 +366,7 @@ def test_slb0002r1_from_xml() -> None:
     assert slb0002r1.from_ispb == '31680151'
     assert slb0002r1.to_ispb == '00038166'
     assert slb0002r1.system_domain == 'SPB01'
-    assert slb0002r1.operation_number == '316801512509080000001'
+    assert slb0002r1.operation_number == '31680151250908000000001'
     assert slb0002r1.message_code == 'SLB0002R1'
     assert slb0002r1.participant_institution_control_number == '123'
     assert slb0002r1.participant_ispb == '31680153'
@@ -383,7 +383,7 @@ def test_slb0002e_general_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SLB0002E CodErro="EGEN0050">
@@ -405,7 +405,7 @@ def test_slb0002e_general_error_from_xml() -> None:
     assert slb0002e.from_ispb == '31680151'
     assert slb0002e.to_ispb == '00038166'
     assert slb0002e.system_domain == 'SPB01'
-    assert slb0002e.operation_number == '316801512509080000001'
+    assert slb0002e.operation_number == '31680151250908000000001'
     assert slb0002e.message_code == 'SLB0002'
     assert slb0002e.participant_institution_control_number == '123'
     assert slb0002e.participant_ispb == '31680153'
@@ -424,7 +424,7 @@ def test_slb0002e_tag_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SLB0002E>
@@ -446,7 +446,7 @@ def test_slb0002e_tag_error_from_xml() -> None:
     assert slb0002e.from_ispb == '31680151'
     assert slb0002e.to_ispb == '00038166'
     assert slb0002e.system_domain == 'SPB01'
-    assert slb0002e.operation_number == '316801512509080000001'
+    assert slb0002e.operation_number == '31680151250908000000001'
     assert slb0002e.message_code == 'SLB0002'
     assert slb0002e.participant_institution_control_number == '123'
     assert slb0002e.participant_ispb == '31680153'
@@ -485,7 +485,7 @@ def test_slb0002_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SLB0002>

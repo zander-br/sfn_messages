@@ -15,7 +15,7 @@ def make_valid_gen0020_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'GEN0020',
         'participant_institution_control_number': '123',
         'participant_ispb': '31680151',
@@ -29,7 +29,7 @@ def make_valid_gen0020r1_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'GEN0020R1',
         'participant_institution_control_number': '123',
         'participant_ispb': '31680151',
@@ -66,7 +66,7 @@ def make_valid_gen0020e_params(*, general_error: bool = False) -> dict[str, Any]
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'GEN0020',
         'participant_institution_control_number': '123',
         'participant_ispb': '31680151',
@@ -90,7 +90,7 @@ def test_gen0020_valid_model() -> None:
     assert gen0020.from_ispb == '31680151'
     assert gen0020.to_ispb == '00038166'
     assert gen0020.system_domain == 'SPB01'
-    assert gen0020.operation_number == '316801512509080000001'
+    assert gen0020.operation_number == '31680151250908000000001'
     assert gen0020.message_code == 'GEN0020'
     assert gen0020.participant_institution_control_number == '123'
     assert gen0020.participant_ispb == '31680151'
@@ -106,7 +106,7 @@ def test_gen0020r1_valid_model() -> None:
     assert gen0020r1.from_ispb == '31680151'
     assert gen0020r1.to_ispb == '00038166'
     assert gen0020r1.system_domain == 'SPB01'
-    assert gen0020r1.operation_number == '316801512509080000001'
+    assert gen0020r1.operation_number == '31680151250908000000001'
     assert gen0020r1.message_code == 'GEN0020R1'
     assert gen0020r1.participant_institution_control_number == '123'
     assert gen0020r1.participant_ispb == '31680151'
@@ -135,7 +135,7 @@ def test_gen0020e_general_error_valid_model() -> None:
     assert gen0020e.from_ispb == '31680151'
     assert gen0020e.to_ispb == '00038166'
     assert gen0020e.system_domain == 'SPB01'
-    assert gen0020e.operation_number == '316801512509080000001'
+    assert gen0020e.operation_number == '31680151250908000000001'
     assert gen0020e.message_code == 'GEN0020'
     assert gen0020e.participant_institution_control_number == '123'
     assert gen0020e.participant_ispb == '31680151'
@@ -152,7 +152,7 @@ def test_gen0020e_tag_error_valid_model() -> None:
     assert gen0020e.from_ispb == '31680151'
     assert gen0020e.to_ispb == '00038166'
     assert gen0020e.system_domain == 'SPB01'
-    assert gen0020e.operation_number == '316801512509080000001'
+    assert gen0020e.operation_number == '31680151250908000000001'
     assert gen0020e.message_code == 'GEN0020'
     assert gen0020e.participant_institution_control_number == '123'
     assert gen0020e.participant_ispb == '31680151'
@@ -206,7 +206,7 @@ def test_gen0020_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0020>
@@ -234,7 +234,7 @@ def test_gen0020r1_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0020R1>
@@ -283,7 +283,7 @@ def test_gen0020e_general_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0020E CodErro="EGEN0050">
@@ -311,7 +311,7 @@ def test_gen0020e_tag_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0020E>
@@ -334,7 +334,7 @@ def test_gen0020_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0020>
@@ -354,7 +354,7 @@ def test_gen0020_from_xml() -> None:
     assert gen0020.from_ispb == '31680151'
     assert gen0020.to_ispb == '00038166'
     assert gen0020.system_domain == 'SPB01'
-    assert gen0020.operation_number == '316801512509080000001'
+    assert gen0020.operation_number == '31680151250908000000001'
     assert gen0020.message_code == 'GEN0020'
     assert gen0020.participant_institution_control_number == '123'
     assert gen0020.participant_ispb == '31680151'
@@ -369,7 +369,7 @@ def test_gen0020r1_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0020R1>
@@ -410,7 +410,7 @@ def test_gen0020r1_from_xml() -> None:
     assert gen0020r1.from_ispb == '31680151'
     assert gen0020r1.to_ispb == '00038166'
     assert gen0020r1.system_domain == 'SPB01'
-    assert gen0020r1.operation_number == '316801512509080000001'
+    assert gen0020r1.operation_number == '31680151250908000000001'
     assert gen0020r1.message_code == 'GEN0020R1'
     assert gen0020r1.participant_institution_control_number == '123'
     assert gen0020r1.participant_ispb == '31680151'
@@ -438,7 +438,7 @@ def test_gen0020e_general_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0020E CodErro="EGEN0050">
@@ -458,7 +458,7 @@ def test_gen0020e_general_error_from_xml() -> None:
     assert gen0020e.from_ispb == '31680151'
     assert gen0020e.to_ispb == '00038166'
     assert gen0020e.system_domain == 'SPB01'
-    assert gen0020e.operation_number == '316801512509080000001'
+    assert gen0020e.operation_number == '31680151250908000000001'
     assert gen0020e.message_code == 'GEN0020'
     assert gen0020e.participant_institution_control_number == '123'
     assert gen0020e.participant_ispb == '31680151'
@@ -474,7 +474,7 @@ def test_gen0020e_tag_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0020E>
@@ -494,7 +494,7 @@ def test_gen0020e_tag_error_from_xml() -> None:
     assert gen0020e.from_ispb == '31680151'
     assert gen0020e.to_ispb == '00038166'
     assert gen0020e.system_domain == 'SPB01'
-    assert gen0020e.operation_number == '316801512509080000001'
+    assert gen0020e.operation_number == '31680151250908000000001'
     assert gen0020e.message_code == 'GEN0020'
     assert gen0020e.participant_institution_control_number == '123'
     assert gen0020e.participant_ispb == '31680151'
@@ -520,7 +520,7 @@ def test_gen0020_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <GEN0020>

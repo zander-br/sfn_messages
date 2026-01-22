@@ -17,7 +17,7 @@ def make_valid_sme0002_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'SME0002',
         'ieme_ispb': '31680153',
         'creditor_account_group': {
@@ -36,7 +36,7 @@ def make_valid_sme0002r1_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'SME0002R1',
         'institution_control_number_ieme': '123',
         'ieme_ispb': '31680153',
@@ -52,7 +52,7 @@ def make_valid_sme0002r2_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'SME0002R2',
         'str_control_number': 'STR20250101000000001',
         'vendor_timestamp': '2025-12-03T10:02:00+00:00',
@@ -70,7 +70,7 @@ def make_valid_sme0002e_params(*, general_error: bool = False) -> dict[str, Any]
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'SME0002',
         'ieme_ispb': '31680153',
         'creditor_account_group': {
@@ -100,7 +100,7 @@ def test_sme0002_valid_model() -> None:
     assert sme0002.from_ispb == '31680151'
     assert sme0002.to_ispb == '00038166'
     assert sme0002.system_domain == 'SPB01'
-    assert sme0002.operation_number == '316801512509080000001'
+    assert sme0002.operation_number == '31680151250908000000001'
     assert sme0002.message_code == 'SME0002'
     assert sme0002.ieme_ispb == '31680153'
     assert sme0002.amount == Decimal('115.5')
@@ -122,7 +122,7 @@ def test_sme0002r1_valid_model() -> None:
     assert sme0002r1.from_ispb == '31680151'
     assert sme0002r1.to_ispb == '00038166'
     assert sme0002r1.system_domain == 'SPB01'
-    assert sme0002r1.operation_number == '316801512509080000001'
+    assert sme0002r1.operation_number == '31680151250908000000001'
     assert sme0002r1.message_code == 'SME0002R1'
     assert sme0002r1.institution_control_number_ieme == '123'
     assert sme0002r1.ieme_ispb == '31680153'
@@ -140,7 +140,7 @@ def test_sme0002r2_valid_model() -> None:
     assert sme0002r2.from_ispb == '31680151'
     assert sme0002r2.to_ispb == '00038166'
     assert sme0002r2.system_domain == 'SPB01'
-    assert sme0002r2.operation_number == '316801512509080000001'
+    assert sme0002r2.operation_number == '31680151250908000000001'
     assert sme0002r2.message_code == 'SME0002R2'
     assert sme0002r2.str_control_number == 'STR20250101000000001'
     assert sme0002r2.vendor_timestamp == datetime(2025, 12, 3, 10, 2, tzinfo=UTC)
@@ -160,7 +160,7 @@ def test_sme0002e_general_error_valid_model() -> None:
     assert sme0002.from_ispb == '31680151'
     assert sme0002.to_ispb == '00038166'
     assert sme0002.system_domain == 'SPB01'
-    assert sme0002.operation_number == '316801512509080000001'
+    assert sme0002.operation_number == '31680151250908000000001'
     assert sme0002.message_code == 'SME0002'
     assert sme0002.ieme_ispb == '31680153'
     assert sme0002.amount == Decimal('115.5')
@@ -183,7 +183,7 @@ def test_sme0002e_tag_error_valid_model() -> None:
     assert sme0002e.from_ispb == '31680151'
     assert sme0002e.to_ispb == '00038166'
     assert sme0002e.system_domain == 'SPB01'
-    assert sme0002e.operation_number == '316801512509080000001'
+    assert sme0002e.operation_number == '31680151250908000000001'
     assert sme0002e.message_code == 'SME0002'
     assert sme0002e.ieme_ispb == '31680153'
     assert sme0002e.amount == Decimal('115.5')
@@ -267,7 +267,7 @@ def test_sme0002_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0002>
@@ -300,7 +300,7 @@ def test_sme0002r1_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0002R1>
@@ -330,7 +330,7 @@ def test_sme0002r2_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0002R2>
@@ -362,7 +362,7 @@ def test_sme0002e_general_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0002E CodErro="EGEN0050">
@@ -395,7 +395,7 @@ def test_sme0002e_tag_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0002E>
@@ -423,7 +423,7 @@ def test_sme0002_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0002>
@@ -448,7 +448,7 @@ def test_sme0002_from_xml() -> None:
     assert sme0002.from_ispb == '31680151'
     assert sme0002.to_ispb == '00038166'
     assert sme0002.system_domain == 'SPB01'
-    assert sme0002.operation_number == '316801512509080000001'
+    assert sme0002.operation_number == '31680151250908000000001'
     assert sme0002.message_code == 'SME0002'
     assert sme0002.ieme_ispb == '31680153'
     assert sme0002.amount == Decimal('115.5')
@@ -469,7 +469,7 @@ def test_sme0002r1_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0002R1>
@@ -491,7 +491,7 @@ def test_sme0002r1_from_xml() -> None:
     assert sme0002r1.from_ispb == '31680151'
     assert sme0002r1.to_ispb == '00038166'
     assert sme0002r1.system_domain == 'SPB01'
-    assert sme0002r1.operation_number == '316801512509080000001'
+    assert sme0002r1.operation_number == '31680151250908000000001'
     assert sme0002r1.message_code == 'SME0002R1'
     assert sme0002r1.institution_control_number_ieme == '123'
     assert sme0002r1.ieme_ispb == '31680153'
@@ -508,7 +508,7 @@ def test_sme0002r2_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0002R2>
@@ -532,7 +532,7 @@ def test_sme0002r2_from_xml() -> None:
     assert sme0002r2.from_ispb == '31680151'
     assert sme0002r2.to_ispb == '00038166'
     assert sme0002r2.system_domain == 'SPB01'
-    assert sme0002r2.operation_number == '316801512509080000001'
+    assert sme0002r2.operation_number == '31680151250908000000001'
     assert sme0002r2.message_code == 'SME0002R2'
     assert sme0002r2.str_control_number == 'STR20250101000000001'
     assert sme0002r2.vendor_timestamp == datetime(2025, 12, 3, 10, 2, tzinfo=UTC)
@@ -551,7 +551,7 @@ def test_sme0002e_general_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0002E CodErro="EGEN0050">
@@ -576,7 +576,7 @@ def test_sme0002e_general_error_from_xml() -> None:
     assert sme0002e.from_ispb == '31680151'
     assert sme0002e.to_ispb == '00038166'
     assert sme0002e.system_domain == 'SPB01'
-    assert sme0002e.operation_number == '316801512509080000001'
+    assert sme0002e.operation_number == '31680151250908000000001'
     assert sme0002e.message_code == 'SME0002'
     assert sme0002e.ieme_ispb == '31680153'
     assert sme0002e.amount == Decimal('115.5')
@@ -598,7 +598,7 @@ def test_sme0002e_tag_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0002E>
@@ -623,7 +623,7 @@ def test_sme0002e_tag_error_from_xml() -> None:
     assert sme0002e.from_ispb == '31680151'
     assert sme0002e.to_ispb == '00038166'
     assert sme0002e.system_domain == 'SPB01'
-    assert sme0002e.operation_number == '316801512509080000001'
+    assert sme0002e.operation_number == '31680151250908000000001'
     assert sme0002e.message_code == 'SME0002'
     assert sme0002e.ieme_ispb == '31680153'
     assert sme0002e.amount == Decimal('115.5')
@@ -676,7 +676,7 @@ def test_sme0002_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <SME0002>

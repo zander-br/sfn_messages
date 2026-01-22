@@ -12,7 +12,7 @@ from tests.conftest import extract_missing_fields, normalize_xml
 def make_valid_str0013_params() -> dict[str, Any]:
     return {
         'from_ispb': '31680151',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'system_domain': 'SPB01',
         'to_ispb': '00038166',
         'institution_control_number': '31680151202509090425',
@@ -24,7 +24,7 @@ def make_valid_str0013_params() -> dict[str, Any]:
 def make_valid_str0013r1_params() -> dict[str, Any]:
     return {
         'from_ispb': '31680151',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'system_domain': 'SPB01',
         'to_ispb': '00038166',
         'institution_control_number': '31680151202509090425',
@@ -38,7 +38,7 @@ def make_valid_str0013r1_params() -> dict[str, Any]:
 def make_valid_str0013e_params(*, general_error: bool = False) -> dict[str, Any]:
     str0013e = {
         'from_ispb': '31680151',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'system_domain': 'SPB01',
         'to_ispb': '00038166',
         'institution_control_number': '31680151202509090425',
@@ -63,7 +63,7 @@ def test_str0013_model_valid() -> None:
     assert message.settlement_date == date(2025, 11, 27)
     assert message.message_code == 'STR0013'
     assert message.institution_ispb == '31680151'
-    assert message.operation_number == '316801512509080000001'
+    assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
     assert message.to_ispb == '00038166'
 
@@ -77,7 +77,7 @@ def test_str0013e_general_error_model_valid() -> None:
     assert message.settlement_date == date(2025, 11, 27)
     assert message.message_code == 'STR0013'
     assert message.institution_ispb == '31680151'
-    assert message.operation_number == '316801512509080000001'
+    assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
     assert message.to_ispb == '00038166'
     assert message.general_error_code == 'EGEN0050'
@@ -92,7 +92,7 @@ def test_str0013e_tag_error_model_valid() -> None:
     assert message.settlement_date == date(2025, 11, 27)
     assert message.message_code == 'STR0013'
     assert message.institution_ispb == '31680151'
-    assert message.operation_number == '316801512509080000001'
+    assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
     assert message.to_ispb == '00038166'
     assert message.institution_ispb_error_code == 'EGEN0051'
@@ -124,7 +124,7 @@ def test_str0013_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0013>
@@ -151,7 +151,7 @@ def test_str0013e_general_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0013E CodErro="EGEN0050">
@@ -178,7 +178,7 @@ def test_str0013e_tag_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0013E>
@@ -201,7 +201,7 @@ def test_str0013_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0013>
@@ -224,7 +224,7 @@ def test_str0013_from_xml() -> None:
     assert str0013.from_ispb == '31680151'
     assert str0013.to_ispb == '00038166'
     assert str0013.system_domain == 'SPB01'
-    assert str0013.operation_number == '316801512509080000001'
+    assert str0013.operation_number == '31680151250908000000001'
 
 
 def test_str0013e_general_error_from_xml() -> None:
@@ -234,7 +234,7 @@ def test_str0013e_general_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0013E CodErro="EGEN0050">
@@ -257,7 +257,7 @@ def test_str0013e_general_error_from_xml() -> None:
     assert str0013e.from_ispb == '31680151'
     assert str0013e.to_ispb == '00038166'
     assert str0013e.system_domain == 'SPB01'
-    assert str0013e.operation_number == '316801512509080000001'
+    assert str0013e.operation_number == '31680151250908000000001'
     assert str0013e.general_error_code == 'EGEN0050'
 
 
@@ -268,7 +268,7 @@ def test_str0013e_tag_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0013E>
@@ -291,7 +291,7 @@ def test_str0013e_tag_error_from_xml() -> None:
     assert str0013e.from_ispb == '31680151'
     assert str0013e.to_ispb == '00038166'
     assert str0013e.system_domain == 'SPB01'
-    assert str0013e.operation_number == '316801512509080000001'
+    assert str0013e.operation_number == '31680151250908000000001'
     assert str0013e.institution_ispb_error_code == 'EGEN0051'
 
 
@@ -337,7 +337,7 @@ def test_str0013r1_model_valid() -> None:
     assert message.settlement_date == date(2025, 11, 27)
     assert message.message_code == 'STR0013R1'
     assert message.institution_ispb == '31680151'
-    assert message.operation_number == '316801512509080000001'
+    assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
     assert message.to_ispb == '00038166'
     assert message.balance == Decimal('100.50')
@@ -372,7 +372,7 @@ def test_str0013r1_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0013R1>
@@ -397,7 +397,7 @@ def test_str0013r1_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <STR0013R1>
@@ -421,7 +421,7 @@ def test_str0013r1_from_xml() -> None:
     assert str0013r1.from_ispb == '31680151'
     assert str0013r1.to_ispb == '00038166'
     assert str0013r1.system_domain == 'SPB01'
-    assert str0013r1.operation_number == '316801512509080000001'
+    assert str0013r1.operation_number == '31680151250908000000001'
     assert str0013r1.balance == Decimal('100.50')
     assert str0013r1.vendor_timestamp == datetime(2025, 11, 20, 15, 30, 0, tzinfo=UTC)
 

@@ -25,7 +25,7 @@ def make_valid_ldl0014_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'LDL0014',
         'institution_control_number': '123',
         'original_ldl_control_number': '321',
@@ -57,7 +57,7 @@ def make_valid_ldl0014r1_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'LDL0014R1',
         'institution_control_number': '123',
         'institution_ispb': '31680151',
@@ -73,7 +73,7 @@ def make_valid_ldl0014r2_params() -> dict[str, Any]:
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'LDL0014R2',
         'str_control_number': 'STR20250101000000001',
         'vendor_timestamp': '2025-12-10T15:30:00+00:00',
@@ -104,7 +104,7 @@ def make_valid_ldl0014e_params(*, general_error: bool = False) -> dict[str, Any]
         'from_ispb': '31680151',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
-        'operation_number': '316801512509080000001',
+        'operation_number': '31680151250908000000001',
         'message_code': 'LDL0014',
         'institution_control_number': '123',
         'original_ldl_control_number': '321',
@@ -147,7 +147,7 @@ def test_ldl0014_valid_model() -> None:
     assert ldl0014.from_ispb == '31680151'
     assert ldl0014.to_ispb == '00038166'
     assert ldl0014.system_domain == 'SPB01'
-    assert ldl0014.operation_number == '316801512509080000001'
+    assert ldl0014.operation_number == '31680151250908000000001'
     assert ldl0014.message_code == 'LDL0014'
     assert ldl0014.institution_control_number == '123'
     assert ldl0014.original_ldl_control_number == '321'
@@ -181,7 +181,7 @@ def test_ldl0014r1_valid_model() -> None:
     assert ldl0014r1.from_ispb == '31680151'
     assert ldl0014r1.to_ispb == '00038166'
     assert ldl0014r1.system_domain == 'SPB01'
-    assert ldl0014r1.operation_number == '316801512509080000001'
+    assert ldl0014r1.operation_number == '31680151250908000000001'
     assert ldl0014r1.message_code == 'LDL0014R1'
     assert ldl0014r1.institution_control_number == '123'
     assert ldl0014r1.institution_ispb == '31680151'
@@ -199,7 +199,7 @@ def test_ldl0014r2_valid_model() -> None:
     assert ldl0014r2.from_ispb == '31680151'
     assert ldl0014r2.to_ispb == '00038166'
     assert ldl0014r2.system_domain == 'SPB01'
-    assert ldl0014r2.operation_number == '316801512509080000001'
+    assert ldl0014r2.operation_number == '31680151250908000000001'
     assert ldl0014r2.message_code == 'LDL0014R2'
     assert ldl0014r2.str_control_number == 'STR20250101000000001'
     assert ldl0014r2.vendor_timestamp == datetime(2025, 12, 10, 15, 30, tzinfo=UTC)
@@ -232,7 +232,7 @@ def test_ldl0014e_general_error_valid_model() -> None:
     assert ldl0014e.from_ispb == '31680151'
     assert ldl0014e.to_ispb == '00038166'
     assert ldl0014e.system_domain == 'SPB01'
-    assert ldl0014e.operation_number == '316801512509080000001'
+    assert ldl0014e.operation_number == '31680151250908000000001'
     assert ldl0014e.message_code == 'LDL0014'
     assert ldl0014e.institution_control_number == '123'
     assert ldl0014e.original_ldl_control_number == '321'
@@ -267,7 +267,7 @@ def test_ldl0014e_tag_error_valid_model() -> None:
     assert ldl0014e.from_ispb == '31680151'
     assert ldl0014e.to_ispb == '00038166'
     assert ldl0014e.system_domain == 'SPB01'
-    assert ldl0014e.operation_number == '316801512509080000001'
+    assert ldl0014e.operation_number == '31680151250908000000001'
     assert ldl0014e.message_code == 'LDL0014'
     assert ldl0014e.institution_control_number == '123'
     assert ldl0014e.original_ldl_control_number == '321'
@@ -365,7 +365,7 @@ def test_ldl0014_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0014>
@@ -409,7 +409,7 @@ def test_ldl0014r1_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0014R1>
@@ -439,7 +439,7 @@ def test_ldl0014r2_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0014R2>
@@ -482,7 +482,7 @@ def test_ldl0014e_general_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0014E CodErro="EGEN0050">
@@ -526,7 +526,7 @@ def test_ldl0014e_tag_error_to_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0014E>
@@ -565,7 +565,7 @@ def test_ldl0014_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0014>
@@ -601,7 +601,7 @@ def test_ldl0014_from_xml() -> None:
     assert ldl0014.from_ispb == '31680151'
     assert ldl0014.to_ispb == '00038166'
     assert ldl0014.system_domain == 'SPB01'
-    assert ldl0014.operation_number == '316801512509080000001'
+    assert ldl0014.operation_number == '31680151250908000000001'
     assert ldl0014.message_code == 'LDL0014'
     assert ldl0014.institution_control_number == '123'
     assert ldl0014.original_ldl_control_number == '321'
@@ -634,7 +634,7 @@ def test_ldl0014r1_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0014R1>
@@ -656,7 +656,7 @@ def test_ldl0014r1_from_xml() -> None:
     assert ldl0014r1.from_ispb == '31680151'
     assert ldl0014r1.to_ispb == '00038166'
     assert ldl0014r1.system_domain == 'SPB01'
-    assert ldl0014r1.operation_number == '316801512509080000001'
+    assert ldl0014r1.operation_number == '31680151250908000000001'
     assert ldl0014r1.message_code == 'LDL0014R1'
     assert ldl0014r1.institution_control_number == '123'
     assert ldl0014r1.institution_ispb == '31680151'
@@ -673,7 +673,7 @@ def test_ldl0014r2_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0014R2>
@@ -708,7 +708,7 @@ def test_ldl0014r2_from_xml() -> None:
     assert ldl0014r2.from_ispb == '31680151'
     assert ldl0014r2.to_ispb == '00038166'
     assert ldl0014r2.system_domain == 'SPB01'
-    assert ldl0014r2.operation_number == '316801512509080000001'
+    assert ldl0014r2.operation_number == '31680151250908000000001'
     assert ldl0014r2.message_code == 'LDL0014R2'
     assert ldl0014r2.str_control_number == 'STR20250101000000001'
     assert ldl0014r2.vendor_timestamp == datetime(2025, 12, 10, 15, 30, tzinfo=UTC)
@@ -740,7 +740,7 @@ def test_ldl0014e_general_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0014E CodErro="EGEN0050">
@@ -776,7 +776,7 @@ def test_ldl0014e_general_error_from_xml() -> None:
     assert ldl0014e.from_ispb == '31680151'
     assert ldl0014e.to_ispb == '00038166'
     assert ldl0014e.system_domain == 'SPB01'
-    assert ldl0014e.operation_number == '316801512509080000001'
+    assert ldl0014e.operation_number == '31680151250908000000001'
     assert ldl0014e.message_code == 'LDL0014'
     assert ldl0014e.institution_control_number == '123'
     assert ldl0014e.original_ldl_control_number == '321'
@@ -810,7 +810,7 @@ def test_ldl0014e_tag_error_from_xml() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0014E>
@@ -846,7 +846,7 @@ def test_ldl0014e_tag_error_from_xml() -> None:
     assert ldl0014e.from_ispb == '31680151'
     assert ldl0014e.to_ispb == '00038166'
     assert ldl0014e.system_domain == 'SPB01'
-    assert ldl0014e.operation_number == '316801512509080000001'
+    assert ldl0014e.operation_number == '31680151250908000000001'
     assert ldl0014e.message_code == 'LDL0014'
     assert ldl0014e.institution_control_number == '123'
     assert ldl0014e.original_ldl_control_number == '321'
@@ -911,7 +911,7 @@ def test_ldl0014_from_xml_missing_required_fields() -> None:
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
-            <NUOp>316801512509080000001</NUOp>
+            <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
             <LDL0014>
