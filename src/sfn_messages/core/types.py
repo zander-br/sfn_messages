@@ -1231,7 +1231,7 @@ class GridCode(EnumMixin, StrEnum):
             cls.SLB_QUERIES: 'SLB02',
             cls.SLB_D0_MATURITY_CHARGES: 'SLB04',
             cls.SME_GENERAL: 'SME01',
-            cls.SME_QUERIES: 'SME_QUERIES',
+            cls.SME_QUERIES: 'SME02',
             cls.SML_OPERATIONS: 'SML01',
             cls.SML_CREDITS: 'SML02',
             cls.STR_GENERAL: 'STR01',
