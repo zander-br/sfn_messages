@@ -46,7 +46,7 @@ lint-mypy:
 
 test: test-pytest
 
-test-pytest .coverage:
+test-pytest .coverage: data/xsd
 	uv run coverage run -m pytest $(TESTS_DIR)
 	uv run coverage report -m
 
@@ -54,9 +54,25 @@ test-coverage-report: .coverage
 	uv run coverage html
 
 
+# Data
+
+.PHONY: data
+
+data: data/xsd
+
+data/xsd: data/xsd.zip
+	rm -rf data/xsd.tmp
+	mkdir -p data/xsd.tmp
+	cd data/xsd.tmp && unzip ../xsd.zip
+	mv data/xsd.tmp $@
+
+data/xsd.zip:
+	curl -o $@ https://www.bcb.gov.br/content/estabilidadefinanceira/cedsfn/Catalogos/XSDDOCV511.zip
+
+
 # Clean
 
-.PHONY: clean clean-build clean-pycache clean-python-tools dist-clean
+.PHONY: clean clean-build clean-pycache clean-python-tools clean-data dist-clean
 
 clean: clean-build clean-pycache clean-python-tools
 
@@ -70,5 +86,8 @@ clean-pycache:
 clean-python-tools:
 	rm -rf .ruff_cache .mypy_cache .pytest_cache .coverage .coverage.* htmlcov
 
-dist-clean: clean
+clean-data:
+	rm -rf data/xsd data/xsd.zip
+
+dist-clean: clean clean-data
 	rm -rf .venv $(SRC_DIR)/*.egg-info
