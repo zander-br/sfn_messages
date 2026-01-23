@@ -1724,3 +1724,35 @@ type StaProtocolNumber = Annotated[
         )
     ),
 ]
+
+
+class InformationType(EnumMixin, StrEnum):
+    COMPLEMENTARY = 'COMPLEMENTARY'
+    DEFINITIVE = 'DEFINITIVE'
+    SPECIAL = 'SPECIAL'
+    PRELIMINARY = 'PRELIMINARY'
+    RECALCULATION = 'RECALCULATION'
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[InformationType, str]:
+        return {
+            cls.COMPLEMENTARY: 'C',
+            cls.DEFINITIVE: 'D',
+            cls.SPECIAL: 'E',
+            cls.PRELIMINARY: 'P',
+            cls.RECALCULATION: 'R',
+        }
+
+
+type InformationSequenceNumber = Annotated[
+    str, GetPydanticSchema(lambda _tp, _handler: core_schema.str_schema(pattern=r'^\d{1,3}$', strip_whitespace=True))
+]
+
+
+class ReconciliationType(EnumMixin, StrEnum):
+    CONFIRM = 'CONFIRM'
+    DIFFER = 'DIFFER'
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[ReconciliationType, str]:
+        return {cls.CONFIRM: 'C', cls.DIFFER: 'D'}
