@@ -11,7 +11,7 @@ from .types import IndividualIdentificationNumber, ResponsibleType
 PATH = 'DOC/SISMSG/GEN0020'
 PATH_R1 = 'DOC/SISMSG/GEN0020R1'
 PATH_R1_GROUP = 'Grupo_GEN0020R1_Respons'
-PATH_E = 'DOC/SISMSG/GEN0020E'
+PATH_E = 'DOC/SISMSG/GEN0020'
 XML_NAMESPACE = 'http://www.bcb.gov.br/GEN/GEN0020.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/GEN/GEN0020E.xsd'
 
@@ -56,13 +56,13 @@ class GEN0020R1(BaseMessage):
 class GEN0020E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['GEN0020'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'GEN0020'
+    message_code: Annotated[Literal['GEN0020E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'GEN0020E'
     participant_institution_control_number: Annotated[
-        InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlPart/text()')
-    ]
-    participant_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBPart/text()')]
+        InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlPart/text()')
+    ] = None
+    participant_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBPart/text()')] = None
     parcitipant_consulted_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBPartConsd/text()')] = None
-    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     participant_institution_control_number_error_code: Annotated[

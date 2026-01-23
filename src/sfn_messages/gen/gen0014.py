@@ -8,7 +8,7 @@ from .types import SelectionCriteria, TransmissionType
 
 PATH = 'DOC/SISMSG/GEN0014'
 PATH_R1 = 'DOC/SISMSG/GEN0014R1'
-PATH_E = 'DOC/SISMSG/GEN0014E'
+PATH_E = 'DOC/SISMSG/GEN0014'
 XML_NAMESPACE = 'http://www.bcb.gov.br/GEN/GEN0014.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/GEN/GEN0014E.xsd'
 
@@ -40,14 +40,16 @@ class GEN0014R1(BaseMessage):
 class GEN0014E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['GEN0014'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'GEN0014'
-    institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIF/text()')]
-    issuing_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBEmissor/text()')]
-    recipient_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBDestinatario/text()')]
-    file_name: Annotated[Name, XmlPath(f'{PATH_E}/NomArq/text()')]
+    message_code: Annotated[Literal['GEN0014E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'GEN0014E'
+    institution_control_number: Annotated[InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlIF/text()')] = (
+        None
+    )
+    issuing_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBEmissor/text()')] = None
+    recipient_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBDestinatario/text()')] = None
+    file_name: Annotated[Name | None, XmlPath(f'{PATH_E}/NomArq/text()')] = None
     selection_criteria: Annotated[SelectionCriteria | None, XmlPath(f'{PATH_E}/CritSelec/text()')] = None
-    transmission_type: Annotated[TransmissionType, XmlPath(f'{PATH_E}/TpTransm/text()')]
-    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+    transmission_type: Annotated[TransmissionType | None, XmlPath(f'{PATH_E}/TpTransm/text()')] = None
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     institution_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIF/@CodErro')] = None

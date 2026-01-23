@@ -7,7 +7,7 @@ from sfn_messages.core.types import ErrorCode, Ispb
 from .types import Certificate, CertificateIssue, CertificateSerialNumber
 
 PATH = 'DOC/SISMSG/GEN0007'
-PATH_E = 'DOC/SISMSG/GEN0007E'
+PATH_E = 'DOC/SISMSG/GEN0007'
 XML_NAMESPACE = 'http://www.bcb.gov.br/GEN/GEN0007.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/GEN/GEN0007E.xsd'
 
@@ -27,13 +27,13 @@ class GEN0007(BaseMessage):
 class GEN0007E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['GEN0007'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'GEN0007'
-    instituition_certificate: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIFCertif/text()')]
-    certificate: Annotated[Certificate, XmlPath(f'{PATH_E}/CertifDig/text()')]
-    certificate_issue: Annotated[CertificateIssue, XmlPath(f'{PATH_E}/CodCertifrAtv/text()')]
-    certificate_serial_number: Annotated[CertificateSerialNumber, XmlPath(f'{PATH_E}/CertifAtv/text()')]
-    vendor_timestamp: Annotated[datetime, XmlPath(f'{PATH_E}/DtHrBC/text()')]
-    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+    message_code: Annotated[Literal['GEN0007E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'GEN0007E'
+    instituition_certificate: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIFCertif/text()')] = None
+    certificate: Annotated[Certificate | None, XmlPath(f'{PATH_E}/CertifDig/text()')] = None
+    certificate_issue: Annotated[CertificateIssue | None, XmlPath(f'{PATH_E}/CodCertifrAtv/text()')] = None
+    certificate_serial_number: Annotated[CertificateSerialNumber | None, XmlPath(f'{PATH_E}/CertifAtv/text()')] = None
+    vendor_timestamp: Annotated[datetime | None, XmlPath(f'{PATH_E}/DtHrBC/text()')] = None
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     instituition_certificate_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBIFCertif/@CodErro')] = None

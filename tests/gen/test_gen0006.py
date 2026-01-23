@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime
+from datetime import date, datetime
 from typing import Any
 
 import pytest
@@ -31,7 +31,7 @@ def make_valid_gen0006r1_params() -> dict[str, Any]:
         'institution_control_number': '123',
         'institution_ispb': '31680151',
         'operation_number': '31680151250908000000001',
-        'vendor_timestamp': '2025-11-20T15:30:00+00:00',
+        'vendor_timestamp': '2025-11-20T15:30:00',
         'settlement_date': '2025-11-20',
         'system_domain': 'SPB01',
         'to_ispb': '31680151',
@@ -89,7 +89,7 @@ def test_gen0006e_general_error_valid_model() -> None:
     assert gen0006e.from_ispb == '31680151'
     assert gen0006e.institution_control_number == '123'
     assert gen0006e.institution_ispb == '31680151'
-    assert gen0006e.message_code == 'GEN0006'
+    assert gen0006e.message_code == 'GEN0006E'
     assert gen0006e.operation_number == '31680151250908000000001'
     assert gen0006e.settlement_date == date(2025, 11, 20)
     assert gen0006e.system_domain == SystemDomain.SPB01
@@ -108,7 +108,7 @@ def test_gen0006e_tag_error_valid_model() -> None:
     assert gen0006e.from_ispb == '31680151'
     assert gen0006e.institution_control_number == '123'
     assert gen0006e.institution_ispb == '31680151'
-    assert gen0006e.message_code == 'GEN0006'
+    assert gen0006e.message_code == 'GEN0006E'
     assert gen0006e.operation_number == '31680151250908000000001'
     assert gen0006e.settlement_date == date(2025, 11, 20)
     assert gen0006e.system_domain == SystemDomain.SPB01
@@ -209,15 +209,15 @@ def test_gen0006e_general_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0006E CodErro="EGEN0050">
-                <CodMsg>GEN0006</CodMsg>
+            <GEN0006 CodErro="EGEN0050">
+                <CodMsg>GEN0006E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <CodCertifrAtv>1</CodCertifrAtv>
                 <CertifAtv>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</CertifAtv>
                 <Hist>Test GEN0006</Hist>
                 <DtMovto>2025-11-20</DtMovto>
-            </GEN0006E>
+            </GEN0006>
         </SISMSG>
     </DOC>
     """
@@ -239,15 +239,15 @@ def test_gen0006e_tag_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0006E>
-                <CodMsg>GEN0006</CodMsg>
+            <GEN0006>
+                <CodMsg>GEN0006E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF CodErro="EGEN0051">31680151</ISPBIF>
                 <CodCertifrAtv>1</CodCertifrAtv>
                 <CertifAtv>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</CertifAtv>
                 <Hist>Test GEN0006</Hist>
                 <DtMovto>2025-11-20</DtMovto>
-            </GEN0006E>
+            </GEN0006>
         </SISMSG>
     </DOC>
     """
@@ -303,15 +303,15 @@ def test_gen0006e_general_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0006E CodErro="EGEN0050">
-                <CodMsg>GEN0006</CodMsg>
+            <GEN0006 CodErro="EGEN0050">
+                <CodMsg>GEN0006E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <CodCertifrAtv>1</CodCertifrAtv>
                 <CertifAtv>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</CertifAtv>
                 <Hist>Test GEN0006</Hist>
                 <DtMovto>2025-11-20</DtMovto>
-            </GEN0006E>
+            </GEN0006>
         </SISMSG>
     </DOC>
     """
@@ -325,7 +325,7 @@ def test_gen0006e_general_error_from_xml() -> None:
     assert gen0006e.from_ispb == '31680151'
     assert gen0006e.institution_control_number == '123'
     assert gen0006e.institution_ispb == '31680151'
-    assert gen0006e.message_code == 'GEN0006'
+    assert gen0006e.message_code == 'GEN0006E'
     assert gen0006e.operation_number == '31680151250908000000001'
     assert gen0006e.settlement_date == date(2025, 11, 20)
     assert gen0006e.system_domain == SystemDomain.SPB01
@@ -343,15 +343,15 @@ def test_gen0006e_tag_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0006E>
-                <CodMsg>GEN0006</CodMsg>
+            <GEN0006>
+                <CodMsg>GEN0006E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF CodErro="EGEN0051">31680151</ISPBIF>
                 <CodCertifrAtv>1</CodCertifrAtv>
                 <CertifAtv>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</CertifAtv>
                 <Hist>Test GEN0006</Hist>
                 <DtMovto>2025-11-20</DtMovto>
-            </GEN0006E>
+            </GEN0006>
         </SISMSG>
     </DOC>
     """
@@ -365,7 +365,7 @@ def test_gen0006e_tag_error_from_xml() -> None:
     assert gen0006e.from_ispb == '31680151'
     assert gen0006e.institution_control_number == '123'
     assert gen0006e.institution_ispb == '31680151'
-    assert gen0006e.message_code == 'GEN0006'
+    assert gen0006e.message_code == 'GEN0006E'
     assert gen0006e.operation_number == '31680151250908000000001'
     assert gen0006e.settlement_date == date(2025, 11, 20)
     assert gen0006e.system_domain == SystemDomain.SPB01
@@ -451,7 +451,7 @@ def test_gen0006r1_valid_model() -> None:
     assert gen0006r1.institution_ispb == '31680151'
     assert gen0006r1.message_code == 'GEN0006R1'
     assert gen0006r1.operation_number == '31680151250908000000001'
-    assert gen0006r1.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert gen0006r1.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
     assert gen0006r1.settlement_date == date(2025, 11, 20)
     assert gen0006r1.system_domain == SystemDomain.SPB01
     assert gen0006r1.to_ispb == '31680151'
@@ -493,7 +493,7 @@ def test_gen0006r1_to_xml() -> None:
                 <CodMsg>GEN0006R1</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <DtMovto>2025-11-20</DtMovto>
             </GEN0006R1>
         </SISMSG>
@@ -516,7 +516,7 @@ def test_gen0006r1_from_xml() -> None:
                 <CodMsg>GEN0006R1</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <DtMovto>2025-11-20</DtMovto>
             </GEN0006R1>
         </SISMSG>
@@ -531,7 +531,7 @@ def test_gen0006r1_from_xml() -> None:
     assert gen0006r1.institution_ispb == '31680151'
     assert gen0006r1.message_code == 'GEN0006R1'
     assert gen0006r1.operation_number == '31680151250908000000001'
-    assert gen0006r1.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert gen0006r1.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
     assert gen0006r1.settlement_date == date(2025, 11, 20)
     assert gen0006r1.system_domain == SystemDomain.SPB01
     assert gen0006r1.to_ispb == '31680151'

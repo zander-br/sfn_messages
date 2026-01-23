@@ -18,7 +18,7 @@ from .types import PortabilityReturnReason
 PATH = 'DOC/SISMSG/STR0048'
 PATH_R1 = 'DOC/SISMSG/STR0048R1'
 PATH_R2 = 'DOC/SISMSG/STR0048R2'
-PATH_E = 'DOC/SISMSG/STR0048E'
+PATH_E = 'DOC/SISMSG/STR0048'
 XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/STR0048.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/STR0048E.xsd'
 
@@ -72,19 +72,23 @@ class STR0048R2(BaseMessage):
 class STR0048E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['STR0048'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'STR0048'
-    institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIF/text()')]
-    debtor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIFDebtd/text()')]
-    creditor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIFCredtd/text()')]
-    amount: Annotated[Decimal, XmlPath(f'{PATH_E}/VlrLanc/text()')]
-    portability_return_reason: Annotated[PortabilityReturnReason, XmlPath(f'{PATH_E}/CodDevPortdd/text()')]
-    original_str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_E}/NumCtrlSTROr/text()')]
-    provider_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBPrestd/text()')]
+    message_code: Annotated[Literal['STR0048E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'STR0048E'
+    institution_control_number: Annotated[InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlIF/text()')] = (
+        None
+    )
+    debtor_institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIFDebtd/text()')] = None
+    creditor_institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIFCredtd/text()')] = None
+    amount: Annotated[Decimal | None, XmlPath(f'{PATH_E}/VlrLanc/text()')] = None
+    portability_return_reason: Annotated[PortabilityReturnReason | None, XmlPath(f'{PATH_E}/CodDevPortdd/text()')] = (
+        None
+    )
+    original_str_control_number: Annotated[StrControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlSTROr/text()')] = None
+    provider_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBPrestd/text()')] = None
     description: Annotated[Description | None, XmlPath(f'{PATH_E}/Hist/text()')] = None
     scheduled_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtAgendt/text()')] = None
     scheduled_time: Annotated[time | None, XmlPath(f'{PATH_E}/HrAgendt/text()')] = None
     priority: Annotated[Priority | None, XmlPath(f'{PATH_E}/NivelPref/text()')] = None
-    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     institution_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIF/@CodErro')] = None

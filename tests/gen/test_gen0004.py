@@ -1,4 +1,4 @@
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Any
 
 import pytest
@@ -22,7 +22,7 @@ def make_valid_gen0004_params() -> dict[str, Any]:
         'unique_operation_number': '31680151250908000000001',
         'original_protocol_sta_number': '123456789012345678',
         'description': 'Generic error description',
-        'participant_datetime': '2026-01-12T10:30:00+00:00',
+        'participant_datetime': '2026-01-12T10:30:00',
     }
 
 
@@ -39,7 +39,7 @@ def test_gen0004_valid_model() -> None:
     assert gen0004.unique_operation_number == '31680151250908000000001'
     assert gen0004.original_protocol_sta_number == '123456789012345678'
     assert gen0004.description == 'Generic error description'
-    assert gen0004.participant_datetime == datetime(2026, 1, 12, 10, 30, tzinfo=UTC)
+    assert gen0004.participant_datetime == datetime(2026, 1, 12, 10, 30)
 
 
 def test_gen0004_missing_required_fields() -> None:
@@ -83,7 +83,7 @@ def test_gen0004_to_xml() -> None:
                 <NUOpOr>31680151250908000000001</NUOpOr>
                 <NumProtSTAOr>123456789012345678</NumProtSTAOr>
                 <Hist>Generic error description</Hist>
-                <DtHrPart>2026-01-12 10:30:00+00:00</DtHrPart>
+                <DtHrPart>2026-01-12T10:30:00</DtHrPart>
             </GEN0004>
         </SISMSG>
     </DOC>
@@ -111,7 +111,7 @@ def test_gen0004_from_xml() -> None:
                 <NUOpOr>31680151250908000000001</NUOpOr>
                 <NumProtSTAOr>123456789012345678</NumProtSTAOr>
                 <Hist>Generic error description</Hist>
-                <DtHrPart>2026-01-12 10:30:00+00:00</DtHrPart>
+                <DtHrPart>2026-01-12T10:30:00</DtHrPart>
             </GEN0004>
         </SISMSG>
     </DOC>
@@ -128,7 +128,7 @@ def test_gen0004_from_xml() -> None:
     assert gen0004.unique_operation_number == '31680151250908000000001'
     assert gen0004.original_protocol_sta_number == '123456789012345678'
     assert gen0004.description == 'Generic error description'
-    assert gen0004.participant_datetime == datetime(2026, 1, 12, 10, 30, tzinfo=UTC)
+    assert gen0004.participant_datetime == datetime(2026, 1, 12, 10, 30)
 
 
 def test_gen0004_roundtrip() -> None:

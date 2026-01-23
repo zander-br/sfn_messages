@@ -14,7 +14,7 @@ from .types import SlbControlNumber, SlbSettlementStatus
 
 PATH = 'DOC/SISMSG/SLB0002'
 PATH_R1 = 'DOC/SISMSG/SLB0002R1'
-PATH_E = 'DOC/SISMSG/SLB0002E'
+PATH_E = 'DOC/SISMSG/SLB0002'
 XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/SLB0002.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/SLB0002E.xsd'
 
@@ -48,15 +48,15 @@ class SLB0002R1(BaseMessage):
 class SLB0002E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['SLB0002'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'SLB0002'
+    message_code: Annotated[Literal['SLB0002E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'SLB0002E'
     participant_institution_control_number: Annotated[
-        InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlPart/text()')
-    ]
-    participant_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBPart/text()')]
-    original_slb_control_number: Annotated[SlbControlNumber, XmlPath(f'{PATH_E}/NumCtrlSLBOr/text()')]
+        InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlPart/text()')
+    ] = None
+    participant_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBPart/text()')] = None
+    original_slb_control_number: Annotated[SlbControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlSLBOr/text()')] = None
     priority: Annotated[Priority | None, XmlPath(f'{PATH_E}/NivelPref/text()')] = None
-    amount: Annotated[Decimal, XmlPath(f'{PATH_E}/VlrLanc/text()')]
-    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+    amount: Annotated[Decimal | None, XmlPath(f'{PATH_E}/VlrLanc/text()')] = None
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     participant_institution_control_number_error_code: Annotated[

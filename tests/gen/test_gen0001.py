@@ -39,7 +39,7 @@ def make_valid_gen0001e_params(*, general_error: bool = False) -> dict[str, Any]
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
         'operation_number': '31680151250908000000001',
-        'message_code': 'GEN0001',
+        'message_code': 'GEN0001E',
         'issuing_ispb': '31680151',
         'recipient_ispb': '31680151',
         'message': 'Message test GEN0001',
@@ -198,12 +198,12 @@ def test_gen0001e_general_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0001E CodErro="EGEN0050">
-                <CodMsg>GEN0001</CodMsg>
+            <GEN0001 CodErro="EGEN0050">
+                <CodMsg>GEN0001E</CodMsg>
                 <ISPBEmissor>31680151</ISPBEmissor>
                 <ISPBDestinatario>31680151</ISPBDestinatario>
                 <MsgECO>Message test GEN0001</MsgECO>
-            </GEN0001E>
+            </GEN0001>
         </SISMSG>
     </DOC>
     """
@@ -226,12 +226,12 @@ def test_gen0001e_tag_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0001E>
-                <CodMsg>GEN0001</CodMsg>
+            <GEN0001>
+                <CodMsg>GEN0001E</CodMsg>
                 <ISPBEmissor CodErro="EGEN0051">31680151</ISPBEmissor>
                 <ISPBDestinatario>31680151</ISPBDestinatario>
                 <MsgECO>Message test GEN0001</MsgECO>
-            </GEN0001E>
+            </GEN0001>
         </SISMSG>
     </DOC>
     """
@@ -305,12 +305,12 @@ def test_gen0001e_general_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0001E CodErro="EGEN0050">
-                <CodMsg>GEN0001</CodMsg>
+            <GEN0001 CodErro="EGEN0050">
+                <CodMsg>GEN0001E</CodMsg>
                 <ISPBEmissor>31680151</ISPBEmissor>
                 <ISPBDestinatario>31680151</ISPBDestinatario>
                 <MsgECO>Message test GEN0001</MsgECO>
-            </GEN0001E>
+            </GEN0001>
         </SISMSG>
     </DOC>
     """
@@ -334,12 +334,12 @@ def test_gen0001e_tag_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0001E>
-                <CodMsg>GEN0001</CodMsg>
+            <GEN0001>
+                <CodMsg>GEN0001E</CodMsg>
                 <ISPBEmissor CodErro="EGEN0051">31680151</ISPBEmissor>
                 <ISPBDestinatario>31680151</ISPBDestinatario>
                 <MsgECO>Message test GEN0001</MsgECO>
-            </GEN0001E>
+            </GEN0001>
         </SISMSG>
     </DOC>
     """

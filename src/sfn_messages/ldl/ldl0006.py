@@ -25,7 +25,7 @@ PATH_GROUP = 'Grupo_LDL0006_DevCred'
 PATH_R1 = 'DOC/SISMSG/LDL0006R1'
 PATH_R2 = 'DOC/SISMSG/LDL0006R2'
 PATH_GROUP_R2 = 'Grupo_LDL0006R2_DevCred'
-PATH_E = 'DOC/SISMSG/LDL0006E'
+PATH_E = 'DOC/SISMSG/LDL0006'
 XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/LDL0006.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/LDL0006E.xsd'
 
@@ -96,11 +96,11 @@ class LDL0006R2(BaseMessage):
 
 
 class CreditRefundGroupError(BaseSubMessage):
-    cnpj: Annotated[Cnpj, XmlPath(f'{PATH_GROUP}/CNPJNLiqdant/text()')]
+    cnpj: Annotated[Cnpj | None, XmlPath(f'{PATH_GROUP}/CNPJNLiqdant/text()')] = None
     participant_identifier: Annotated[ParticipantIdentifier | None, XmlPath(f'{PATH_GROUP}/IdentdPartCamr/text()')] = (
         None
     )
-    amount: Annotated[Decimal, XmlPath(f'{PATH_GROUP}/VlrNLiqdant/text()')]
+    amount: Annotated[Decimal | None, XmlPath(f'{PATH_GROUP}/VlrNLiqdant/text()')] = None
     payment_type_ldl: Annotated[PaymentType | None, XmlPath(f'{PATH_GROUP}/TpPgtoLDL/text()')] = None
     movement_type: Annotated[MovementType | None, XmlPath(f'{PATH_GROUP}/TpMovtc/text()')] = None
     payment_number: Annotated[PaymentNumber | None, XmlPath(f'{PATH_GROUP}/NumPgtoLDL/text()')] = None
@@ -120,15 +120,17 @@ class CreditRefundGroupError(BaseSubMessage):
 class LDL0006E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['LDL0006'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'LDL0006'
-    institution_or_ldl_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIF_LDL/text()')]
-    debitor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIF_LDLDebtd/text()')]
-    creditor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIF_LDLCredtd/text()')]
+    message_code: Annotated[Literal['LDL0006E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'LDL0006E'
+    institution_or_ldl_control_number: Annotated[
+        InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlIF_LDL/text()')
+    ] = None
+    debitor_institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIF_LDLDebtd/text()')] = None
+    creditor_institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIF_LDLCredtd/text()')] = None
     product_code: Annotated[ProductCode | None, XmlPath(f'{PATH_E}/CodProdt/text()')] = None
-    original_str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_E}/NumCtrlSTROr/text()')]
-    amount: Annotated[Decimal, XmlPath(f'{PATH_E}/VlrLanc/text()')]
+    original_str_control_number: Annotated[StrControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlSTROr/text()')] = None
+    amount: Annotated[Decimal | None, XmlPath(f'{PATH_E}/VlrLanc/text()')] = None
     credit_refund_group: Annotated[list[CreditRefundGroupError], XmlPath(f'{PATH_E}')] = Field(default_factory=list)
-    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     institution_or_ldl_control_number_error_code: Annotated[

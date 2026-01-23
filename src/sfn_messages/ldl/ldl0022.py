@@ -15,7 +15,7 @@ from sfn_messages.core.types import (
 PATH = 'DOC/SISMSG/LDL0022'
 PATH_R1 = 'DOC/SISMSG/LDL0022R1'
 PATH_R2 = 'DOC/SISMSG/LDL0022R2'
-PATH_E = 'DOC/SISMSG/LDL0022E'
+PATH_E = 'DOC/SISMSG/LDL0022'
 XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/LDL0022.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/LDL0022E.xsd'
 
@@ -60,13 +60,15 @@ class LDL0022R2(BaseMessage):
 class LDL0022E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['LDL0022'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'LDL0022'
-    institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIF/text()')]
-    institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIF/text()')]
-    ldl_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBLDL/text()')]
-    product_code: Annotated[ProductCode, XmlPath(f'{PATH_E}/CodProdt/text()')]
-    amount: Annotated[Decimal, XmlPath(f'{PATH_E}/VlrLanc/text()')]
-    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+    message_code: Annotated[Literal['LDL0022E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'LDL0022E'
+    institution_control_number: Annotated[InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlIF/text()')] = (
+        None
+    )
+    institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIF/text()')] = None
+    ldl_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBLDL/text()')] = None
+    product_code: Annotated[ProductCode | None, XmlPath(f'{PATH_E}/CodProdt/text()')] = None
+    amount: Annotated[Decimal | None, XmlPath(f'{PATH_E}/VlrLanc/text()')] = None
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     institution_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIF/@CodErro')] = None

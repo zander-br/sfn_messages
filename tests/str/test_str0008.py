@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime, time
+from datetime import date, datetime, time
 from decimal import Decimal
 from typing import Any
 
@@ -49,7 +49,7 @@ def make_valid_str0008r1_params() -> dict[str, Any]:
         'debtor_institution_ispb': '31680151',
         'str_control_number': 'STR20250101000000001',
         'str_settlement_status': 'EFFECTIVE',
-        'settlement_timestamp': '2025-11-20T15:30:00+00:00',
+        'settlement_timestamp': '2025-11-20T15:30:00',
         'settlement_date': '2025-09-08',
         'operation_number': '31680151250908000000001',
         'to_ispb': '00038166',
@@ -82,7 +82,7 @@ def make_valid_str0008r2_params() -> dict[str, Any]:
         'system_domain': 'SPB01',
         'to_ispb': '00038166',
         'transaction_id': '0000000000000000000000001',
-        'vendor_timestamp': '2025-11-20T15:30:00+00:00',
+        'vendor_timestamp': '2025-11-20T15:30:00',
         'str_control_number': 'STR20250101000000001',
     }
 
@@ -409,8 +409,8 @@ def test_str0008e_general_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008E CodErro="EGEN0050">
-                <CodMsg>STR0008</CodMsg>
+            <STR0008 CodErro="EGEN0050">
+                <CodMsg>STR0008E</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
                 <AgDebtd>0002</AgDebtd>
@@ -434,7 +434,7 @@ def test_str0008e_general_error_to_xml() -> None:
                 <HrAgendt>15:30:00</HrAgendt>
                 <NivelPref>C</NivelPref>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0008E>
+            </STR0008>
         </SISMSG>
     </DOC>
     """
@@ -456,8 +456,8 @@ def test_str0008e_tag_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008E>
-                <CodMsg>STR0008</CodMsg>
+            <STR0008>
+                <CodMsg>STR0008E</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIFDebtd CodErro="EGEN0051">31680151</ISPBIFDebtd>
                 <AgDebtd>0002</AgDebtd>
@@ -481,7 +481,7 @@ def test_str0008e_tag_error_to_xml() -> None:
                 <HrAgendt>15:30:00</HrAgendt>
                 <NivelPref>C</NivelPref>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0008E>
+            </STR0008>
         </SISMSG>
     </DOC>
     """
@@ -620,8 +620,8 @@ def test_str0008e_general_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008E CodErro="EGEN0050">
-                <CodMsg>STR0008</CodMsg>
+            <STR0008 CodErro="EGEN0050">
+                <CodMsg>STR0008E</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
                 <AgDebtd>0002</AgDebtd>
@@ -645,7 +645,7 @@ def test_str0008e_general_error_from_xml() -> None:
                 <HrAgendt>15:30:00</HrAgendt>
                 <NivelPref>C</NivelPref>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0008E>
+            </STR0008>
         </SISMSG>
     </DOC>
     """
@@ -694,8 +694,8 @@ def test_str0008e_tag_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0008E>
-                <CodMsg>STR0008</CodMsg>
+            <STR0008>
+                <CodMsg>STR0008E</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIFDebtd CodErro="EGEN0051">31680151</ISPBIFDebtd>
                 <AgDebtd>0002</AgDebtd>
@@ -719,7 +719,7 @@ def test_str0008e_tag_error_from_xml() -> None:
                 <HrAgendt>15:30:00</HrAgendt>
                 <NivelPref>C</NivelPref>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0008E>
+            </STR0008>
         </SISMSG>
     </DOC>
     """
@@ -883,7 +883,7 @@ def test_str0008r1_valid_model() -> None:
     assert str0008r1.message_code == 'STR0008R1'
     assert str0008r1.operation_number == '31680151250908000000001'
     assert str0008r1.settlement_date == date(2025, 9, 8)
-    assert str0008r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0008r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30)
     assert str0008r1.str_control_number == 'STR20250101000000001'
     assert str0008r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
     assert str0008r1.to_ispb == '00038166'
@@ -928,7 +928,7 @@ def test_str0008r1_to_xml() -> None:
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <SitLancSTR>1</SitLancSTR>
-                <DtHrSit>2025-11-20 15:30:00+00:00</DtHrSit>
+                <DtHrSit>2025-11-20T15:30:00</DtHrSit>
                 <DtMovto>2025-09-08</DtMovto>
             </STR0008R1>
         </SISMSG>
@@ -954,7 +954,7 @@ def test_str0008r1_from_xml() -> None:
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <SitLancSTR>1</SitLancSTR>
-                <DtHrSit>2025-11-20 15:30:00+00:00</DtHrSit>
+                <DtHrSit>2025-11-20T15:30:00</DtHrSit>
                 <DtMovto>2025-09-08</DtMovto>
             </STR0008R1>
         </SISMSG>
@@ -968,7 +968,7 @@ def test_str0008r1_from_xml() -> None:
     assert str0008r1.message_code == 'STR0008R1'
     assert str0008r1.operation_number == '31680151250908000000001'
     assert str0008r1.settlement_date == date(2025, 9, 8)
-    assert str0008r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0008r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30)
     assert str0008r1.str_control_number == 'STR20250101000000001'
     assert str0008r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
     assert str0008r1.to_ispb == '00038166'
@@ -1042,7 +1042,7 @@ def test_str0008r2_valid_model() -> None:
     assert str0008r2.system_domain == 'SPB01'
     assert str0008r2.to_ispb == '00038166'
     assert str0008r2.transaction_id == '0000000000000000000000001'
-    assert str0008r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0008r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
     assert str0008r2.str_control_number == 'STR20250101000000001'
 
 
@@ -1181,7 +1181,7 @@ def test_str0008r2_to_xml() -> None:
             <STR0008R2>
                 <CodMsg>STR0008R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
                 <AgDebtd>0002</AgDebtd>
                 <TpCtDebtd>CC</TpCtDebtd>
@@ -1229,7 +1229,7 @@ def test_str0008r2_to_xml_omit_optional_fields() -> None:
             <STR0008R2>
                 <CodMsg>STR0008R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
                 <AgDebtd>0002</AgDebtd>
                 <TpCtDebtd>CC</TpCtDebtd>
@@ -1268,7 +1268,7 @@ def test_str0008r2_from_xml() -> None:
             <STR0008R2>
                 <CodMsg>STR0008R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
                 <AgDebtd>0002</AgDebtd>
                 <TpCtDebtd>CC</TpCtDebtd>
@@ -1320,7 +1320,7 @@ def test_str0008r2_from_xml() -> None:
     assert str0008r2.system_domain == 'SPB01'
     assert str0008r2.to_ispb == '00038166'
     assert str0008r2.transaction_id == '0000000000000000000000001'
-    assert str0008r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0008r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
 
 
 def test_str0008r2_from_xml_omit_optional_fields() -> None:
@@ -1336,7 +1336,7 @@ def test_str0008r2_from_xml_omit_optional_fields() -> None:
             <STR0008R2>
                 <CodMsg>STR0008R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
                 <AgDebtd>0002</AgDebtd>
                 <TpCtDebtd>CC</TpCtDebtd>
@@ -1386,7 +1386,7 @@ def test_str0008r2_from_xml_omit_optional_fields() -> None:
     assert str0008r2.system_domain == 'SPB01'
     assert str0008r2.to_ispb == '00038166'
     assert str0008r2.transaction_id is None
-    assert str0008r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0008r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
 
 
 def test_str0008r2_roundtrip() -> None:

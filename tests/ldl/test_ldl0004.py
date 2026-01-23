@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Any
 
@@ -51,7 +51,7 @@ def make_valid_ldl0004r1_params() -> dict[str, Any]:
         'institution_ispb': '31680151',
         'str_control_number': 'STR20250101000000001',
         'ldl_settlement_status': 'EFFECTIVE',
-        'settlement_timestamp': '2025-12-09T10:00:00+00:00',
+        'settlement_timestamp': '2025-12-09T10:00:00',
         'settlement_date': '2025-12-09',
     }
 
@@ -66,7 +66,7 @@ def make_valid_ldl0004r2_params() -> dict[str, Any]:
         'original_ldl_control_number': '321',
         'institution_ispb': '31680151',
         'str_control_number': 'STR20250101000000001',
-        'vendor_timestamp': '2025-12-09T09:00:00+00:00',
+        'vendor_timestamp': '2025-12-09T09:00:00',
         'ldl_ispb': '31680153',
         'amount': 120.0,
         'net_result_group': [
@@ -91,7 +91,7 @@ def make_valid_ldl0004e_params(*, general_error: bool = False) -> dict[str, Any]
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
         'operation_number': '31680151250908000000001',
-        'message_code': 'LDL0004',
+        'message_code': 'LDL0004E',
         'institution_control_number': '123',
         'institution_ispb': '31680151',
         'original_ldl_control_number': '321',
@@ -180,7 +180,7 @@ def test_ldl0004r2_valid_model() -> None:
     assert ldl0004r2.original_ldl_control_number == '321'
     assert ldl0004r2.institution_ispb == '31680151'
     assert ldl0004r2.str_control_number == 'STR20250101000000001'
-    assert ldl0004r2.vendor_timestamp == datetime(2025, 12, 9, 9, 0, tzinfo=UTC)
+    assert ldl0004r2.vendor_timestamp == datetime(2025, 12, 9, 9, 0)
     assert ldl0004r2.ldl_ispb == '31680153'
     assert ldl0004r2.amount == Decimal('120.0')
     assert ldl0004r2.settlement_date == date(2025, 12, 9)
@@ -207,7 +207,7 @@ def test_ldl0004e_valid_model() -> None:
     assert ldl0004e.to_ispb == '00038166'
     assert ldl0004e.system_domain == 'SPB01'
     assert ldl0004e.operation_number == '31680151250908000000001'
-    assert ldl0004e.message_code == 'LDL0004'
+    assert ldl0004e.message_code == 'LDL0004E'
     assert ldl0004e.institution_control_number == '123'
     assert ldl0004e.institution_ispb == '31680151'
     assert ldl0004e.original_ldl_control_number == '321'
@@ -294,7 +294,7 @@ def test_ldl0004_to_xml() -> None:
     xml = ldl0004.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0004.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0004.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -334,7 +334,7 @@ def test_ldl0004r1_to_xml() -> None:
     xml = ldl0004r1.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0004.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0004.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -348,7 +348,7 @@ def test_ldl0004r1_to_xml() -> None:
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <SitLancLDL>1</SitLancLDL>
-                <DtHrSit>2025-12-09 10:00:00+00:00</DtHrSit>
+                <DtHrSit>2025-12-09T10:00:00</DtHrSit>
                 <DtMovto>2025-12-09</DtMovto>
             </LDL0004R1>
         </SISMSG>
@@ -364,7 +364,7 @@ def test_ldl0004r2_to_xml() -> None:
     xml = ldl0004r2.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0004.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0004.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -377,7 +377,7 @@ def test_ldl0004r2_to_xml() -> None:
                 <NumCtrlLDLOr>321</NumCtrlLDLOr>
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-12-09 09:00:00+00:00</DtHrBC>
+                <DtHrBC>2025-12-09T09:00:00</DtHrBC>
                 <ISPBLDL>31680153</ISPBLDL>
                 <VlrLanc>120.0</VlrLanc>
                 <Grupo_LDL0004R2_ResultLiqd>
@@ -405,7 +405,7 @@ def test_ldl0004e_general_error_to_xml() -> None:
     xml = ldl0004e.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0004E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0004E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -413,8 +413,8 @@ def test_ldl0004e_general_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <LDL0004E CodErro="EGEN0050">
-                <CodMsg>LDL0004</CodMsg>
+            <LDL0004 CodErro="EGEN0050">
+                <CodMsg>LDL0004E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlLDLOr>321</NumCtrlLDLOr>
@@ -431,7 +431,7 @@ def test_ldl0004e_general_error_to_xml() -> None:
                     <VlrResultLiqdNLiqdant>60.0</VlrResultLiqdNLiqdant>
                 </Grupo_LDL0004_ResultLiqd>
                 <DtMovto>2025-12-09</DtMovto>
-            </LDL0004E>
+            </LDL0004>
         </SISMSG>
     </DOC>
     """
@@ -445,7 +445,7 @@ def test_ldl0004e_tag_error_to_xml() -> None:
     xml = ldl0004e.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0004E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0004E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -453,8 +453,8 @@ def test_ldl0004e_tag_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <LDL0004E>
-                <CodMsg>LDL0004</CodMsg>
+            <LDL0004>
+                <CodMsg>LDL0004E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF CodErro="ELDL0123">31680151</ISPBIF>
                 <NumCtrlLDLOr>321</NumCtrlLDLOr>
@@ -471,7 +471,7 @@ def test_ldl0004e_tag_error_to_xml() -> None:
                     <VlrResultLiqdNLiqdant>60.0</VlrResultLiqdNLiqdant>
                 </Grupo_LDL0004_ResultLiqd>
                 <DtMovto>2025-12-09</DtMovto>
-            </LDL0004E>
+            </LDL0004>
         </SISMSG>
     </DOC>
     """
@@ -480,7 +480,7 @@ def test_ldl0004e_tag_error_to_xml() -> None:
 
 def test_ldl0004_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0004.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0004.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -541,7 +541,7 @@ def test_ldl0004_from_xml() -> None:
 
 def test_ldl0004r1_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0004.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0004.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -555,7 +555,7 @@ def test_ldl0004r1_from_xml() -> None:
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <SitLancLDL>1</SitLancLDL>
-                <DtHrSit>2025-12-09 10:00:00+00:00</DtHrSit>
+                <DtHrSit>2025-12-09T10:00:00</DtHrSit>
                 <DtMovto>2025-12-09</DtMovto>
             </LDL0004R1>
         </SISMSG>
@@ -579,7 +579,7 @@ def test_ldl0004r1_from_xml() -> None:
 
 def test_ldl0004r2_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0004.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0004.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -592,7 +592,7 @@ def test_ldl0004r2_from_xml() -> None:
                 <NumCtrlLDLOr>321</NumCtrlLDLOr>
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-12-09 09:00:00+00:00</DtHrBC>
+                <DtHrBC>2025-12-09T09:00:00</DtHrBC>
                 <ISPBLDL>31680153</ISPBLDL>
                 <VlrLanc>120.0</VlrLanc>
                 <Grupo_LDL0004R2_ResultLiqd>
@@ -622,7 +622,7 @@ def test_ldl0004r2_from_xml() -> None:
     assert ldl0004r2.original_ldl_control_number == '321'
     assert ldl0004r2.institution_ispb == '31680151'
     assert ldl0004r2.str_control_number == 'STR20250101000000001'
-    assert ldl0004r2.vendor_timestamp == datetime(2025, 12, 9, 9, 0, tzinfo=UTC)
+    assert ldl0004r2.vendor_timestamp == datetime(2025, 12, 9, 9, 0)
     assert ldl0004r2.ldl_ispb == '31680153'
     assert ldl0004r2.amount == Decimal('120.0')
     assert ldl0004r2.settlement_date == date(2025, 12, 9)
@@ -642,7 +642,7 @@ def test_ldl0004r2_from_xml() -> None:
 
 def test_ldl0004e_general_error_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0004E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0004E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -650,8 +650,8 @@ def test_ldl0004e_general_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <LDL0004E CodErro="EGEN0050">
-                <CodMsg>LDL0004</CodMsg>
+            <LDL0004 CodErro="EGEN0050">
+                <CodMsg>LDL0004E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlLDLOr>321</NumCtrlLDLOr>
@@ -668,7 +668,7 @@ def test_ldl0004e_general_error_from_xml() -> None:
                     <VlrResultLiqdNLiqdant>60.0</VlrResultLiqdNLiqdant>
                 </Grupo_LDL0004_ResultLiqd>
                 <DtMovto>2025-12-09</DtMovto>
-            </LDL0004E>
+            </LDL0004>
         </SISMSG>
     </DOC>
     """
@@ -680,7 +680,7 @@ def test_ldl0004e_general_error_from_xml() -> None:
     assert ldl0004e.to_ispb == '00038166'
     assert ldl0004e.system_domain == 'SPB01'
     assert ldl0004e.operation_number == '31680151250908000000001'
-    assert ldl0004e.message_code == 'LDL0004'
+    assert ldl0004e.message_code == 'LDL0004E'
     assert ldl0004e.institution_control_number == '123'
     assert ldl0004e.institution_ispb == '31680151'
     assert ldl0004e.original_ldl_control_number == '321'
@@ -705,7 +705,7 @@ def test_ldl0004e_general_error_from_xml() -> None:
 
 def test_ldl0004e_tag_error_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0004E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0004E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -713,8 +713,8 @@ def test_ldl0004e_tag_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <LDL0004E>
-                <CodMsg>LDL0004</CodMsg>
+            <LDL0004>
+                <CodMsg>LDL0004E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF CodErro="ELDL0123">31680151</ISPBIF>
                 <NumCtrlLDLOr>321</NumCtrlLDLOr>
@@ -731,7 +731,7 @@ def test_ldl0004e_tag_error_from_xml() -> None:
                     <VlrResultLiqdNLiqdant>60.0</VlrResultLiqdNLiqdant>
                 </Grupo_LDL0004_ResultLiqd>
                 <DtMovto>2025-12-09</DtMovto>
-            </LDL0004E>
+            </LDL0004>
         </SISMSG>
     </DOC>
     """
@@ -743,7 +743,7 @@ def test_ldl0004e_tag_error_from_xml() -> None:
     assert ldl0004e.to_ispb == '00038166'
     assert ldl0004e.system_domain == 'SPB01'
     assert ldl0004e.operation_number == '31680151250908000000001'
-    assert ldl0004e.message_code == 'LDL0004'
+    assert ldl0004e.message_code == 'LDL0004E'
     assert ldl0004e.institution_control_number == '123'
     assert ldl0004e.institution_ispb == '31680151'
     assert ldl0004e.original_ldl_control_number == '321'
@@ -798,7 +798,7 @@ def test_ldl0004r2_roundtrip() -> None:
 
 def test_ldl0004_from_xml_missing_required_fields() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SME/SME0001.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SME0001.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>

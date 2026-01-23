@@ -15,7 +15,7 @@ from sfn_messages.core.types import (
 PATH = 'DOC/SISMSG/STR0001'
 PATH_R1 = 'DOC/SISMSG/STR0001R1'
 PATH_R1_GROUP = 'Grupo_STR0001R1_GrdHrio'
-PATH_E = 'DOC/SISMSG/STR0001E'
+PATH_E = 'DOC/SISMSG/STR0001'
 XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/STR0001.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/STR0001E.xsd'
 
@@ -51,11 +51,13 @@ class STR0001R1(BaseMessage):
 class STR0001E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['STR0001'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'STR0001'
-    institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIF/text()')]
-    institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIF/text()')]
-    reference_date: Annotated[date, XmlPath(f'{PATH_E}/DtRef/text()')]
-    hour_type: Annotated[TimeType, XmlPath(f'{PATH_E}/TpHrio/text()')]
+    message_code: Annotated[Literal['STR0001E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'STR0001E'
+    institution_control_number: Annotated[InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlIF/text()')] = (
+        None
+    )
+    institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIF/text()')] = None
+    reference_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtRef/text()')] = None
+    hour_type: Annotated[TimeType | None, XmlPath(f'{PATH_E}/TpHrio/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     institution_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIF/@CodErro')] = None

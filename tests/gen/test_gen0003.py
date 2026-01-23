@@ -1,4 +1,4 @@
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Any
 
 import pytest
@@ -32,8 +32,8 @@ def make_valid_gen0003r1_params() -> dict[str, Any]:
         'issuing_ispb': '31680151',
         'recipient_ispb': '31680151',
         'last_number_operation': '00316801512509080000001',
-        'last_message_datetime': '2025-11-25T17:02:00+00:00',
-        'participant_datetime': '2025-11-25T17:02:00+00:00',
+        'last_message_datetime': '2025-11-25T17:02:00',
+        'participant_datetime': '2025-11-25T17:02:00',
     }
 
 
@@ -43,7 +43,7 @@ def make_valid_gen0003e_params(*, general_error: bool = False) -> dict[str, Any]
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
         'operation_number': '31680151250908000000001',
-        'message_code': 'GEN0003',
+        'message_code': 'GEN0003E',
         'institution_control_number': '123',
         'issuing_ispb': '31680151',
         'recipient_ispb': '31680151',
@@ -74,8 +74,8 @@ def test_gen0003r1_valid_model() -> None:
 
     assert isinstance(gen0003r1, GEN0003R1)
     assert gen0003r1.institution_control_number == '123'
-    assert gen0003r1.last_message_datetime == datetime(2025, 11, 25, 17, 2, tzinfo=UTC)
-    assert gen0003r1.participant_datetime == datetime(2025, 11, 25, 17, 2, tzinfo=UTC)
+    assert gen0003r1.last_message_datetime == datetime(2025, 11, 25, 17, 2)
+    assert gen0003r1.participant_datetime == datetime(2025, 11, 25, 17, 2)
     assert gen0003r1.last_number_operation == '00316801512509080000001'
     assert gen0003r1.issuing_ispb == '31680151'
     assert gen0003r1.recipient_ispb == '31680151'
@@ -86,7 +86,7 @@ def test_gen0003e_general_error_valid_model() -> None:
     gen0003e = GEN0003E.model_validate(params)
 
     assert isinstance(gen0003e, GEN0003E)
-    assert gen0003e.message_code == 'GEN0003'
+    assert gen0003e.message_code == 'GEN0003E'
     assert gen0003e.institution_control_number == '123'
     assert gen0003e.issuing_ispb == '31680151'
     assert gen0003e.recipient_ispb == '31680151'
@@ -98,7 +98,7 @@ def test_gen0003e_tag_error_valid_model() -> None:
     gen0003e = GEN0003E.model_validate(params)
 
     assert isinstance(gen0003e, GEN0003E)
-    assert gen0003e.message_code == 'GEN0003'
+    assert gen0003e.message_code == 'GEN0003E'
     assert gen0003e.institution_control_number == '123'
     assert gen0003e.issuing_ispb == '31680151'
     assert gen0003e.recipient_ispb == '31680151'
@@ -189,8 +189,8 @@ def test_gen0003r1_to_xml() -> None:
                 <ISPBEmissor>31680151</ISPBEmissor>
                 <ISPBDestinatario>31680151</ISPBDestinatario>
                 <NumUltOp>00316801512509080000001</NumUltOp>
-                <DtHrUltMsg>2025-11-25 17:02:00+00:00</DtHrUltMsg>
-                <DtHrPart>2025-11-25 17:02:00+00:00</DtHrPart>
+                <DtHrUltMsg>2025-11-25T17:02:00</DtHrUltMsg>
+                <DtHrPart>2025-11-25T17:02:00</DtHrPart>
             </GEN0003R1>
         </SISMSG>
     </DOC>
@@ -214,12 +214,12 @@ def test_gen0003e_general_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0003E CodErro="EGEN0050">
-                <CodMsg>GEN0003</CodMsg>
+            <GEN0003 CodErro="EGEN0050">
+                <CodMsg>GEN0003E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBEmissor>31680151</ISPBEmissor>
                 <ISPBDestinatario>31680151</ISPBDestinatario>
-            </GEN0003E>
+            </GEN0003>
         </SISMSG>
     </DOC>
     """
@@ -242,12 +242,12 @@ def test_gen0003e_tag_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0003E>
-                <CodMsg>GEN0003</CodMsg>
+            <GEN0003>
+                <CodMsg>GEN0003E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBEmissor CodErro="EGEN0051">31680151</ISPBEmissor>
                 <ISPBDestinatario>31680151</ISPBDestinatario>
-            </GEN0003E>
+            </GEN0003>
         </SISMSG>
     </DOC>
     """
@@ -299,8 +299,8 @@ def test_gen0003r1_from_xml() -> None:
                 <ISPBEmissor>31680151</ISPBEmissor>
                 <ISPBDestinatario>31680151</ISPBDestinatario>
                 <NumUltOp>00316801512509080000001</NumUltOp>
-                <DtHrUltMsg>2025-11-25 17:02:00+00:00</DtHrUltMsg>
-                <DtHrPart>2025-11-25 17:02:00+00:00</DtHrPart>
+                <DtHrUltMsg>2025-11-25T17:02:00</DtHrUltMsg>
+                <DtHrPart>2025-11-25T17:02:00</DtHrPart>
             </GEN0003R1>
         </SISMSG>
     </DOC>
@@ -310,8 +310,8 @@ def test_gen0003r1_from_xml() -> None:
 
     assert isinstance(gen0003r1, GEN0003R1)
     assert gen0003r1.institution_control_number == '123'
-    assert gen0003r1.last_message_datetime == datetime(2025, 11, 25, 17, 2, tzinfo=UTC)
-    assert gen0003r1.participant_datetime == datetime(2025, 11, 25, 17, 2, tzinfo=UTC)
+    assert gen0003r1.last_message_datetime == datetime(2025, 11, 25, 17, 2)
+    assert gen0003r1.participant_datetime == datetime(2025, 11, 25, 17, 2)
     assert gen0003r1.last_number_operation == '00316801512509080000001'
     assert gen0003r1.issuing_ispb == '31680151'
     assert gen0003r1.recipient_ispb == '31680151'
@@ -327,12 +327,12 @@ def test_gen0003e_general_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0003E CodErro="EGEN0050">
-                <CodMsg>GEN0003</CodMsg>
+            <GEN0003 CodErro="EGEN0050">
+                <CodMsg>GEN0003E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBEmissor>31680151</ISPBEmissor>
                 <ISPBDestinatario>31680151</ISPBDestinatario>
-            </GEN0003E>
+            </GEN0003>
         </SISMSG>
     </DOC>
     """
@@ -356,12 +356,12 @@ def test_gen0003e_tag_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0003E>
-                <CodMsg>GEN0003</CodMsg>
+            <GEN0003>
+                <CodMsg>GEN0003E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBEmissor CodErro="EGEN0051">31680151</ISPBEmissor>
                 <ISPBDestinatario>31680151</ISPBDestinatario>
-            </GEN0003E>
+            </GEN0003>
         </SISMSG>
     </DOC>
     """

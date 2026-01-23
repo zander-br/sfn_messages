@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime
+from datetime import date, datetime
 from typing import Any
 
 import pytest
@@ -16,8 +16,8 @@ def make_valid_str0017_params() -> dict[str, Any]:
         'to_ispb': '00038166',
         'institution_ispb': '31680151',
         'settlement_date': date(2025, 11, 27),
-        'opening_timestamp': '2025-11-20T10:00:00+00:00',
-        'vendor_timestamp': '2025-11-20T15:30:00+00:00',
+        'opening_timestamp': '2025-11-20T10:00:00',
+        'vendor_timestamp': '2025-11-20T15:30:00',
     }
 
 
@@ -29,8 +29,8 @@ def make_valid_str0017e_params(*, general_error: bool = False) -> dict[str, Any]
         'to_ispb': '00038166',
         'institution_ispb': '31680151',
         'settlement_date': date(2025, 11, 27),
-        'opening_timestamp': '2025-11-20T10:00:00+00:00',
-        'vendor_timestamp': '2025-11-20T15:30:00+00:00',
+        'opening_timestamp': '2025-11-20T10:00:00',
+        'vendor_timestamp': '2025-11-20T15:30:00',
     }
 
     if general_error:
@@ -47,8 +47,8 @@ def test_str0017_model_valid() -> None:
     assert isinstance(message, STR0017)
     assert message.from_ispb == '31680151'
     assert message.settlement_date == date(2025, 11, 27)
-    assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0, tzinfo=UTC)
-    assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0)
+    assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
     assert message.message_code == 'STR0017'
     assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
@@ -61,9 +61,9 @@ def test_str0017e_general_error_model_valid() -> None:
     assert isinstance(message, STR0017E)
     assert message.from_ispb == '31680151'
     assert message.settlement_date == date(2025, 11, 27)
-    assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0, tzinfo=UTC)
-    assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
-    assert message.message_code == 'STR0017'
+    assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0)
+    assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
+    assert message.message_code == 'STR0017E'
     assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
     assert message.to_ispb == '00038166'
@@ -76,9 +76,9 @@ def test_str0017e_tag_error_model_valid() -> None:
     assert isinstance(message, STR0017E)
     assert message.from_ispb == '31680151'
     assert message.settlement_date == date(2025, 11, 27)
-    assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0, tzinfo=UTC)
-    assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
-    assert message.message_code == 'STR0017'
+    assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0)
+    assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
+    assert message.message_code == 'STR0017E'
     assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
     assert message.to_ispb == '00038166'
@@ -116,8 +116,8 @@ def test_str0017_to_xml() -> None:
         <SISMSG>
             <STR0017>
                 <CodMsg>STR0017</CodMsg>
-                <DtHrAbert>2025-11-20 10:00:00+00:00</DtHrAbert>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <DtHrAbert>2025-11-20T10:00:00</DtHrAbert>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <DtMovto>2025-11-27</DtMovto>
             </STR0017>
         </SISMSG>
@@ -141,12 +141,12 @@ def test_str0017e_general_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0017E CodErro="EGEN0050">
-                <CodMsg>STR0017</CodMsg>
-                <DtHrAbert>2025-11-20 10:00:00+00:00</DtHrAbert>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+            <STR0017 CodErro="EGEN0050">
+                <CodMsg>STR0017E</CodMsg>
+                <DtHrAbert>2025-11-20T10:00:00</DtHrAbert>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <DtMovto>2025-11-27</DtMovto>
-            </STR0017E>
+            </STR0017>
         </SISMSG>
     </DOC>
     """
@@ -168,12 +168,12 @@ def test_str0017e_tag_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0017E>
-                <CodMsg>STR0017</CodMsg>
-                <DtHrAbert CodErro="EGEN0023">2025-11-20 10:00:00+00:00</DtHrAbert>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+            <STR0017>
+                <CodMsg>STR0017E</CodMsg>
+                <DtHrAbert CodErro="EGEN0023">2025-11-20T10:00:00</DtHrAbert>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <DtMovto>2025-11-27</DtMovto>
-            </STR0017E>
+            </STR0017>
         </SISMSG>
     </DOC>
     """
@@ -193,8 +193,8 @@ def test_str0017_from_xml() -> None:
         <SISMSG>
             <STR0017>
                 <CodMsg>STR0017</CodMsg>
-                <DtHrAbert>2025-11-20 10:00:00+00:00</DtHrAbert>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <DtHrAbert>2025-11-20T10:00:00</DtHrAbert>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <DtMovto>2025-11-27</DtMovto>
             </STR0017>
         </SISMSG>
@@ -205,8 +205,8 @@ def test_str0017_from_xml() -> None:
     assert isinstance(message, STR0017)
     assert message.from_ispb == '31680151'
     assert message.settlement_date == date(2025, 11, 27)
-    assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0, tzinfo=UTC)
-    assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0)
+    assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
     assert message.message_code == 'STR0017'
     assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
@@ -223,12 +223,12 @@ def test_str0017e_general_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0017E CodErro="EGEN0050">
-                <CodMsg>STR0017</CodMsg>
-                <DtHrAbert>2025-11-20 10:00:00+00:00</DtHrAbert>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+            <STR0017 CodErro="EGEN0050">
+                <CodMsg>STR0017E</CodMsg>
+                <DtHrAbert>2025-11-20T10:00:00</DtHrAbert>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <DtMovto>2025-11-27</DtMovto>
-            </STR0017E>
+            </STR0017>
         </SISMSG>
     </DOC>
     """
@@ -237,9 +237,9 @@ def test_str0017e_general_error_from_xml() -> None:
     assert isinstance(message, STR0017E)
     assert message.from_ispb == '31680151'
     assert message.settlement_date == date(2025, 11, 27)
-    assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0, tzinfo=UTC)
-    assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
-    assert message.message_code == 'STR0017'
+    assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0)
+    assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
+    assert message.message_code == 'STR0017E'
     assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
     assert message.to_ispb == '00038166'
@@ -256,12 +256,12 @@ def test_str0017e_tag_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0017E>
-                <CodMsg>STR0017</CodMsg>
-                <DtHrAbert CodErro="EGEN0023">2025-11-20 10:00:00+00:00</DtHrAbert>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+            <STR0017>
+                <CodMsg>STR0017E</CodMsg>
+                <DtHrAbert CodErro="EGEN0023">2025-11-20T10:00:00</DtHrAbert>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <DtMovto>2025-11-27</DtMovto>
-            </STR0017E>
+            </STR0017>
         </SISMSG>
     </DOC>
     """
@@ -270,9 +270,9 @@ def test_str0017e_tag_error_from_xml() -> None:
     assert isinstance(message, STR0017E)
     assert message.from_ispb == '31680151'
     assert message.settlement_date == date(2025, 11, 27)
-    assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0, tzinfo=UTC)
-    assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
-    assert message.message_code == 'STR0017'
+    assert message.opening_timestamp == datetime(2025, 11, 20, 10, 0)
+    assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
+    assert message.message_code == 'STR0017E'
     assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
     assert message.to_ispb == '00038166'
