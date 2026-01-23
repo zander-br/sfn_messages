@@ -34,6 +34,7 @@ class SME0002(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
 
     message_code: Annotated[Literal['SME0002'], XmlPath(f'{PATH}/CodMsg/text()')] = 'SME0002'
+    institution_control_number_ieme: Annotated[InstitutionControlNumber, XmlPath(f'{PATH}/NumCtrlIEME/text()')]
     ieme_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBIEME/text()')]
     creditor_account_group: Annotated[CreditorGroup | None, XmlPath(f'{PATH}')] = None
     amount: Annotated[Decimal, XmlPath(f'{PATH}/VlrLanc/text()')]
