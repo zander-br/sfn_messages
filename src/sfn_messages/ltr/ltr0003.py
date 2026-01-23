@@ -22,8 +22,8 @@ PATH_R1 = 'DOC/SISMSG/LTR0003R1'
 PATH_R2 = 'DOC/SISMSG/LTR0003R2'
 PATH_R3 = 'DOC/SISMSG/LTR0003R3'
 PATH_E = 'DOC/SISMSG/LTR0003E'
-XML_NAMESPACE = 'http://www.bcb.gov.br/LTR/LTR0003.xsd'
-XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/LTR/LTR0003E.xsd'
+XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/LTR0003.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/LTR0003E.xsd'
 
 
 class LTR0003(BaseMessage):

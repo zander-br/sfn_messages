@@ -9,8 +9,8 @@ PATH = 'DOC/SISMSG/SME0001'
 PATH_R1 = 'DOC/SISMSG/SME0001R1'
 PATH_R2 = 'DOC/SISMSG/SME0001R2'
 PATH_E = 'DOC/SISMSG/SME0001E'
-XML_NAMESPACE = 'http://www.bcb.gov.br/SME/SME0001.xsd'
-XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SME/SME0001E.xsd'
+XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/SME0001.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/SME0001E.xsd'
 
 
 class SME0001(BaseMessage):

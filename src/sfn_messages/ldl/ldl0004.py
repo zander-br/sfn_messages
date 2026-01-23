@@ -23,8 +23,8 @@ PATH_R2 = 'DOC/SISMSG/LDL0004R2'
 PATH_R2_GROUP = 'Grupo_LDL0004R2_ResultLiqd'
 PATH_E = 'DOC/SISMSG/LDL0004E'
 PATH_E_GROUP = 'DOC/SISMSG/LDL0004E'
-XML_NAMESPACE = 'http://www.bcb.gov.br/LDL/LDL0004.xsd'
-XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/LDL/LDL0004E.xsd'
+XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/LDL0004.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/LDL0004E.xsd'
 
 
 class NetResult(BaseSubMessage):

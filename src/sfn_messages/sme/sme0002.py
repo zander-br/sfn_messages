@@ -19,8 +19,8 @@ PATH_GROUP = 'Grupo_SME0002_CtCredtd'
 PATH_R1 = 'DOC/SISMSG/SME0002R1'
 PATH_R2 = 'DOC/SISMSG/SME0002R2'
 PATH_E = 'DOC/SISMSG/SME0002E'
-XML_NAMESPACE = 'http://www.bcb.gov.br/SME/SME0002.xsd'
-XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SME/SME0002E.xsd'
+XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/SME0002.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/SME0002E.xsd'
 
 
 class CreditorGroup(BaseSubMessage):

@@ -22,8 +22,8 @@ PATH_R1 = 'DOC/SISMSG/LDL0014R1'
 PATH_R2 = 'DOC/SISMSG/LDL0014R2'
 PATH_GROUP_R2 = 'Grupo_LDL0014R2_Dep'
 PATH_E = 'DOC/SISMSG/LDL0014E'
-XML_NAMESPACE = 'http://www.bcb.gov.br/LDL/LDL0014.xsd'
-XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/LDL/LDL0014E.xsd'
+XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/LDL0014.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/LDL0014E.xsd'
 
 
 class DepositGroup(BaseSubMessage):

@@ -20,8 +20,8 @@ PATH = 'DOC/SISMSG/SME0003'
 PATH_R1 = 'DOC/SISMSG/SME0003R1'
 PATH_R1_GROUP = 'Grupo_SME0003R1_Lanc'
 PATH_E = 'DOC/SISMSG/SME0003E'
-XML_NAMESPACE = 'http://www.bcb.gov.br/SME/SME0003.xsd'
-XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SME/SME0003E.xsd'
+XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/SME0003.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/SME0003E.xsd'
 
 
 class SME0003(BaseMessage):

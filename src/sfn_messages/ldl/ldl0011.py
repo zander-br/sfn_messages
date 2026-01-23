@@ -18,8 +18,8 @@ PATH = 'DOC/SISMSG/LDL0011'
 PATH_R1 = 'DOC/SISMSG/LDL0011R1'
 PATH_R2 = 'DOC/SISMSG/LDL0011R2'
 PATH_E = 'DOC/SISMSG/LDL0011E'
-XML_NAMESPACE = 'http://www.bcb.gov.br/LDL/LDL0011.xsd'
-XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/LDL/LDL0011E.xsd'
+XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/LDL0011.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/LDL0011E.xsd'
 
 
 class LDL0011(BaseMessage):

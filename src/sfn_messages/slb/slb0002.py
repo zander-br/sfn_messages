@@ -15,8 +15,8 @@ from .types import SlbControlNumber, SlbSettlementStatus
 PATH = 'DOC/SISMSG/SLB0002'
 PATH_R1 = 'DOC/SISMSG/SLB0002R1'
 PATH_E = 'DOC/SISMSG/SLB0002E'
-XML_NAMESPACE = 'http://www.bcb.gov.br/SLB/SLB0002.xsd'
-XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SLB/SLB0002E.xsd'
+XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/SLB0002.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/SLB0002E.xsd'
 
 
 class SLB0002(BaseMessage):

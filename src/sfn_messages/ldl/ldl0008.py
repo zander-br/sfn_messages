@@ -24,8 +24,8 @@ PATH_R1 = 'DOC/SISMSG/LDL0008R1'
 PATH_R2 = 'DOC/SISMSG/LDL0008R2'
 PATH_GROUP_R2 = 'Grupo_LDL0008R2_EvtEms'
 PATH_E = 'DOC/SISMSG/LDL0008E'
-XML_NAMESPACE = 'http://www.bcb.gov.br/LDL/LDL0008.xsd'
-XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/LDL/LDL0008E.xsd'
+XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/LDL0008.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/LDL0008E.xsd'
 
 
 class EmissionEventGroup(BaseSubMessage):

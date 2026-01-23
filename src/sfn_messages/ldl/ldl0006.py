@@ -26,8 +26,8 @@ PATH_R1 = 'DOC/SISMSG/LDL0006R1'
 PATH_R2 = 'DOC/SISMSG/LDL0006R2'
 PATH_GROUP_R2 = 'Grupo_LDL0006R2_DevCred'
 PATH_E = 'DOC/SISMSG/LDL0006E'
-XML_NAMESPACE = 'http://www.bcb.gov.br/LDL/LDL0006.xsd'
-XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/LDL/LDL0006E.xsd'
+XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/LDL0006.xsd'
+XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/LDL0006E.xsd'
 
 
 class CreditRefundGroup(BaseSubMessage):
