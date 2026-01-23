@@ -7,7 +7,7 @@ from .types import Message
 
 PATH = 'DOC/SISMSG/GEN0001'
 PATH_R1 = 'DOC/SISMSG/GEN0001R1'
-PATH_E = 'DOC/SISMSG/GEN0001E'
+PATH_E = 'DOC/SISMSG/GEN0001'
 XML_NAMESPACE = 'http://www.bcb.gov.br/GEN/GEN0001.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/GEN/GEN0001E.xsd'
 
@@ -33,7 +33,7 @@ class GEN0001R1(BaseMessage):
 class GEN0001E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['GEN0001'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'GEN0001'
+    message_code: Annotated[Literal['GEN0001E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'GEN0001E'
     issuing_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBEmissor/text()')]
     recipient_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBDestinatario/text()')]
     message: Annotated[Message, XmlPath(f'{PATH_E}/MsgECO/text()')]
