@@ -308,7 +308,7 @@ def test_str0007_to_xml() -> None:
                 <TpPessoaCredtd>F</TpPessoaCredtd>
                 <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
                 <NomCliCredtd>Joe Doe</NomCliCredtd>
-                <NumCtrdCredtd>CTR123456789</NumCtrdCredtd>
+                <NumContrtoOpCred>CTR123456789</NumContrtoOpCred>
                 <VlrLanc>100.0</VlrLanc>
                 <FinlddIF>1</FinlddIF>
                 <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
@@ -353,7 +353,7 @@ def test_str0007e_general_error_to_xml() -> None:
                 <TpPessoaCredtd>F</TpPessoaCredtd>
                 <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
                 <NomCliCredtd>Joe Doe</NomCliCredtd>
-                <NumCtrdCredtd>CTR123456789</NumCtrdCredtd>
+                <NumContrtoOpCred>CTR123456789</NumContrtoOpCred>
                 <VlrLanc>100.0</VlrLanc>
                 <FinlddIF>1</FinlddIF>
                 <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
@@ -398,7 +398,7 @@ def test_str0007e_tag_error_to_xml() -> None:
                 <TpPessoaCredtd>F</TpPessoaCredtd>
                 <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
                 <NomCliCredtd>Joe Doe</NomCliCredtd>
-                <NumCtrdCredtd>CTR123456789</NumCtrdCredtd>
+                <NumContrtoOpCred>CTR123456789</NumContrtoOpCred>
                 <VlrLanc>100.0</VlrLanc>
                 <FinlddIF>1</FinlddIF>
                 <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
@@ -485,7 +485,7 @@ def test_str0007_from_xml() -> None:
                 <TpPessoaCredtd>F</TpPessoaCredtd>
                 <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
                 <NomCliCredtd>Joe Doe</NomCliCredtd>
-                <NumCtrdCredtd>CTR123456789</NumCtrdCredtd>
+                <NumContrtoOpCred>CTR123456789</NumContrtoOpCred>
                 <VlrLanc>100.0</VlrLanc>
                 <FinlddIF>1</FinlddIF>
                 <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
@@ -548,7 +548,7 @@ def test_str0007e_general_error_from_xml() -> None:
                 <TpPessoaCredtd>F</TpPessoaCredtd>
                 <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
                 <NomCliCredtd>Joe Doe</NomCliCredtd>
-                <NumCtrdCredtd>CTR123456789</NumCtrdCredtd>
+                <NumContrtoOpCred>CTR123456789</NumContrtoOpCred>
                 <VlrLanc>100.0</VlrLanc>
                 <FinlddIF>1</FinlddIF>
                 <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
@@ -612,7 +612,7 @@ def test_str0007e_tag_error_from_xml() -> None:
                 <TpPessoaCredtd>F</TpPessoaCredtd>
                 <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
                 <NomCliCredtd>Joe Doe</NomCliCredtd>
-                <NumCtrdCredtd>CTR123456789</NumCtrdCredtd>
+                <NumContrtoOpCred>CTR123456789</NumContrtoOpCred>
                 <VlrLanc>100.0</VlrLanc>
                 <FinlddIF>1</FinlddIF>
                 <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
@@ -1023,7 +1023,7 @@ def test_str0007r2_to_xml() -> None:
                 <TpPessoaCredtd>F</TpPessoaCredtd>
                 <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
                 <NomCliCredtd>Joe Doe</NomCliCredtd>
-                <NumCtrdCredtd>CTR123456789</NumCtrdCredtd>
+                <NumContrtoOpCred>CTR123456789</NumContrtoOpCred>
                 <VlrLanc>100.0</VlrLanc>
                 <FinlddIF>1</FinlddIF>
                 <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
@@ -1106,7 +1106,7 @@ def test_str0007r2_from_xml() -> None:
                 <TpPessoaCredtd>F</TpPessoaCredtd>
                 <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
                 <NomCliCredtd>Joe Doe</NomCliCredtd>
-                <NumCtrdCredtd>CTR123456789</NumCtrdCredtd>
+                <NumContrtoOpCred>CTR123456789</NumContrtoOpCred>
                 <VlrLanc>100.0</VlrLanc>
                 <FinlddIF>1</FinlddIF>
                 <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>

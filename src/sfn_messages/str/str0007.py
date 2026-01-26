@@ -56,7 +56,7 @@ class STR0007(PartyValidations, BaseMessage):
     creditor_type: Annotated[PersonType, XmlPath(f'{PATH}/TpPessoaCredtd/text()')]
     creditor_document: Annotated[Cnpj | Cpf, XmlPath(f'{PATH}/CNPJ_CPFCliCredtd/text()')]
     creditor_name: Annotated[Name, XmlPath(f'{PATH}/NomCliCredtd/text()')]
-    credit_contract_number: Annotated[CreditContractNumber | None, XmlPath(f'{PATH}/NumCtrdCredtd/text()')] = None
+    credit_contract_number: Annotated[CreditContractNumber | None, XmlPath(f'{PATH}/NumContrtoOpCred/text()')] = None
     amount: Annotated[Decimal, XmlPath(f'{PATH}/VlrLanc/text()')]
     purpose: Annotated[InstitutionPurpose, XmlPath(f'{PATH}/FinlddIF/text()')]
     transaction_id: Annotated[TransactionId | None, XmlPath(f'{PATH}/CodIdentdTransf/text()')] = None
@@ -103,7 +103,9 @@ class STR0007R2(PartyValidations, BaseMessage):
     creditor_type: Annotated[PersonType, XmlPath(f'{PATH_R2}/TpPessoaCredtd/text()')]
     creditor_document: Annotated[Cnpj | Cpf, XmlPath(f'{PATH_R2}/CNPJ_CPFCliCredtd/text()')]
     creditor_name: Annotated[Name, XmlPath(f'{PATH_R2}/NomCliCredtd/text()')]
-    credit_contract_number: Annotated[CreditContractNumber | None, XmlPath(f'{PATH_R2}/NumCtrdCredtd/text()')] = None
+    credit_contract_number: Annotated[CreditContractNumber | None, XmlPath(f'{PATH_R2}/NumContrtoOpCred/text()')] = (
+        None
+    )
     amount: Annotated[Decimal, XmlPath(f'{PATH_R2}/VlrLanc/text()')]
     purpose: Annotated[InstitutionPurpose, XmlPath(f'{PATH_R2}/FinlddIF/text()')]
     transaction_id: Annotated[TransactionId | None, XmlPath(f'{PATH_R2}/CodIdentdTransf/text()')] = None
@@ -136,7 +138,7 @@ class STR0007E(PartyValidations, BaseMessage):
     creditor_type: Annotated[PersonType | None, XmlPath(f'{PATH_E}/TpPessoaCredtd/text()')] = None
     creditor_document: Annotated[Cnpj | None | Cpf, XmlPath(f'{PATH_E}/CNPJ_CPFCliCredtd/text()')] = None
     creditor_name: Annotated[Name | None, XmlPath(f'{PATH_E}/NomCliCredtd/text()')] = None
-    credit_contract_number: Annotated[CreditContractNumber | None, XmlPath(f'{PATH_E}/NumCtrdCredtd/text()')] = None
+    credit_contract_number: Annotated[CreditContractNumber | None, XmlPath(f'{PATH_E}/NumContrtoOpCred/text()')] = None
     amount: Annotated[Decimal | None, XmlPath(f'{PATH_E}/VlrLanc/text()')] = None
     purpose: Annotated[InstitutionPurpose | None, XmlPath(f'{PATH_E}/FinlddIF/text()')] = None
     transaction_id: Annotated[TransactionId | None, XmlPath(f'{PATH_E}/CodIdentdTransf/text()')] = None
@@ -166,7 +168,9 @@ class STR0007E(PartyValidations, BaseMessage):
         ErrorCode | None | Cpf, XmlPath(f'{PATH_E}/CNPJ_CPFCliCredtd/@CodErro')
     ] = None
     creditor_name_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NomCliCredtd/@CodErro')] = None
-    credit_contract_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrdCredtd/@CodErro')] = None
+    credit_contract_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumContrtoOpCred/@CodErro')] = (
+        None
+    )
     amount_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/VlrLanc/@CodErro')] = None
     purpose_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/FinlddIF/@CodErro')] = None
     transaction_id_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/CodIdentdTransf/@CodErro')] = None
