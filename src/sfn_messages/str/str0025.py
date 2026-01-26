@@ -33,7 +33,7 @@ XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/STR0025E.xsd'
 class STR0025(PartyValidations, BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
 
-    document_parties: ClassVar[list[str]] = ['creditor']
+    document_parties: ClassVar[list[str]] = ['debtor']
     account_parties: ClassVar[list[str]] = ['debtor']
 
     message_code: Annotated[Literal['STR0025'], XmlPath(f'{PATH}/CodMsg/text()')] = 'STR0025'
@@ -93,7 +93,7 @@ class STR0025R2(PartyValidations, BaseMessage):
 class STR0025E(PartyValidations, BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    document_parties: ClassVar[list[str]] = ['creditor']
+    document_parties: ClassVar[list[str]] = ['debtor']
     account_parties: ClassVar[list[str]] = ['debtor']
 
     message_code: Annotated[Literal['STR0025E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'STR0025E'
@@ -105,9 +105,9 @@ class STR0025E(PartyValidations, BaseMessage):
     debtor_account_type: Annotated[AccountType | None, XmlPath(f'{PATH_E}/TpCtDebtd/text()')] = None
     debtor_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_E}/CtDebtd/text()')] = None
     debtor_payment_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_E}/CtPgtoDebtd/text()')] = None
-    creditor_name: Annotated[Name | None, XmlPath(f'{PATH_E}/NomCliCredtd/text()')] = None
-    creditor_type: Annotated[PersonType | None, XmlPath(f'{PATH_E}/TpPessoaCredtd/text()')] = None
-    creditor_document: Annotated[Cnpj | None | Cpf, XmlPath(f'{PATH_E}/CNPJ_CPFCliCredtd/text()')] = None
+    debtor_name: Annotated[Name | None, XmlPath(f'{PATH_E}/NomCliDebtd/text()')] = None
+    debtor_type: Annotated[PersonType | None, XmlPath(f'{PATH_E}/TpPessoaDebtd/text()')] = None
+    debtor_document: Annotated[Cnpj | Cpf | None, XmlPath(f'{PATH_E}/CNPJ_CPFCliDebtd/text()')] = None
     creditor_institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIFCredtd/text()')] = None
     amount: Annotated[Decimal | None, XmlPath(f'{PATH_E}/VlrLanc/text()')] = None
     priority: Annotated[Priority | None, XmlPath(f'{PATH_E}/NivelPref/text()')] = None
@@ -125,11 +125,9 @@ class STR0025E(PartyValidations, BaseMessage):
     debtor_payment_account_number_error_code: Annotated[
         ErrorCode | None, XmlPath(f'{PATH_E}/CtPgtoDebtd/@CodErro')
     ] = None
-    creditor_name_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NomCliCredtd/@CodErro')] = None
-    creditor_type_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/TpPessoaCredtd/@CodErro')] = None
-    creditor_document_error_code: Annotated[
-        ErrorCode | None | Cpf, XmlPath(f'{PATH_E}/CNPJ_CPFCliCredtd/@CodErro')
-    ] = None
+    debtor_name_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NomCliDebtd/@CodErro')] = None
+    debtor_type_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/TpPessoaDebtd/@CodErro')] = None
+    debtor_document_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/CNPJ_CPFCliDebtd/@CodErro')] = None
     creditor_institution_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBIFCredtd/@CodErro')] = (
         None
     )

@@ -18,7 +18,7 @@ def make_valid_gen0004_params() -> dict[str, Any]:
         'generic_error': 'EGEN0050',
         'issuing_ispb': '31680151',
         'recipient_ispb': '00038166',
-        'mq_number': '0123456789ABCDEF00000000',
+        'mq_number': '0123456789ABCDEF000000000123456789ABCDEF00000000',
         'unique_operation_number': '31680151250908000000001',
         'original_protocol_sta_number': '123456789012345678',
         'description': 'Generic error description',
@@ -35,7 +35,7 @@ def test_gen0004_valid_model() -> None:
     assert gen0004.generic_error == 'EGEN0050'
     assert gen0004.issuing_ispb == '31680151'
     assert gen0004.recipient_ispb == '00038166'
-    assert gen0004.mq_number == '0123456789ABCDEF00000000'
+    assert gen0004.mq_number == '0123456789ABCDEF000000000123456789ABCDEF00000000'
     assert gen0004.unique_operation_number == '31680151250908000000001'
     assert gen0004.original_protocol_sta_number == '123456789012345678'
     assert gen0004.description == 'Generic error description'
@@ -79,7 +79,7 @@ def test_gen0004_to_xml() -> None:
                 <ErroGEN>EGEN0050</ErroGEN>
                 <ISPBEmissor>31680151</ISPBEmissor>
                 <ISPBDestinatario>00038166</ISPBDestinatario>
-                <NumMQ>0123456789ABCDEF00000000</NumMQ>
+                <NumMQ>0123456789ABCDEF000000000123456789ABCDEF00000000</NumMQ>
                 <NUOpOr>31680151250908000000001</NUOpOr>
                 <NumProtSTAOr>123456789012345678</NumProtSTAOr>
                 <Hist>Generic error description</Hist>
@@ -107,7 +107,7 @@ def test_gen0004_from_xml() -> None:
                 <ErroGEN>EGEN0050</ErroGEN>
                 <ISPBEmissor>31680151</ISPBEmissor>
                 <ISPBDestinatario>00038166</ISPBDestinatario>
-                <NumMQ>0123456789ABCDEF00000000</NumMQ>
+                <NumMQ>0123456789ABCDEF000000000123456789ABCDEF00000000</NumMQ>
                 <NUOpOr>31680151250908000000001</NUOpOr>
                 <NumProtSTAOr>123456789012345678</NumProtSTAOr>
                 <Hist>Generic error description</Hist>
@@ -124,7 +124,7 @@ def test_gen0004_from_xml() -> None:
     assert gen0004.generic_error == 'EGEN0050'
     assert gen0004.issuing_ispb == '31680151'
     assert gen0004.recipient_ispb == '00038166'
-    assert gen0004.mq_number == '0123456789ABCDEF00000000'
+    assert gen0004.mq_number == '0123456789ABCDEF000000000123456789ABCDEF00000000'
     assert gen0004.unique_operation_number == '31680151250908000000001'
     assert gen0004.original_protocol_sta_number == '123456789012345678'
     assert gen0004.description == 'Generic error description'

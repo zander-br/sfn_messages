@@ -133,7 +133,7 @@ def test_str0011_to_xml() -> None:
                 <CodMsg>STR0011</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
-                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <DtMovto>2025-09-08</DtMovto>
             </STR0011>
         </SISMSG>
@@ -161,7 +161,7 @@ def test_str0011e_general_error_to_xml() -> None:
                 <CodMsg>STR0011E</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
-                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <DtMovto>2025-09-08</DtMovto>
             </STR0011>
         </SISMSG>
@@ -189,7 +189,7 @@ def test_str0011e_tag_error_to_xml() -> None:
                 <CodMsg>STR0011E</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIF CodErro="EINS0010">31680151</ISPBIF>
-                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <DtMovto>2025-09-08</DtMovto>
             </STR0011>
         </SISMSG>
@@ -213,7 +213,7 @@ def test_str0011_from_xml() -> None:
                 <CodMsg>STR0011</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
-                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <DtMovto>2025-09-08</DtMovto>
             </STR0011>
         </SISMSG>
@@ -246,7 +246,7 @@ def test_str0011e_general_error_from_xml() -> None:
                 <CodMsg>STR0011E</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
-                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <DtMovto>2025-09-08</DtMovto>
             </STR0011>
         </SISMSG>
@@ -280,7 +280,7 @@ def test_str0011e_tag_error_from_xml() -> None:
                 <CodMsg>STR0011E</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIF CodErro="EINS0010">31680151</ISPBIF>
-                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <DtMovto>2025-09-08</DtMovto>
             </STR0011>
         </SISMSG>
@@ -383,7 +383,7 @@ def test_str0011r1_to_xml() -> None:
         </BCMSG>
         <SISMSG>
             <STR0011R1>
-                <CodMsg>STR0011</CodMsg>
+                <CodMsg>STR0011R1</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <DtHrBC>2025-11-20T15:30:00</DtHrBC>
@@ -407,7 +407,7 @@ def test_str0011r1_from_xml() -> None:
         </BCMSG>
         <SISMSG>
             <STR0011R1>
-                <CodMsg>STR0011</CodMsg>
+                <CodMsg>STR0011R1</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <DtHrBC>2025-11-20T15:30:00</DtHrBC>
@@ -447,7 +447,7 @@ def test_str0011r1_from_xml_missing_required_fields() -> None:
         </BCMSG>
         <SISMSG>
             <STR0011R1>
-                <CodMsg>STR0011</CodMsg>
+                <CodMsg>STR0011R1</CodMsg>
             </STR0011R1>
         </SISMSG>
     </DOC>

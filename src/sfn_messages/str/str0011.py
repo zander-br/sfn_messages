@@ -39,13 +39,13 @@ class STR0011E(BaseMessage):
         None
     )
     institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIF/text()')] = None
-    original_str_control_number: Annotated[StrControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlSTR/text()')] = None
+    original_str_control_number: Annotated[StrControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlSTROr/text()')] = None
     settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     institution_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIF/@CodErro')] = None
     institution_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBIF/@CodErro')] = None
-    original_str_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlSTR/@CodErro')] = (
+    original_str_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlSTROr/@CodErro')] = (
         None
     )
     settlement_date_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/DtMovto/@CodErro')] = None
