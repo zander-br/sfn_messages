@@ -1,4 +1,8 @@
 from enum import StrEnum
+from typing import Annotated
+
+from pydantic import GetPydanticSchema
+from pydantic_core import core_schema
 
 from sfn_messages.core.types import EnumMixin
 
@@ -331,3 +335,17 @@ class PortabilityReturnReason(EnumMixin, StrEnum):
             cls.PAYMENT_ON_INVALID_DATE: '83',
             cls.PORTABILITY_ALREADY_SETTLED_BY_ORIGINAL_CREDITOR: '84',
         }
+
+
+type PortabilityNumber = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            pattern=r'^[0-9A-Z]{21}$',
+            min_length=21,
+            max_length=21,
+            strip_whitespace=True,
+            to_upper=True,
+        )
+    ),
+]

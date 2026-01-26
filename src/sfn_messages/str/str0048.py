@@ -18,6 +18,7 @@ from .types import PortabilityReturnReason
 PATH = 'DOC/SISMSG/STR0048'
 PATH_R1 = 'DOC/SISMSG/STR0048R1'
 PATH_R2 = 'DOC/SISMSG/STR0048R2'
+PATH_R3 = 'DOC/SISMSG/STR0048R3'
 PATH_E = 'DOC/SISMSG/STR0048'
 XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/STR0048.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/STR0048E.xsd'
@@ -67,6 +68,22 @@ class STR0048R2(BaseMessage):
     provider_ispb: Annotated[Ispb, XmlPath(f'{PATH_R2}/ISPBPrestd/text()')]
     description: Annotated[Description | None, XmlPath(f'{PATH_R2}/Hist/text()')] = None
     settlement_date: Annotated[date, XmlPath(f'{PATH_R2}/DtMovto/text()')]
+
+
+class STR0048R3(BaseMessage):
+    XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
+
+    message_code: Annotated[Literal['STR0048R3'], XmlPath(f'{PATH_R3}/CodMsg/text()')] = 'STR0048R3'
+    str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_R3}/NumCtrlSTR/text()')]
+    vendor_timestamp: Annotated[datetime, XmlPath(f'{PATH_R3}/DtHrBC/text()')]
+    debtor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R3}/ISPBIFDebtd/text()')]
+    creditor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R3}/ISPBIFCredtd/text()')]
+    amount: Annotated[Decimal, XmlPath(f'{PATH_R3}/VlrLanc/text()')]
+    portability_return_reason: Annotated[PortabilityReturnReason, XmlPath(f'{PATH_R3}/CodDevPortdd/text()')]
+    original_str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_R3}/NumCtrlSTROr/text()')]
+    provider_ispb: Annotated[Ispb, XmlPath(f'{PATH_R3}/ISPBPrestd/text()')]
+    description: Annotated[Description | None, XmlPath(f'{PATH_R3}/Hist/text()')] = None
+    settlement_date: Annotated[date, XmlPath(f'{PATH_R3}/DtMovto/text()')]
 
 
 class STR0048E(BaseMessage):
