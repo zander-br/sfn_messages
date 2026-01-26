@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime
+from datetime import date, datetime
 from typing import Any
 
 import pytest
@@ -29,7 +29,7 @@ def make_valid_str0011r1_params() -> dict[str, Any]:
         'to_ispb': '00038166',
         'institution_control_number': '31680151202509090425',
         'institution_ispb': '31680151',
-        'vendor_timestamp': '2025-11-20T15:30:00+00:00',
+        'vendor_timestamp': '2025-11-20T15:30:00',
         'settlement_date': '2025-09-08',
     }
 
@@ -157,13 +157,13 @@ def test_str0011e_general_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0011E CodErro="EGEN0050">
-                <CodMsg>STR0011</CodMsg>
+            <STR0011 CodErro="EGEN0050">
+                <CodMsg>STR0011E</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0011E>
+            </STR0011>
         </SISMSG>
     </DOC>
     """
@@ -185,13 +185,13 @@ def test_str0011e_tag_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0011E>
-                <CodMsg>STR0011</CodMsg>
+            <STR0011>
+                <CodMsg>STR0011E</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIF CodErro="EINS0010">31680151</ISPBIF>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0011E>
+            </STR0011>
         </SISMSG>
     </DOC>
     """
@@ -242,13 +242,13 @@ def test_str0011e_general_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0011E CodErro="EGEN0050">
-                <CodMsg>STR0011</CodMsg>
+            <STR0011 CodErro="EGEN0050">
+                <CodMsg>STR0011E</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0011E>
+            </STR0011>
         </SISMSG>
     </DOC>
     """
@@ -276,13 +276,13 @@ def test_str0011e_tag_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0011E>
-                <CodMsg>STR0011</CodMsg>
+            <STR0011>
+                <CodMsg>STR0011E</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIF CodErro="EINS0010">31680151</ISPBIF>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0011E>
+            </STR0011>
         </SISMSG>
     </DOC>
     """
@@ -348,7 +348,7 @@ def test_str0011r1_valid_params() -> None:
     assert str0011r1.institution_control_number == '31680151202509090425'
     assert str0011r1.institution_ispb == '31680151'
     assert str0011r1.settlement_date == date(2025, 9, 8)
-    assert str0011r1.vendor_timestamp == datetime(2025, 11, 20, 15, 30, 0, tzinfo=UTC)
+    assert str0011r1.vendor_timestamp == datetime(2025, 11, 20, 15, 30, 0)
 
 
 def test_str0011r1_missing_required_fields() -> None:
@@ -386,7 +386,7 @@ def test_str0011r1_to_xml() -> None:
                 <CodMsg>STR0011</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <DtMovto>2025-09-08</DtMovto>
             </STR0011R1>
         </SISMSG>
@@ -410,7 +410,7 @@ def test_str0011r1_from_xml() -> None:
                 <CodMsg>STR0011</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <DtMovto>2025-09-08</DtMovto>
             </STR0011R1>
         </SISMSG>
@@ -425,7 +425,7 @@ def test_str0011r1_from_xml() -> None:
     assert str0011r1.institution_control_number == '31680151202509090425'
     assert str0011r1.institution_ispb == '31680151'
     assert str0011r1.settlement_date == date(2025, 9, 8)
-    assert str0011r1.vendor_timestamp == datetime(2025, 11, 20, 15, 30, 0, tzinfo=UTC)
+    assert str0011r1.vendor_timestamp == datetime(2025, 11, 20, 15, 30, 0)
 
 
 def test_str0011r1_roundtrip() -> None:

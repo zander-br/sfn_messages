@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Any
 
@@ -38,7 +38,7 @@ def make_valid_ltr0006r1_params() -> dict[str, Any]:
         'debtor_institution_or_ltr_ispb': '31680151',
         'str_control_number': 'STR20250101000000001',
         'str_settlement_status': 'EFFECTIVE',
-        'settlement_timestamp': '2025-12-04T13:21:00+00:00',
+        'settlement_timestamp': '2025-12-04T13:21:00',
         'settlement_date': '2025-12-04',
     }
 
@@ -56,7 +56,7 @@ def make_valid_ltr0006r2_params() -> dict[str, Any]:
         'amount': 123.0,
         'original_str_control_number': 'STR20250101000000001',
         'description': 'Test description',
-        'vendor_timestamp': '2025-12-04T13:22:00+00:00',
+        'vendor_timestamp': '2025-12-04T13:22:00',
         'settlement_date': '2025-12-04',
     }
 
@@ -67,7 +67,7 @@ def make_valid_ltr0006e_params(*, general_error: bool = False) -> dict[str, Any]
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
         'operation_number': '31680151250908000000001',
-        'message_code': 'LTR0006',
+        'message_code': 'LTR0006E',
         'institution_or_ltr_control_number': '123',
         'debtor_institution_or_ltr_ispb': '31680151',
         'creditor_institution_or_ltr_ispb': '31680152',
@@ -118,7 +118,7 @@ def test_ltr0006r1_valid_model() -> None:
     assert ltr0006r1.debtor_institution_or_ltr_ispb == '31680151'
     assert ltr0006r1.str_control_number == 'STR20250101000000001'
     assert ltr0006r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
-    assert ltr0006r1.settlement_timestamp == datetime(2025, 12, 4, 13, 21, tzinfo=UTC)
+    assert ltr0006r1.settlement_timestamp == datetime(2025, 12, 4, 13, 21)
     assert ltr0006r1.settlement_date == date(2025, 12, 4)
 
 
@@ -138,7 +138,7 @@ def test_ltr0006r2_valid_model() -> None:
     assert ltr0006r2.amount == Decimal('123.0')
     assert ltr0006r2.original_str_control_number == 'STR20250101000000001'
     assert ltr0006r2.description == 'Test description'
-    assert ltr0006r2.vendor_timestamp == datetime(2025, 12, 4, 13, 22, tzinfo=UTC)
+    assert ltr0006r2.vendor_timestamp == datetime(2025, 12, 4, 13, 22)
     assert ltr0006r2.settlement_date == date(2025, 12, 4)
 
 
@@ -151,7 +151,7 @@ def test_ltr0006e_general_error_valid_model() -> None:
     assert ltr0006e.to_ispb == '00038166'
     assert ltr0006e.system_domain == 'SPB01'
     assert ltr0006e.operation_number == '31680151250908000000001'
-    assert ltr0006e.message_code == 'LTR0006'
+    assert ltr0006e.message_code == 'LTR0006E'
     assert ltr0006e.institution_or_ltr_control_number == '123'
     assert ltr0006e.debtor_institution_or_ltr_ispb == '31680151'
     assert ltr0006e.creditor_institution_or_ltr_ispb == '31680152'
@@ -172,7 +172,7 @@ def test_ltr0006e_tag_error_valid_model() -> None:
     assert ltr0006e.to_ispb == '00038166'
     assert ltr0006e.system_domain == 'SPB01'
     assert ltr0006e.operation_number == '31680151250908000000001'
-    assert ltr0006e.message_code == 'LTR0006'
+    assert ltr0006e.message_code == 'LTR0006E'
     assert ltr0006e.institution_or_ltr_control_number == '123'
     assert ltr0006e.debtor_institution_or_ltr_ispb == '31680151'
     assert ltr0006e.creditor_institution_or_ltr_ispb == '31680152'
@@ -249,7 +249,7 @@ def test_ltr0006_to_xml() -> None:
     xml = ltr0006.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0006.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LTR0006.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -280,7 +280,7 @@ def test_ltr0006r1_to_xml() -> None:
     xml = ltr0006r1.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0006.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LTR0006.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -294,7 +294,7 @@ def test_ltr0006r1_to_xml() -> None:
                 <ISPBIF_LTRDebtd>31680151</ISPBIF_LTRDebtd>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <SitLancSTR>1</SitLancSTR>
-                <DtHrSit>2025-12-04 13:21:00+00:00</DtHrSit>
+                <DtHrSit>2025-12-04T13:21:00</DtHrSit>
                 <DtMovto>2025-12-04</DtMovto>
             </LTR0006R1>
         </SISMSG>
@@ -311,7 +311,7 @@ def test_ltr0006r2_to_xml() -> None:
     xml = ltr0006r2.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0006.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LTR0006.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -327,7 +327,7 @@ def test_ltr0006r2_to_xml() -> None:
                 <VlrLanc>123.0</VlrLanc>
                 <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <Hist>Test description</Hist>
-                <DtHrBC>2025-12-04 13:22:00+00:00</DtHrBC>
+                <DtHrBC>2025-12-04T13:22:00</DtHrBC>
                 <DtMovto>2025-12-04</DtMovto>
             </LTR0006R2>
         </SISMSG>
@@ -343,7 +343,7 @@ def test_ltr0006e_general_error_to_xml() -> None:
     xml = ltr0006e.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0006E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LTR0006E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -351,8 +351,8 @@ def test_ltr0006e_general_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <LTR0006E CodErro="EGEN0050">
-                <CodMsg>LTR0006</CodMsg>
+            <LTR0006 CodErro="EGEN0050">
+                <CodMsg>LTR0006E</CodMsg>
                 <NumCtrlIF_LTR>123</NumCtrlIF_LTR>
                 <ISPBIF_LTRDebtd>31680151</ISPBIF_LTRDebtd>
                 <ISPBIF_LTRCredtd>31680152</ISPBIF_LTRCredtd>
@@ -360,7 +360,7 @@ def test_ltr0006e_general_error_to_xml() -> None:
                 <VlrLanc>123.0</VlrLanc>
                 <Hist>Test description</Hist>
                 <DtMovto>2025-12-04</DtMovto>
-            </LTR0006E>
+            </LTR0006>
         </SISMSG>
     </DOC>
     """
@@ -374,7 +374,7 @@ def test_ltr0006e_tag_error_to_xml() -> None:
     xml = ltr0006e.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0006E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LTR0006E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -382,8 +382,8 @@ def test_ltr0006e_tag_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <LTR0006E>
-                <CodMsg>LTR0006</CodMsg>
+            <LTR0006>
+                <CodMsg>LTR0006E</CodMsg>
                 <NumCtrlIF_LTR>123</NumCtrlIF_LTR>
                 <ISPBIF_LTRDebtd>31680151</ISPBIF_LTRDebtd>
                 <ISPBIF_LTRCredtd>31680152</ISPBIF_LTRCredtd>
@@ -391,7 +391,7 @@ def test_ltr0006e_tag_error_to_xml() -> None:
                 <VlrLanc>123.0</VlrLanc>
                 <Hist>Test description</Hist>
                 <DtMovto>2025-12-04</DtMovto>
-            </LTR0006E>
+            </LTR0006>
         </SISMSG>
     </DOC>
     """
@@ -400,7 +400,7 @@ def test_ltr0006e_tag_error_to_xml() -> None:
 
 def test_ltr0006_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0006.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LTR0006.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -441,7 +441,7 @@ def test_ltr0006_from_xml() -> None:
 
 def test_ltr0006r1_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0006.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LTR0006.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -455,7 +455,7 @@ def test_ltr0006r1_from_xml() -> None:
                 <ISPBIF_LTRDebtd>31680151</ISPBIF_LTRDebtd>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <SitLancSTR>1</SitLancSTR>
-                <DtHrSit>2025-12-04 13:21:00+00:00</DtHrSit>
+                <DtHrSit>2025-12-04T13:21:00</DtHrSit>
                 <DtMovto>2025-12-04</DtMovto>
             </LTR0006R1>
         </SISMSG>
@@ -474,13 +474,13 @@ def test_ltr0006r1_from_xml() -> None:
     assert ltr0006r1.debtor_institution_or_ltr_ispb == '31680151'
     assert ltr0006r1.str_control_number == 'STR20250101000000001'
     assert ltr0006r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
-    assert ltr0006r1.settlement_timestamp == datetime(2025, 12, 4, 13, 21, tzinfo=UTC)
+    assert ltr0006r1.settlement_timestamp == datetime(2025, 12, 4, 13, 21)
     assert ltr0006r1.settlement_date == date(2025, 12, 4)
 
 
 def test_ltr0006r2_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0006.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LTR0006.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -496,7 +496,7 @@ def test_ltr0006r2_from_xml() -> None:
                 <VlrLanc>123.0</VlrLanc>
                 <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <Hist>Test description</Hist>
-                <DtHrBC>2025-12-04 13:22:00+00:00</DtHrBC>
+                <DtHrBC>2025-12-04T13:22:00</DtHrBC>
                 <DtMovto>2025-12-04</DtMovto>
             </LTR0006R2>
         </SISMSG>
@@ -517,13 +517,13 @@ def test_ltr0006r2_from_xml() -> None:
     assert ltr0006r2.amount == Decimal('123.0')
     assert ltr0006r2.original_str_control_number == 'STR20250101000000001'
     assert ltr0006r2.description == 'Test description'
-    assert ltr0006r2.vendor_timestamp == datetime(2025, 12, 4, 13, 22, tzinfo=UTC)
+    assert ltr0006r2.vendor_timestamp == datetime(2025, 12, 4, 13, 22)
     assert ltr0006r2.settlement_date == date(2025, 12, 4)
 
 
 def test_ltr0006e_general_error_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0006E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LTR0006E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -531,8 +531,8 @@ def test_ltr0006e_general_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <LTR0006E CodErro="EGEN0050">
-                <CodMsg>LTR0006</CodMsg>
+            <LTR0006 CodErro="EGEN0050">
+                <CodMsg>LTR0006E</CodMsg>
                 <NumCtrlIF_LTR>123</NumCtrlIF_LTR>
                 <ISPBIF_LTRDebtd>31680151</ISPBIF_LTRDebtd>
                 <ISPBIF_LTRCredtd>31680152</ISPBIF_LTRCredtd>
@@ -540,7 +540,7 @@ def test_ltr0006e_general_error_from_xml() -> None:
                 <VlrLanc>123.0</VlrLanc>
                 <Hist>Test description</Hist>
                 <DtMovto>2025-12-04</DtMovto>
-            </LTR0006E>
+            </LTR0006>
         </SISMSG>
     </DOC>
     """
@@ -552,7 +552,7 @@ def test_ltr0006e_general_error_from_xml() -> None:
     assert ltr0006e.to_ispb == '00038166'
     assert ltr0006e.system_domain == 'SPB01'
     assert ltr0006e.operation_number == '31680151250908000000001'
-    assert ltr0006e.message_code == 'LTR0006'
+    assert ltr0006e.message_code == 'LTR0006E'
     assert ltr0006e.institution_or_ltr_control_number == '123'
     assert ltr0006e.debtor_institution_or_ltr_ispb == '31680151'
     assert ltr0006e.creditor_institution_or_ltr_ispb == '31680152'
@@ -566,7 +566,7 @@ def test_ltr0006e_general_error_from_xml() -> None:
 
 def test_ltr0006e_tag_error_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LTR/LTR0006E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LTR0006E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -574,8 +574,8 @@ def test_ltr0006e_tag_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <LTR0006E>
-                <CodMsg>LTR0006</CodMsg>
+            <LTR0006>
+                <CodMsg>LTR0006E</CodMsg>
                 <NumCtrlIF_LTR>123</NumCtrlIF_LTR>
                 <ISPBIF_LTRDebtd>31680151</ISPBIF_LTRDebtd>
                 <ISPBIF_LTRCredtd>31680152</ISPBIF_LTRCredtd>
@@ -583,7 +583,7 @@ def test_ltr0006e_tag_error_from_xml() -> None:
                 <VlrLanc>123.0</VlrLanc>
                 <Hist>Test description</Hist>
                 <DtMovto>2025-12-04</DtMovto>
-            </LTR0006E>
+            </LTR0006>
         </SISMSG>
     </DOC>
     """
@@ -595,7 +595,7 @@ def test_ltr0006e_tag_error_from_xml() -> None:
     assert ltr0006e.to_ispb == '00038166'
     assert ltr0006e.system_domain == 'SPB01'
     assert ltr0006e.operation_number == '31680151250908000000001'
-    assert ltr0006e.message_code == 'LTR0006'
+    assert ltr0006e.message_code == 'LTR0006E'
     assert ltr0006e.institution_or_ltr_control_number == '123'
     assert ltr0006e.debtor_institution_or_ltr_ispb == '31680151'
     assert ltr0006e.creditor_institution_or_ltr_ispb == '31680152'

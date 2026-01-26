@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Iterable, Iterator
 from contextlib import suppress
 from dataclasses import dataclass
+from datetime import datetime
 from types import GenericAlias, UnionType
 from typing import Annotated, Any, ClassVar, Self, Union, get_args, get_origin
 from xml.etree import ElementTree as ET
@@ -153,6 +154,8 @@ class XmlSerializerMixin(ABC, BaseModel):
             return [value.to_xml_value() for value in field_value]
         if isinstance(field_value, MappableToXmlValue):
             return field_value.to_xml_value()
+        if isinstance(field_value, datetime):
+            return field_value.strftime('%Y-%m-%dT%H:%M:%S')
         return str(field_value)
 
     @classmethod

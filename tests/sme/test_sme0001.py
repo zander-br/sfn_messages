@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Any
 
@@ -48,7 +48,7 @@ def make_valid_sme0001r2_params() -> dict[str, Any]:
         'operation_number': '31680151250908000000001',
         'message_code': 'SME0001R2',
         'str_control_number': 'STR20250101000000001',
-        'vendor_timestamp': '2025-12-03T09:00:00+00:00',
+        'vendor_timestamp': '2025-12-03T09:00:00',
         'institution_ispb': '31680151',
         'ieme_ispb': '31680153',
         'amount': 120.00,
@@ -62,7 +62,7 @@ def make_valid_sme0001e_params(*, general_error: bool = False) -> dict[str, Any]
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
         'operation_number': '31680151250908000000001',
-        'message_code': 'SME0001',
+        'message_code': 'SME0001E',
         'institution_control_number': '123',
         'institution_ispb': '31680151',
         'ieme_ispb': '31680153',
@@ -123,7 +123,7 @@ def test_sme0001r2_valid_model() -> None:
     assert sme0001r2.operation_number == '31680151250908000000001'
     assert sme0001r2.message_code == 'SME0001R2'
     assert sme0001r2.str_control_number == 'STR20250101000000001'
-    assert sme0001r2.vendor_timestamp == datetime(2025, 12, 3, 9, 0, tzinfo=UTC)
+    assert sme0001r2.vendor_timestamp == datetime(2025, 12, 3, 9, 0)
     assert sme0001r2.institution_ispb == '31680151'
     assert sme0001r2.ieme_ispb == '31680153'
     assert sme0001r2.amount == Decimal('120.00')
@@ -139,7 +139,7 @@ def test_sme0001e_general_error_valid_model() -> None:
     assert sme0001e.to_ispb == '00038166'
     assert sme0001e.system_domain == 'SPB01'
     assert sme0001e.operation_number == '31680151250908000000001'
-    assert sme0001e.message_code == 'SME0001'
+    assert sme0001e.message_code == 'SME0001E'
     assert sme0001e.institution_control_number == '123'
     assert sme0001e.institution_ispb == '31680151'
     assert sme0001e.ieme_ispb == '31680153'
@@ -157,7 +157,7 @@ def test_sme0001e_tag_error_valid_model() -> None:
     assert sme0001e.to_ispb == '00038166'
     assert sme0001e.system_domain == 'SPB01'
     assert sme0001e.operation_number == '31680151250908000000001'
-    assert sme0001e.message_code == 'SME0001'
+    assert sme0001e.message_code == 'SME0001E'
     assert sme0001e.institution_control_number == '123'
     assert sme0001e.institution_ispb == '31680151'
     assert sme0001e.ieme_ispb == '31680153'
@@ -227,7 +227,7 @@ def test_sme0001_to_xml() -> None:
     xml = sme0001.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SME/SME0001.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SME0001.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -256,7 +256,7 @@ def test_sme0001r1_to_xml() -> None:
     xml = sme0001r1.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SME/SME0001.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SME0001.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -285,7 +285,7 @@ def test_sme0001r2_to_xml() -> None:
     xml = sme0001r2.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SME/SME0001.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SME0001.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -296,7 +296,7 @@ def test_sme0001r2_to_xml() -> None:
             <SME0001R2>
                 <CodMsg>SME0001R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-12-03 09:00:00+00:00</DtHrBC>
+                <DtHrBC>2025-12-03T09:00:00</DtHrBC>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBIEME>31680153</ISPBIEME>
                 <VlrLanc>120.0</VlrLanc>
@@ -315,7 +315,7 @@ def test_sme0001e_general_error_to_xml() -> None:
     xml = sme0001e.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SME/SME0001E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SME0001E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -323,14 +323,14 @@ def test_sme0001e_general_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <SME0001E CodErro="EGEN0050">
-                <CodMsg>SME0001</CodMsg>
+            <SME0001 CodErro="EGEN0050">
+                <CodMsg>SME0001E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBIEME>31680153</ISPBIEME>
                 <VlrLanc>120.0</VlrLanc>
                 <DtMovto>2025-12-03</DtMovto>
-            </SME0001E>
+            </SME0001>
         </SISMSG>
     </DOC>
     """
@@ -344,7 +344,7 @@ def test_sme0001e_tag_error_to_xml() -> None:
     xml = sme0001e.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SME/SME0001E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SME0001E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -352,14 +352,14 @@ def test_sme0001e_tag_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <SME0001E>
-                <CodMsg>SME0001</CodMsg>
+            <SME0001>
+                <CodMsg>SME0001E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBIEME CodErro="EGEN0051">31680153</ISPBIEME>
                 <VlrLanc>120.0</VlrLanc>
                 <DtMovto>2025-12-03</DtMovto>
-            </SME0001E>
+            </SME0001>
         </SISMSG>
     </DOC>
     """
@@ -368,7 +368,7 @@ def test_sme0001e_tag_error_to_xml() -> None:
 
 def test_sme0001_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SME/SME0001.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SME0001.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -405,7 +405,7 @@ def test_sme0001_from_xml() -> None:
 
 def test_sme0001r1_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SME/SME0001.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SME0001.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -442,7 +442,7 @@ def test_sme0001r1_from_xml() -> None:
 
 def test_sme0001r2_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SME/SME0001.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SME0001.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -453,7 +453,7 @@ def test_sme0001r2_from_xml() -> None:
             <SME0001R2>
                 <CodMsg>SME0001R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-12-03 09:00:00+00:00</DtHrBC>
+                <DtHrBC>2025-12-03T09:00:00</DtHrBC>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBIEME>31680153</ISPBIEME>
                 <VlrLanc>120.0</VlrLanc>
@@ -472,7 +472,7 @@ def test_sme0001r2_from_xml() -> None:
     assert sme0001r2.operation_number == '31680151250908000000001'
     assert sme0001r2.message_code == 'SME0001R2'
     assert sme0001r2.str_control_number == 'STR20250101000000001'
-    assert sme0001r2.vendor_timestamp == datetime(2025, 12, 3, 9, 0, tzinfo=UTC)
+    assert sme0001r2.vendor_timestamp == datetime(2025, 12, 3, 9, 0)
     assert sme0001r2.institution_ispb == '31680151'
     assert sme0001r2.ieme_ispb == '31680153'
     assert sme0001r2.amount == Decimal('120.00')
@@ -481,7 +481,7 @@ def test_sme0001r2_from_xml() -> None:
 
 def test_sme0001e_general_error_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SME/SME0001E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SME0001E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -489,14 +489,14 @@ def test_sme0001e_general_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <SME0001E CodErro="EGEN0050">
-                <CodMsg>SME0001</CodMsg>
+            <SME0001 CodErro="EGEN0050">
+                <CodMsg>SME0001E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBIEME>31680153</ISPBIEME>
                 <VlrLanc>120.0</VlrLanc>
                 <DtMovto>2025-12-03</DtMovto>
-            </SME0001E>
+            </SME0001>
         </SISMSG>
     </DOC>
     """
@@ -508,7 +508,7 @@ def test_sme0001e_general_error_from_xml() -> None:
     assert sme0001e.to_ispb == '00038166'
     assert sme0001e.system_domain == 'SPB01'
     assert sme0001e.operation_number == '31680151250908000000001'
-    assert sme0001e.message_code == 'SME0001'
+    assert sme0001e.message_code == 'SME0001E'
     assert sme0001e.institution_control_number == '123'
     assert sme0001e.institution_ispb == '31680151'
     assert sme0001e.ieme_ispb == '31680153'
@@ -519,7 +519,7 @@ def test_sme0001e_general_error_from_xml() -> None:
 
 def test_sme0001e_tag_error_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SME/SME0001E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SME0001E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -527,14 +527,14 @@ def test_sme0001e_tag_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <SME0001E>
-                <CodMsg>SME0001</CodMsg>
+            <SME0001>
+                <CodMsg>SME0001E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBIEME CodErro="EGEN0051">31680153</ISPBIEME>
                 <VlrLanc>120.0</VlrLanc>
                 <DtMovto>2025-12-03</DtMovto>
-            </SME0001E>
+            </SME0001>
         </SISMSG>
     </DOC>
     """
@@ -546,7 +546,7 @@ def test_sme0001e_tag_error_from_xml() -> None:
     assert sme0001e.to_ispb == '00038166'
     assert sme0001e.system_domain == 'SPB01'
     assert sme0001e.operation_number == '31680151250908000000001'
-    assert sme0001e.message_code == 'SME0001'
+    assert sme0001e.message_code == 'SME0001E'
     assert sme0001e.institution_control_number == '123'
     assert sme0001e.institution_ispb == '31680151'
     assert sme0001e.ieme_ispb == '31680153'
@@ -587,7 +587,7 @@ def test_sme0001r2_roundtrip() -> None:
 
 def test_sme0001_from_xml_missing_required_fields() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SME/SME0001.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SME0001.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>

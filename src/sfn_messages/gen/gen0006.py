@@ -8,7 +8,7 @@ from .types import CertificateIssue, CertificateSerialNumber
 
 PATH = 'DOC/SISMSG/GEN0006'
 PATH_R1 = 'DOC/SISMSG/GEN0006R1'
-PATH_E = 'DOC/SISMSG/GEN0006E'
+PATH_E = 'DOC/SISMSG/GEN0006'
 XML_NAMESPACE = 'http://www.bcb.gov.br/GEN/GEN0006.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/GEN/GEN0006E.xsd'
 
@@ -37,13 +37,15 @@ class GEN0006R1(BaseMessage):
 class GEN0006E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['GEN0006'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'GEN0006'
-    institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIF/text()')]
-    institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIF/text()')]
-    certificate_issue: Annotated[CertificateIssue, XmlPath(f'{PATH_E}/CodCertifrAtv/text()')]
-    certificate_serial_number: Annotated[CertificateSerialNumber, XmlPath(f'{PATH_E}/CertifAtv/text()')]
+    message_code: Annotated[Literal['GEN0006E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'GEN0006E'
+    institution_control_number: Annotated[InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlIF/text()')] = (
+        None
+    )
+    institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIF/text()')] = None
+    certificate_issue: Annotated[CertificateIssue | None, XmlPath(f'{PATH_E}/CodCertifrAtv/text()')] = None
+    certificate_serial_number: Annotated[CertificateSerialNumber | None, XmlPath(f'{PATH_E}/CertifAtv/text()')] = None
     description: Annotated[Description | None, XmlPath(f'{PATH_E}/Hist/text()')] = None
-    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     institution_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIF/@CodErro')] = None

@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Any
 
@@ -63,7 +63,7 @@ def make_valid_ldl0008r1_params() -> dict[str, Any]:
         'institution_ispb': '31680151',
         'str_control_number': 'STR20250101000000001',
         'ldl_settlement_status': 'EFFECTIVE',
-        'settlement_timestamp': '2025-12-09T10:02:00+00:00',
+        'settlement_timestamp': '2025-12-09T10:02:00',
         'settlement_date': '2025-12-09',
     }
 
@@ -77,7 +77,7 @@ def make_valid_ldl0008r2_params() -> dict[str, Any]:
         'message_code': 'LDL0008R2',
         'str_control_number': 'STR20250101000000001',
         'original_ldl_control_number': '321',
-        'vendor_timestamp': '2025-12-09T10:02:00+00:00',
+        'vendor_timestamp': '2025-12-09T10:02:00',
         'institution_ispb': '31680151',
         'ldl_ispb': '31680153',
         'amount': 933.0,
@@ -107,7 +107,7 @@ def make_valid_ldl0008e_params(*, general_error: bool = False) -> dict[str, Any]
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
         'operation_number': '31680151250908000000001',
-        'message_code': 'LDL0008',
+        'message_code': 'LDL0008E',
         'institution_control_number': '123',
         'institution_ispb': '31680151',
         'original_ldl_control_number': '321',
@@ -190,7 +190,7 @@ def test_ldl0008r1_valid_model() -> None:
     assert ldl0008r1.institution_ispb == '31680151'
     assert ldl0008r1.str_control_number == 'STR20250101000000001'
     assert ldl0008r1.ldl_settlement_status == LdlSettlementStatus.EFFECTIVE
-    assert ldl0008r1.settlement_timestamp == datetime(2025, 12, 9, 10, 2, tzinfo=UTC)
+    assert ldl0008r1.settlement_timestamp == datetime(2025, 12, 9, 10, 2)
     assert ldl0008r1.settlement_date == date(2025, 12, 9)
 
 
@@ -206,7 +206,7 @@ def test_ldl0008r2_valid_model() -> None:
     assert ldl0008r2.message_code == 'LDL0008R2'
     assert ldl0008r2.str_control_number == 'STR20250101000000001'
     assert ldl0008r2.original_ldl_control_number == '321'
-    assert ldl0008r2.vendor_timestamp == datetime(2025, 12, 9, 10, 2, tzinfo=UTC)
+    assert ldl0008r2.vendor_timestamp == datetime(2025, 12, 9, 10, 2)
     assert ldl0008r2.institution_ispb == '31680151'
     assert ldl0008r2.ldl_ispb == '31680153'
     assert ldl0008r2.amount == Decimal('933.0')
@@ -239,7 +239,7 @@ def test_ldl0008e_general_error_valid_model() -> None:
     assert ldl0008e.to_ispb == '00038166'
     assert ldl0008e.system_domain == 'SPB01'
     assert ldl0008e.operation_number == '31680151250908000000001'
-    assert ldl0008e.message_code == 'LDL0008'
+    assert ldl0008e.message_code == 'LDL0008E'
     assert ldl0008e.institution_control_number == '123'
     assert ldl0008e.institution_ispb == '31680151'
     assert ldl0008e.original_ldl_control_number == '321'
@@ -275,7 +275,7 @@ def test_ldl0008e_tag_error_valid_model() -> None:
     assert ldl0008.to_ispb == '00038166'
     assert ldl0008.system_domain == 'SPB01'
     assert ldl0008.operation_number == '31680151250908000000001'
-    assert ldl0008.message_code == 'LDL0008'
+    assert ldl0008.message_code == 'LDL0008E'
     assert ldl0008.institution_control_number == '123'
     assert ldl0008.institution_ispb == '31680151'
     assert ldl0008.original_ldl_control_number == '321'
@@ -368,7 +368,7 @@ def test_ldl0008_to_xml() -> None:
     xml = ldl0008.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0008.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0008.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -412,7 +412,7 @@ def test_ldl0008r1_to_xml() -> None:
     xml = ldl0008r1.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0008.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0008.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -426,7 +426,7 @@ def test_ldl0008r1_to_xml() -> None:
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <SitLancLDL>1</SitLancLDL>
-                <DtHrSit>2025-12-09 10:02:00+00:00</DtHrSit>
+                <DtHrSit>2025-12-09T10:02:00</DtHrSit>
                 <DtMovto>2025-12-09</DtMovto>
             </LDL0008R1>
         </SISMSG>
@@ -442,7 +442,7 @@ def test_ldl0008r2_to_xml() -> None:
     xml = ldl0008r2.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0008.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0008.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -454,7 +454,7 @@ def test_ldl0008r2_to_xml() -> None:
                 <CodMsg>LDL0008R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <NumCtrlLDLOr>321</NumCtrlLDLOr>
-                <DtHrBC>2025-12-09 10:02:00+00:00</DtHrBC>
+                <DtHrBC>2025-12-09T10:02:00</DtHrBC>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBLDL>31680153</ISPBLDL>
                 <VlrLanc>933.0</VlrLanc>
@@ -487,7 +487,7 @@ def test_ldl0008e_general_error_to_xml() -> None:
     xml = ldl0008e.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0008E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0008E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -495,8 +495,8 @@ def test_ldl0008e_general_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <LDL0008E CodErro="EGEN0050">
-                <CodMsg>LDL0008</CodMsg>
+            <LDL0008 CodErro="EGEN0050">
+                <CodMsg>LDL0008E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlLDLOr>321</NumCtrlLDLOr>
@@ -517,7 +517,7 @@ def test_ldl0008e_general_error_to_xml() -> None:
                     <IdentdPartCamr>43075534</IdentdPartCamr>
                 </Grupo_LDL0008_EvtEms>
                 <DtMovto>2025-12-09</DtMovto>
-            </LDL0008E>
+            </LDL0008>
         </SISMSG>
     </DOC>
     """
@@ -531,7 +531,7 @@ def test_ldl0008e_tag_error_to_xml() -> None:
     xml = ldl0008e.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0008E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0008E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -539,8 +539,8 @@ def test_ldl0008e_tag_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <LDL0008E>
-                <CodMsg>LDL0008</CodMsg>
+            <LDL0008>
+                <CodMsg>LDL0008E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlLDLOr>321</NumCtrlLDLOr>
@@ -561,7 +561,7 @@ def test_ldl0008e_tag_error_to_xml() -> None:
                     <IdentdPartCamr>43075534</IdentdPartCamr>
                 </Grupo_LDL0008_EvtEms>
                 <DtMovto>2025-12-09</DtMovto>
-            </LDL0008E>
+            </LDL0008>
         </SISMSG>
     </DOC>
     """
@@ -570,7 +570,7 @@ def test_ldl0008e_tag_error_to_xml() -> None:
 
 def test_ldl0008_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0008.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0008.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -640,7 +640,7 @@ def test_ldl0008_from_xml() -> None:
 
 def test_ldl0008r1_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0008.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0008.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -654,7 +654,7 @@ def test_ldl0008r1_from_xml() -> None:
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <SitLancLDL>1</SitLancLDL>
-                <DtHrSit>2025-12-09 10:02:00+00:00</DtHrSit>
+                <DtHrSit>2025-12-09T10:02:00</DtHrSit>
                 <DtMovto>2025-12-09</DtMovto>
             </LDL0008R1>
         </SISMSG>
@@ -673,13 +673,13 @@ def test_ldl0008r1_from_xml() -> None:
     assert ldl0008r1.institution_ispb == '31680151'
     assert ldl0008r1.str_control_number == 'STR20250101000000001'
     assert ldl0008r1.ldl_settlement_status == LdlSettlementStatus.EFFECTIVE
-    assert ldl0008r1.settlement_timestamp == datetime(2025, 12, 9, 10, 2, tzinfo=UTC)
+    assert ldl0008r1.settlement_timestamp == datetime(2025, 12, 9, 10, 2)
     assert ldl0008r1.settlement_date == date(2025, 12, 9)
 
 
 def test_ldl0008r2_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0008.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0008.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -691,7 +691,7 @@ def test_ldl0008r2_from_xml() -> None:
                 <CodMsg>LDL0008R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <NumCtrlLDLOr>321</NumCtrlLDLOr>
-                <DtHrBC>2025-12-09 10:02:00+00:00</DtHrBC>
+                <DtHrBC>2025-12-09T10:02:00</DtHrBC>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBLDL>31680153</ISPBLDL>
                 <VlrLanc>933.0</VlrLanc>
@@ -725,7 +725,7 @@ def test_ldl0008r2_from_xml() -> None:
     assert ldl0008r2.message_code == 'LDL0008R2'
     assert ldl0008r2.str_control_number == 'STR20250101000000001'
     assert ldl0008r2.original_ldl_control_number == '321'
-    assert ldl0008r2.vendor_timestamp == datetime(2025, 12, 9, 10, 2, tzinfo=UTC)
+    assert ldl0008r2.vendor_timestamp == datetime(2025, 12, 9, 10, 2)
     assert ldl0008r2.institution_ispb == '31680151'
     assert ldl0008r2.ldl_ispb == '31680153'
     assert ldl0008r2.amount == Decimal('933.0')
@@ -751,7 +751,7 @@ def test_ldl0008r2_from_xml() -> None:
 
 def test_ldl0008e_general_error_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0008E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0008E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -759,8 +759,8 @@ def test_ldl0008e_general_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <LDL0008E CodErro="EGEN0050">
-                <CodMsg>LDL0008</CodMsg>
+            <LDL0008 CodErro="EGEN0050">
+                <CodMsg>LDL0008E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlLDLOr>321</NumCtrlLDLOr>
@@ -781,7 +781,7 @@ def test_ldl0008e_general_error_from_xml() -> None:
                     <IdentdPartCamr>43075534</IdentdPartCamr>
                 </Grupo_LDL0008_EvtEms>
                 <DtMovto>2025-12-09</DtMovto>
-            </LDL0008E>
+            </LDL0008>
         </SISMSG>
     </DOC>
     """
@@ -793,7 +793,7 @@ def test_ldl0008e_general_error_from_xml() -> None:
     assert ldl0008e.to_ispb == '00038166'
     assert ldl0008e.system_domain == 'SPB01'
     assert ldl0008e.operation_number == '31680151250908000000001'
-    assert ldl0008e.message_code == 'LDL0008'
+    assert ldl0008e.message_code == 'LDL0008E'
     assert ldl0008e.institution_control_number == '123'
     assert ldl0008e.institution_ispb == '31680151'
     assert ldl0008e.original_ldl_control_number == '321'
@@ -822,7 +822,7 @@ def test_ldl0008e_general_error_from_xml() -> None:
 
 def test_ldl0008e_tag_error_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0008E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0008E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -830,8 +830,8 @@ def test_ldl0008e_tag_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <LDL0008E>
-                <CodMsg>LDL0008</CodMsg>
+            <LDL0008>
+                <CodMsg>LDL0008E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlLDLOr>321</NumCtrlLDLOr>
@@ -852,7 +852,7 @@ def test_ldl0008e_tag_error_from_xml() -> None:
                     <IdentdPartCamr>43075534</IdentdPartCamr>
                 </Grupo_LDL0008_EvtEms>
                 <DtMovto>2025-12-09</DtMovto>
-            </LDL0008E>
+            </LDL0008>
         </SISMSG>
     </DOC>
     """
@@ -864,7 +864,7 @@ def test_ldl0008e_tag_error_from_xml() -> None:
     assert ldl0008e.to_ispb == '00038166'
     assert ldl0008e.system_domain == 'SPB01'
     assert ldl0008e.operation_number == '31680151250908000000001'
-    assert ldl0008e.message_code == 'LDL0008'
+    assert ldl0008e.message_code == 'LDL0008E'
     assert ldl0008e.institution_control_number == '123'
     assert ldl0008e.institution_ispb == '31680151'
     assert ldl0008e.original_ldl_control_number == '321'
@@ -924,7 +924,7 @@ def test_ldl0008r2_roundtrip() -> None:
 
 def test_ldl0008_from_xml_missing_required_fields() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0008.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0008.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>

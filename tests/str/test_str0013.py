@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Any
 
@@ -31,7 +31,7 @@ def make_valid_str0013r1_params() -> dict[str, Any]:
         'institution_ispb': '31680151',
         'settlement_date': date(2025, 11, 27),
         'balance': '100.50',
-        'vendor_timestamp': '2025-11-20T15:30:00+00:00',
+        'vendor_timestamp': '2025-11-20T15:30:00',
     }
 
 
@@ -75,7 +75,7 @@ def test_str0013e_general_error_model_valid() -> None:
     assert message.from_ispb == '31680151'
     assert message.institution_control_number == '31680151202509090425'
     assert message.settlement_date == date(2025, 11, 27)
-    assert message.message_code == 'STR0013'
+    assert message.message_code == 'STR0013E'
     assert message.institution_ispb == '31680151'
     assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
@@ -90,7 +90,7 @@ def test_str0013e_tag_error_model_valid() -> None:
     assert message.from_ispb == '31680151'
     assert message.institution_control_number == '31680151202509090425'
     assert message.settlement_date == date(2025, 11, 27)
-    assert message.message_code == 'STR0013'
+    assert message.message_code == 'STR0013E'
     assert message.institution_ispb == '31680151'
     assert message.operation_number == '31680151250908000000001'
     assert message.system_domain == 'SPB01'
@@ -154,12 +154,12 @@ def test_str0013e_general_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0013E CodErro="EGEN0050">
-                <CodMsg>STR0013</CodMsg>
+            <STR0013 CodErro="EGEN0050">
+                <CodMsg>STR0013E</CodMsg>
                 <NumCtrlIF_LDL>31680151202509090425</NumCtrlIF_LDL>
                 <ISPBIF_LDL>31680151</ISPBIF_LDL>
                 <DtMovto>2025-11-27</DtMovto>
-            </STR0013E>
+            </STR0013>
         </SISMSG>
     </DOC>
     """
@@ -181,12 +181,12 @@ def test_str0013e_tag_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0013E>
-                <CodMsg>STR0013</CodMsg>
+            <STR0013>
+                <CodMsg>STR0013E</CodMsg>
                 <NumCtrlIF_LDL>31680151202509090425</NumCtrlIF_LDL>
                 <ISPBIF_LDL CodErro="EGEN0051">31680151</ISPBIF_LDL>
                 <DtMovto>2025-11-27</DtMovto>
-            </STR0013E>
+            </STR0013>
         </SISMSG>
     </DOC>
     """
@@ -237,12 +237,12 @@ def test_str0013e_general_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0013E CodErro="EGEN0050">
-                <CodMsg>STR0013</CodMsg>
+            <STR0013 CodErro="EGEN0050">
+                <CodMsg>STR0013E</CodMsg>
                 <NumCtrlIF_LDL>31680151202509090425</NumCtrlIF_LDL>
                 <ISPBIF_LDL>31680151</ISPBIF_LDL>
                 <DtMovto>2025-11-27</DtMovto>
-            </STR0013E>
+            </STR0013>
         </SISMSG>
     </DOC>
     """
@@ -250,7 +250,7 @@ def test_str0013e_general_error_from_xml() -> None:
     str0013e = STR0013E.from_xml(xml)
 
     assert isinstance(str0013e, STR0013E)
-    assert str0013e.message_code == 'STR0013'
+    assert str0013e.message_code == 'STR0013E'
     assert str0013e.institution_control_number == '31680151202509090425'
     assert str0013e.institution_ispb == '31680151'
     assert str0013e.settlement_date == date(2025, 11, 27)
@@ -271,12 +271,12 @@ def test_str0013e_tag_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0013E>
-                <CodMsg>STR0013</CodMsg>
+            <STR0013>
+                <CodMsg>STR0013E</CodMsg>
                 <NumCtrlIF_LDL>31680151202509090425</NumCtrlIF_LDL>
                 <ISPBIF_LDL CodErro="EGEN0051">31680151</ISPBIF_LDL>
                 <DtMovto>2025-11-27</DtMovto>
-            </STR0013E>
+            </STR0013>
         </SISMSG>
     </DOC>
     """
@@ -284,7 +284,7 @@ def test_str0013e_tag_error_from_xml() -> None:
     str0013e = STR0013E.from_xml(xml)
 
     assert isinstance(str0013e, STR0013E)
-    assert str0013e.message_code == 'STR0013'
+    assert str0013e.message_code == 'STR0013E'
     assert str0013e.institution_control_number == '31680151202509090425'
     assert str0013e.institution_ispb == '31680151'
     assert str0013e.settlement_date == date(2025, 11, 27)
@@ -341,7 +341,7 @@ def test_str0013r1_model_valid() -> None:
     assert message.system_domain == 'SPB01'
     assert message.to_ispb == '00038166'
     assert message.balance == Decimal('100.50')
-    assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30, 0, tzinfo=UTC)
+    assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30, 0)
 
 
 def test_str0013r1_missing_required_fields() -> None:
@@ -380,7 +380,7 @@ def test_str0013r1_to_xml() -> None:
                 <NumCtrlIF_LDL>31680151202509090425</NumCtrlIF_LDL>
                 <ISPBIF_LDL>31680151</ISPBIF_LDL>
                 <SldRB_CL>100.50</SldRB_CL>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <DtMovto>2025-11-27</DtMovto>
             </STR0013R1>
         </SISMSG>
@@ -405,7 +405,7 @@ def test_str0013r1_from_xml() -> None:
                 <NumCtrlIF_LDL>31680151202509090425</NumCtrlIF_LDL>
                 <ISPBIF_LDL>31680151</ISPBIF_LDL>
                 <SldRB_CL>100.50</SldRB_CL>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <DtMovto>2025-11-27</DtMovto>
             </STR0013R1>
         </SISMSG>
@@ -423,7 +423,7 @@ def test_str0013r1_from_xml() -> None:
     assert str0013r1.system_domain == 'SPB01'
     assert str0013r1.operation_number == '31680151250908000000001'
     assert str0013r1.balance == Decimal('100.50')
-    assert str0013r1.vendor_timestamp == datetime(2025, 11, 20, 15, 30, 0, tzinfo=UTC)
+    assert str0013r1.vendor_timestamp == datetime(2025, 11, 20, 15, 30, 0)
 
 
 def test_str0013r1_roundtrip() -> None:

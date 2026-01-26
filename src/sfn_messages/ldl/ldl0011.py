@@ -17,7 +17,7 @@ from sfn_messages.core.types import (
 PATH = 'DOC/SISMSG/LDL0011'
 PATH_R1 = 'DOC/SISMSG/LDL0011R1'
 PATH_R2 = 'DOC/SISMSG/LDL0011R2'
-PATH_E = 'DOC/SISMSG/LDL0011E'
+PATH_E = 'DOC/SISMSG/LDL0011'
 XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/LDL0011.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/LDL0011E.xsd'
 
@@ -66,15 +66,17 @@ class LDL0011R2(BaseMessage):
 class LDL0011E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['LDL0011'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'LDL0011'
-    institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIF/text()')]
-    institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIF/text()')]
-    original_ldl_control_number: Annotated[LdlControlNumber, XmlPath(f'{PATH_E}/NumCtrlLDLOr/text()')]
-    branch: Annotated[Branch, XmlPath(f'{PATH_E}/AgDebtd/text()')]
-    account_number: Annotated[AccountNumber, XmlPath(f'{PATH_E}/CtDebtd/text()')]
-    ldl_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBLDL/text()')]
-    amount: Annotated[Decimal, XmlPath(f'{PATH_E}/VlrLanc/text()')]
-    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+    message_code: Annotated[Literal['LDL0011E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'LDL0011E'
+    institution_control_number: Annotated[InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlIF/text()')] = (
+        None
+    )
+    institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIF/text()')] = None
+    original_ldl_control_number: Annotated[LdlControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlLDLOr/text()')] = None
+    branch: Annotated[Branch | None, XmlPath(f'{PATH_E}/AgDebtd/text()')] = None
+    account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_E}/CtDebtd/text()')] = None
+    ldl_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBLDL/text()')] = None
+    amount: Annotated[Decimal | None, XmlPath(f'{PATH_E}/VlrLanc/text()')] = None
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     institution_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIF/@CodErro')] = None

@@ -15,7 +15,7 @@ from sfn_messages.core.types import (
 PATH = 'DOC/SISMSG/LTR0006'
 PATH_R1 = 'DOC/SISMSG/LTR0006R1'
 PATH_R2 = 'DOC/SISMSG/LTR0006R2'
-PATH_E = 'DOC/SISMSG/LTR0006E'
+PATH_E = 'DOC/SISMSG/LTR0006'
 XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/LTR0006.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/LTR0006E.xsd'
 
@@ -62,14 +62,18 @@ class LTR0006R2(BaseMessage):
 class LTR0006E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['LTR0006'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'LTR0006'
-    institution_or_ltr_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIF_LTR/text()')]
-    debtor_institution_or_ltr_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIF_LTRDebtd/text()')]
-    creditor_institution_or_ltr_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIF_LTRCredtd/text()')]
-    original_ltr_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlLTROr/text()')]
-    amount: Annotated[Decimal, XmlPath(f'{PATH_E}/VlrLanc/text()')]
+    message_code: Annotated[Literal['LTR0006E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'LTR0006E'
+    institution_or_ltr_control_number: Annotated[
+        InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlIF_LTR/text()')
+    ] = None
+    debtor_institution_or_ltr_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIF_LTRDebtd/text()')] = None
+    creditor_institution_or_ltr_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIF_LTRCredtd/text()')] = None
+    original_ltr_control_number: Annotated[
+        InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlLTROr/text()')
+    ] = None
+    amount: Annotated[Decimal | None, XmlPath(f'{PATH_E}/VlrLanc/text()')] = None
     description: Annotated[Description | None, XmlPath(f'{PATH_E}/Hist/text()')] = None
-    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     institution_or_ltr_control_number_error_code: Annotated[

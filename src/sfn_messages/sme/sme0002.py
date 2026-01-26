@@ -18,7 +18,7 @@ PATH = 'DOC/SISMSG/SME0002'
 PATH_GROUP = 'Grupo_SME0002_CtCredtd'
 PATH_R1 = 'DOC/SISMSG/SME0002R1'
 PATH_R2 = 'DOC/SISMSG/SME0002R2'
-PATH_E = 'DOC/SISMSG/SME0002E'
+PATH_E = 'DOC/SISMSG/SME0002'
 XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/SME0002.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/SME0002E.xsd'
 
@@ -34,7 +34,7 @@ class SME0002(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
 
     message_code: Annotated[Literal['SME0002'], XmlPath(f'{PATH}/CodMsg/text()')] = 'SME0002'
-    institution_control_number_ieme: Annotated[InstitutionControlNumber, XmlPath(f'{PATH}/NumCtrlIEME/text()')]
+    ieme_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH}/NumCtrlIEME/text()')]
     ieme_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBIEME/text()')]
     creditor_account_group: Annotated[CreditorGroup | None, XmlPath(f'{PATH}')] = None
     amount: Annotated[Decimal, XmlPath(f'{PATH}/VlrLanc/text()')]
@@ -45,7 +45,7 @@ class SME0002R1(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
 
     message_code: Annotated[Literal['SME0002R1'], XmlPath(f'{PATH_R1}/CodMsg/text()')] = 'SME0002R1'
-    institution_control_number_ieme: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_R1}/NumCtrlIEME/text()')]
+    ieme_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_R1}/NumCtrlIEME/text()')]
     ieme_ispb: Annotated[Ispb, XmlPath(f'{PATH_R1}/ISPBIEME/text()')]
     str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_R1}/NumCtrlSTR/text()')]
     str_settlement_status: Annotated[StrSettlementStatus, XmlPath(f'{PATH_R1}/SitLancSTR/text()')]
@@ -68,10 +68,10 @@ class SME0002R2(BaseMessage):
 
 
 class CreditorGroupError(BaseSubMessage):
-    institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_GROUP}/ISPBIFCredtd/text()')]
-    branch: Annotated[Branch, XmlPath(f'{PATH_GROUP}/AgCredtd/text()')]
-    account_number: Annotated[AccountNumber, XmlPath(f'{PATH_GROUP}/CtCredtd/text()')]
-    cnpj: Annotated[Cnpj, XmlPath(f'{PATH_GROUP}/CNPJCliCredtd/text()')]
+    institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_GROUP}/ISPBIFCredtd/text()')] = None
+    branch: Annotated[Branch | None, XmlPath(f'{PATH_GROUP}/AgCredtd/text()')] = None
+    account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_GROUP}/CtCredtd/text()')] = None
+    cnpj: Annotated[Cnpj | None, XmlPath(f'{PATH_GROUP}/CNPJCliCredtd/text()')] = None
 
     institution_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_GROUP}/ISPBIFCredtd/@CodErro')] = None
     branch_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_GROUP}/AgCredtd/@CodErro')] = None
@@ -82,13 +82,15 @@ class CreditorGroupError(BaseSubMessage):
 class SME0002E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['SME0002'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'SME0002'
-    ieme_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIEME/text()')]
+    message_code: Annotated[Literal['SME0002E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'SME0002E'
+    ieme_control_number: Annotated[InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlIEME/text()')] = None
+    ieme_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIEME/text()')] = None
     creditor_account_group: Annotated[CreditorGroupError | None, XmlPath(f'{PATH_E}')] = None
-    amount: Annotated[Decimal, XmlPath(f'{PATH_E}/VlrLanc/text()')]
-    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+    amount: Annotated[Decimal | None, XmlPath(f'{PATH_E}/VlrLanc/text()')] = None
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
+    ieme_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIEME/@CodErro')] = None
     ieme_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBIEME/@CodErro')] = None
     amount_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/VlrLanc/@CodErro')] = None
     settlement_date_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/DtMovto/@CodErro')] = None

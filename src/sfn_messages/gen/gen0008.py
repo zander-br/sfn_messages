@@ -6,7 +6,7 @@ from sfn_messages.core.types import ErrorCode, InstitutionControlNumber, Ispb
 
 PATH = 'DOC/SISMSG/GEN0008'
 PATH_R1 = 'DOC/SISMSG/GEN0008R1'
-PATH_E = 'DOC/SISMSG/GEN0008E'
+PATH_E = 'DOC/SISMSG/GEN0008'
 XML_NAMESPACE = 'http://www.bcb.gov.br/GEN/GEN0008.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/GEN/GEN0008E.xsd'
 
@@ -35,11 +35,13 @@ class GEN0008R1(BaseMessage):
 class GEN0008E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['GEN0008'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'GEN0008'
-    institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIF/text()')]
-    institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIF/text()')]
-    instituition_certificate: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIFCertif/text()')]
-    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+    message_code: Annotated[Literal['GEN0008E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'GEN0008E'
+    institution_control_number: Annotated[InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlIF/text()')] = (
+        None
+    )
+    institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIF/text()')] = None
+    instituition_certificate: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIFCertif/text()')] = None
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     institution_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIF/@CodErro')] = None

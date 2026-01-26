@@ -17,7 +17,7 @@ from sfn_messages.core.types import (
 
 PATH = 'DOC/SISMSG/LDL0001'
 PATH_GROUP = 'Grupo_LDL0001_ResultLiqd'
-PATH_E = 'DOC/SISMSG/LDL0001E'
+PATH_E = 'DOC/SISMSG/LDL0001'
 XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/LDL0001.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/LDL0001E.xsd'
 
@@ -47,11 +47,11 @@ class LDL0001(BaseMessage):
 
 
 class InformationNetResultError(BaseSubMessage):
-    cnpj: Annotated[Cnpj, XmlPath(f'{PATH_GROUP}/CNPJNLiqdant/text()')]
+    cnpj: Annotated[Cnpj | None, XmlPath(f'{PATH_GROUP}/CNPJNLiqdant/text()')] = None
     participant_identifier: Annotated[ParticipantIdentifier | None, XmlPath(f'{PATH_GROUP}/IdentdPartCamr/text()')] = (
         None
     )
-    amount: Annotated[Decimal, XmlPath(f'{PATH_GROUP}/VlrResultLiqdNLiqdant/text()')]
+    amount: Annotated[Decimal | None, XmlPath(f'{PATH_GROUP}/VlrResultLiqdNLiqdant/text()')] = None
 
     cnpj_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_GROUP}/CNPJNLiqdant/@CodErro')] = None
     participant_identifier_error_code: Annotated[
@@ -63,20 +63,20 @@ class InformationNetResultError(BaseSubMessage):
 class LDL0001E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['LDL0001'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'LDL0001'
-    ldl_control_number: Annotated[LdlControlNumber, XmlPath(f'{PATH_E}/NumCtrlLDL/text()')]
-    ldl_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBLDL/text()')]
-    institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIF/text()')]
-    information_type: Annotated[InformationType, XmlPath(f'{PATH_E}/TpInf/text()')]
-    liquidation_date: Annotated[date, XmlPath(f'{PATH_E}/DtLiquid/text()')]
-    amount: Annotated[Decimal, XmlPath(f'{PATH_E}/VlrLanc/text()')]
-    credit_debit_type: Annotated[CreditDebitType, XmlPath(f'{PATH_E}/TpDeb_Cred/text()')]
+    message_code: Annotated[Literal['LDL0001E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'LDL0001E'
+    ldl_control_number: Annotated[LdlControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlLDL/text()')] = None
+    ldl_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBLDL/text()')] = None
+    institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIF/text()')] = None
+    information_type: Annotated[InformationType | None, XmlPath(f'{PATH_E}/TpInf/text()')] = None
+    liquidation_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtLiquid/text()')] = None
+    amount: Annotated[Decimal | None, XmlPath(f'{PATH_E}/VlrLanc/text()')] = None
+    credit_debit_type: Annotated[CreditDebitType | None, XmlPath(f'{PATH_E}/TpDeb_Cred/text()')] = None
     net_result_group: Annotated[list[InformationNetResultError], XmlPath(f'{PATH_E}')] = Field(default_factory=list)
-    ldl_timestamp: Annotated[datetime, XmlPath(f'{PATH_E}/DtHrLDL/text()')]
-    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+    ldl_timestamp: Annotated[datetime | None, XmlPath(f'{PATH_E}/DtHrLDL/text()')] = None
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
-    general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlLDL/@CodErro')] = None
-    ldl_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlLDL/@CodErro')]
+    general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
+    ldl_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlLDL/@CodErro')] = None
     ldl_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBLDL/@CodErro')] = None
     institution_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBIF/@CodErro')] = None
     information_type_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/TpInf/@CodErro')] = None

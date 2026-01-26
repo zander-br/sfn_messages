@@ -1650,9 +1650,6 @@ class MovementType(EnumMixin, StrEnum):
     SETTLEMENT = 'SETTLEMENT'
     REVERSE_SPLIT = 'REVERSE_SPLIT'
     SPIN_OFF = 'SPIN_OFF'
-    NORMAL = 'NORMAL'
-    COSTS = 'COSTS'
-    SUBORDINATED_TERM_SETTLEMENT = 'SUBORDINATED_TERM_SETTLEMENT'
 
     @classmethod
     def _value_to_xml(cls) -> dict[MovementType, str]:
@@ -1678,9 +1675,6 @@ class MovementType(EnumMixin, StrEnum):
             cls.SETTLEMENT: '7',
             cls.REVERSE_SPLIT: '8',
             cls.SPIN_OFF: '9',
-            cls.NORMAL: '01',
-            cls.COSTS: '03',
-            cls.SUBORDINATED_TERM_SETTLEMENT: '04',
         }
 
 

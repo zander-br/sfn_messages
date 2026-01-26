@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime
+from datetime import date, datetime
 from typing import Any
 
 import pytest
@@ -55,8 +55,8 @@ def make_valid_gen0020r1_params() -> dict[str, Any]:
             },
         ],
         'original_description': 'Test description',
-        'original_provider_datetime': '2025-11-27T16:02:00+00:00',
-        'provider_datetime': '2025-11-27T16:02:00+00:00',
+        'original_provider_datetime': '2025-11-27T16:02:00',
+        'provider_datetime': '2025-11-27T16:02:00',
         'settlement_date': '2025-11-27',
     }
 
@@ -67,7 +67,7 @@ def make_valid_gen0020e_params(*, general_error: bool = False) -> dict[str, Any]
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
         'operation_number': '31680151250908000000001',
-        'message_code': 'GEN0020',
+        'message_code': 'GEN0020E',
         'participant_institution_control_number': '123',
         'participant_ispb': '31680151',
         'parcitipant_consulted_ispb': '00038166',
@@ -112,8 +112,8 @@ def test_gen0020r1_valid_model() -> None:
     assert gen0020r1.participant_ispb == '31680151'
     assert gen0020r1.parcitipant_consulted_ispb == '00038166'
     assert gen0020r1.original_description == 'Test description'
-    assert gen0020r1.original_provider_datetime == datetime(2025, 11, 27, 16, 2, tzinfo=UTC)
-    assert gen0020r1.provider_datetime == datetime(2025, 11, 27, 16, 2, tzinfo=UTC)
+    assert gen0020r1.original_provider_datetime == datetime(2025, 11, 27, 16, 2)
+    assert gen0020r1.provider_datetime == datetime(2025, 11, 27, 16, 2)
     assert gen0020r1.settlement_date == date(2025, 11, 27)
 
     assert len(gen0020r1.responsibles) == RESPONSIBLE_SIZE
@@ -136,7 +136,7 @@ def test_gen0020e_general_error_valid_model() -> None:
     assert gen0020e.to_ispb == '00038166'
     assert gen0020e.system_domain == 'SPB01'
     assert gen0020e.operation_number == '31680151250908000000001'
-    assert gen0020e.message_code == 'GEN0020'
+    assert gen0020e.message_code == 'GEN0020E'
     assert gen0020e.participant_institution_control_number == '123'
     assert gen0020e.participant_ispb == '31680151'
     assert gen0020e.parcitipant_consulted_ispb == '00038166'
@@ -153,7 +153,7 @@ def test_gen0020e_tag_error_valid_model() -> None:
     assert gen0020e.to_ispb == '00038166'
     assert gen0020e.system_domain == 'SPB01'
     assert gen0020e.operation_number == '31680151250908000000001'
-    assert gen0020e.message_code == 'GEN0020'
+    assert gen0020e.message_code == 'GEN0020E'
     assert gen0020e.participant_institution_control_number == '123'
     assert gen0020e.participant_ispb == '31680151'
     assert gen0020e.parcitipant_consulted_ispb == '00038166'
@@ -261,8 +261,8 @@ def test_gen0020r1_to_xml() -> None:
                     <TpRespons>M</TpRespons>
                 </Grupo_GEN0020R1_Respons>
                 <HistOr>Test description</HistOr>
-                <DtHrPrestdOr>2025-11-27 16:02:00+00:00</DtHrPrestdOr>
-                <DtHrPrestd>2025-11-27 16:02:00+00:00</DtHrPrestd>
+                <DtHrPrestdOr>2025-11-27T16:02:00</DtHrPrestdOr>
+                <DtHrPrestd>2025-11-27T16:02:00</DtHrPrestd>
                 <DtMovto>2025-11-27</DtMovto>
             </GEN0020R1>
         </SISMSG>
@@ -286,13 +286,13 @@ def test_gen0020e_general_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0020E CodErro="EGEN0050">
-                <CodMsg>GEN0020</CodMsg>
+            <GEN0020 CodErro="EGEN0050">
+                <CodMsg>GEN0020E</CodMsg>
                 <NumCtrlPart>123</NumCtrlPart>
                 <ISPBPart>31680151</ISPBPart>
                 <ISPBPartConsd>00038166</ISPBPartConsd>
                 <DtMovto>2025-11-27</DtMovto>
-            </GEN0020E>
+            </GEN0020>
         </SISMSG>
     </DOC>
     """
@@ -314,13 +314,13 @@ def test_gen0020e_tag_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0020E>
-                <CodMsg>GEN0020</CodMsg>
+            <GEN0020>
+                <CodMsg>GEN0020E</CodMsg>
                 <NumCtrlPart>123</NumCtrlPart>
                 <ISPBPart CodErro="EGEN0051">31680151</ISPBPart>
                 <ISPBPartConsd>00038166</ISPBPartConsd>
                 <DtMovto>2025-11-27</DtMovto>
-            </GEN0020E>
+            </GEN0020>
         </SISMSG>
     </DOC>
     """
@@ -396,8 +396,8 @@ def test_gen0020r1_from_xml() -> None:
                     <TpRespons>M</TpRespons>
                 </Grupo_GEN0020R1_Respons>
                 <HistOr>Test description</HistOr>
-                <DtHrPrestdOr>2025-11-27 16:02:00+00:00</DtHrPrestdOr>
-                <DtHrPrestd>2025-11-27 16:02:00+00:00</DtHrPrestd>
+                <DtHrPrestdOr>2025-11-27T16:02:00</DtHrPrestdOr>
+                <DtHrPrestd>2025-11-27T16:02:00</DtHrPrestd>
                 <DtMovto>2025-11-27</DtMovto>
             </GEN0020R1>
         </SISMSG>
@@ -416,8 +416,8 @@ def test_gen0020r1_from_xml() -> None:
     assert gen0020r1.participant_ispb == '31680151'
     assert gen0020r1.parcitipant_consulted_ispb == '00038166'
     assert gen0020r1.original_description == 'Test description'
-    assert gen0020r1.original_provider_datetime == datetime(2025, 11, 27, 16, 2, tzinfo=UTC)
-    assert gen0020r1.provider_datetime == datetime(2025, 11, 27, 16, 2, tzinfo=UTC)
+    assert gen0020r1.original_provider_datetime == datetime(2025, 11, 27, 16, 2)
+    assert gen0020r1.provider_datetime == datetime(2025, 11, 27, 16, 2)
     assert gen0020r1.settlement_date == date(2025, 11, 27)
 
     assert len(gen0020r1.responsibles) == RESPONSIBLE_SIZE
@@ -441,13 +441,13 @@ def test_gen0020e_general_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0020E CodErro="EGEN0050">
-                <CodMsg>GEN0020</CodMsg>
+            <GEN0020 CodErro="EGEN0050">
+                <CodMsg>GEN0020E</CodMsg>
                 <NumCtrlPart>123</NumCtrlPart>
                 <ISPBPart>31680151</ISPBPart>
                 <ISPBPartConsd>00038166</ISPBPartConsd>
                 <DtMovto>2025-11-27</DtMovto>
-            </GEN0020E>
+            </GEN0020>
         </SISMSG>
     </DOC>
     """
@@ -459,7 +459,7 @@ def test_gen0020e_general_error_from_xml() -> None:
     assert gen0020e.to_ispb == '00038166'
     assert gen0020e.system_domain == 'SPB01'
     assert gen0020e.operation_number == '31680151250908000000001'
-    assert gen0020e.message_code == 'GEN0020'
+    assert gen0020e.message_code == 'GEN0020E'
     assert gen0020e.participant_institution_control_number == '123'
     assert gen0020e.participant_ispb == '31680151'
     assert gen0020e.parcitipant_consulted_ispb == '00038166'
@@ -477,13 +477,13 @@ def test_gen0020e_tag_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0020E>
-                <CodMsg>GEN0020</CodMsg>
+            <GEN0020>
+                <CodMsg>GEN0020E</CodMsg>
                 <NumCtrlPart>123</NumCtrlPart>
                 <ISPBPart CodErro="EGEN0051">31680151</ISPBPart>
                 <ISPBPartConsd>00038166</ISPBPartConsd>
                 <DtMovto>2025-11-27</DtMovto>
-            </GEN0020E>
+            </GEN0020>
         </SISMSG>
     </DOC>
     """
@@ -495,7 +495,7 @@ def test_gen0020e_tag_error_from_xml() -> None:
     assert gen0020e.to_ispb == '00038166'
     assert gen0020e.system_domain == 'SPB01'
     assert gen0020e.operation_number == '31680151250908000000001'
-    assert gen0020e.message_code == 'GEN0020'
+    assert gen0020e.message_code == 'GEN0020E'
     assert gen0020e.participant_institution_control_number == '123'
     assert gen0020e.participant_ispb == '31680151'
     assert gen0020e.parcitipant_consulted_ispb == '00038166'

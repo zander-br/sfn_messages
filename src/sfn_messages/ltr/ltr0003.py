@@ -21,7 +21,7 @@ PATH = 'DOC/SISMSG/LTR0003'
 PATH_R1 = 'DOC/SISMSG/LTR0003R1'
 PATH_R2 = 'DOC/SISMSG/LTR0003R2'
 PATH_R3 = 'DOC/SISMSG/LTR0003R3'
-PATH_E = 'DOC/SISMSG/LTR0003E'
+PATH_E = 'DOC/SISMSG/LTR0003'
 XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/LTR0003.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/LTR0003E.xsd'
 
@@ -97,20 +97,24 @@ class LTR0003R3(BaseMessage):
 class LTR0003E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['LTR0003'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'LTR0003'
-    institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIF/text()')]
-    debtor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIFDebtd/text()')]
-    creditor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIFCredtd/text()')]
-    ltr_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBLTR/text()')]
-    original_ltr_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlLTROr/text()')]
+    message_code: Annotated[Literal['LTR0003E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'LTR0003E'
+    institution_control_number: Annotated[InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlIF/text()')] = (
+        None
+    )
+    debtor_institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIFDebtd/text()')] = None
+    creditor_institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIFCredtd/text()')] = None
+    ltr_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBLTR/text()')] = None
+    original_ltr_control_number: Annotated[
+        InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlLTROr/text()')
+    ] = None
     branch: Annotated[Branch | None, XmlPath(f'{PATH_E}/AgCredtd/text()')] = None
     account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_E}/CtCredtd/text()')] = None
-    amount: Annotated[Decimal, XmlPath(f'{PATH_E}/VlrLanc/text()')]
-    sub_asset_type: Annotated[AssetType, XmlPath(f'{PATH_E}/SubTpAtv/text()')]
+    amount: Annotated[Decimal | None, XmlPath(f'{PATH_E}/VlrLanc/text()')] = None
+    sub_asset_type: Annotated[AssetType | None, XmlPath(f'{PATH_E}/SubTpAtv/text()')] = None
     asset_description: Annotated[AssetDescription | None, XmlPath(f'{PATH_E}/DescAtv/text()')] = None
     description: Annotated[Description | None, XmlPath(f'{PATH_E}/Hist/text()')] = None
     priority: Annotated[Priority | None, XmlPath(f'{PATH_E}/NivelPref/text()')] = None
-    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     institution_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIF/@CodErro')] = None

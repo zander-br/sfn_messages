@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime
+from datetime import date, datetime
 from typing import Any
 
 import pytest
@@ -36,7 +36,7 @@ def make_valid_gen0012r1_params() -> dict[str, Any]:
         'institution_control_number': '123',
         'institution_ispb': '31680151',
         'file_identifier': 'A' * 32,
-        'participant_datetime': '2025-11-26T17:02:00+00:00',
+        'participant_datetime': '2025-11-26T17:02:00',
         'settlement_date': '2025-11-26',
     }
 
@@ -47,7 +47,7 @@ def make_valid_gen0012e_params(*, general_error: bool = False) -> dict[str, Any]
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
         'operation_number': '31680151250908000000001',
-        'message_code': 'GEN0012',
+        'message_code': 'GEN0012E',
         'institution_control_number': '123',
         'institution_ispb': '31680151',
         'recipient_ispb': '31680151',
@@ -93,7 +93,7 @@ def test_gen0012r1_valid_model() -> None:
     assert gen0012r1.institution_control_number == '123'
     assert gen0012r1.institution_ispb == '31680151'
     assert gen0012r1.file_identifier == 'A' * 32
-    assert gen0012r1.participant_datetime == datetime(2025, 11, 26, 17, 2, tzinfo=UTC)
+    assert gen0012r1.participant_datetime == datetime(2025, 11, 26, 17, 2)
     assert gen0012r1.settlement_date == date(2025, 11, 26)
 
 
@@ -104,7 +104,7 @@ def test_gen0012e_general_error_valid_model() -> None:
     assert isinstance(gen0012e, GEN0012E)
     assert gen0012e.from_ispb == '31680151'
     assert gen0012e.to_ispb == '00038166'
-    assert gen0012e.message_code == 'GEN0012'
+    assert gen0012e.message_code == 'GEN0012E'
     assert gen0012e.institution_control_number == '123'
     assert gen0012e.institution_ispb == '31680151'
     assert gen0012e.recipient_ispb == '31680151'
@@ -122,7 +122,7 @@ def test_gen0012e_tag_error_valid_model() -> None:
     assert isinstance(gen0012e, GEN0012E)
     assert gen0012e.from_ispb == '31680151'
     assert gen0012e.to_ispb == '00038166'
-    assert gen0012e.message_code == 'GEN0012'
+    assert gen0012e.message_code == 'GEN0012E'
     assert gen0012e.institution_control_number == '123'
     assert gen0012e.institution_ispb == '31680151'
     assert gen0012e.recipient_ispb == '31680151'
@@ -219,7 +219,7 @@ def test_gen0012r1_to_xml() -> None:
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <IdentdArq>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</IdentdArq>
-                <DtHrPart>2025-11-26 17:02:00+00:00</DtHrPart>
+                <DtHrPart>2025-11-26T17:02:00</DtHrPart>
                 <DtMovto>2025-11-26</DtMovto>
             </GEN0012R1>
         </SISMSG>
@@ -243,8 +243,8 @@ def test_gen0012e_general_eror_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0012E CodErro="EGEN0050">
-                <CodMsg>GEN0012</CodMsg>
+            <GEN0012 CodErro="EGEN0050">
+                <CodMsg>GEN0012E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBDestinatario>31680151</ISPBDestinatario>
@@ -252,7 +252,7 @@ def test_gen0012e_general_eror_to_xml() -> None:
                 <NumCtrlSistOr>123</NumCtrlSistOr>
                 <NUOpOr>31680151250908000000001</NUOpOr>
                 <DtMovto>2025-11-26</DtMovto>
-            </GEN0012E>
+            </GEN0012>
         </SISMSG>
     </DOC>
     """
@@ -274,8 +274,8 @@ def test_gen0012e_tag_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0012E>
-                <CodMsg>GEN0012</CodMsg>
+            <GEN0012>
+                <CodMsg>GEN0012E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF CodErro="EGEN0051">31680151</ISPBIF>
                 <ISPBDestinatario>31680151</ISPBDestinatario>
@@ -283,7 +283,7 @@ def test_gen0012e_tag_error_to_xml() -> None:
                 <NumCtrlSistOr>123</NumCtrlSistOr>
                 <NUOpOr>31680151250908000000001</NUOpOr>
                 <DtMovto>2025-11-26</DtMovto>
-            </GEN0012E>
+            </GEN0012>
         </SISMSG>
     </DOC>
     """
@@ -344,7 +344,7 @@ def test_gen0012r1_from_xml() -> None:
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <IdentdArq>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</IdentdArq>
-                <DtHrPart>2025-11-26 17:02:00+00:00</DtHrPart>
+                <DtHrPart>2025-11-26T17:02:00</DtHrPart>
                 <DtMovto>2025-11-26</DtMovto>
             </GEN0012R1>
         </SISMSG>
@@ -360,7 +360,7 @@ def test_gen0012r1_from_xml() -> None:
     assert gen0012r1.institution_control_number == '123'
     assert gen0012r1.institution_ispb == '31680151'
     assert gen0012r1.file_identifier == 'A' * 32
-    assert gen0012r1.participant_datetime == datetime(2025, 11, 26, 17, 2, tzinfo=UTC)
+    assert gen0012r1.participant_datetime == datetime(2025, 11, 26, 17, 2)
     assert gen0012r1.settlement_date == date(2025, 11, 26)
 
 
@@ -374,8 +374,8 @@ def test_gen0012e_general_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0012E CodErro="EGEN0050">
-                <CodMsg>GEN0012</CodMsg>
+            <GEN0012 CodErro="EGEN0050">
+                <CodMsg>GEN0012E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBDestinatario>31680151</ISPBDestinatario>
@@ -383,7 +383,7 @@ def test_gen0012e_general_error_from_xml() -> None:
                 <NumCtrlSistOr>123</NumCtrlSistOr>
                 <NUOpOr>31680151250908000000001</NUOpOr>
                 <DtMovto>2025-11-26</DtMovto>
-            </GEN0012E>
+            </GEN0012>
         </SISMSG>
     </DOC>
     """
@@ -393,7 +393,7 @@ def test_gen0012e_general_error_from_xml() -> None:
     assert isinstance(gen0012e, GEN0012E)
     assert gen0012e.from_ispb == '31680151'
     assert gen0012e.to_ispb == '00038166'
-    assert gen0012e.message_code == 'GEN0012'
+    assert gen0012e.message_code == 'GEN0012E'
     assert gen0012e.institution_control_number == '123'
     assert gen0012e.institution_ispb == '31680151'
     assert gen0012e.recipient_ispb == '31680151'
@@ -414,8 +414,8 @@ def test_gen0012e_tag_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <GEN0012E>
-                <CodMsg>GEN0012</CodMsg>
+            <GEN0012>
+                <CodMsg>GEN0012E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF CodErro="EGEN0051">31680151</ISPBIF>
                 <ISPBDestinatario>31680151</ISPBDestinatario>
@@ -423,7 +423,7 @@ def test_gen0012e_tag_error_from_xml() -> None:
                 <NumCtrlSistOr>123</NumCtrlSistOr>
                 <NUOpOr>31680151250908000000001</NUOpOr>
                 <DtMovto>2025-11-26</DtMovto>
-            </GEN0012E>
+            </GEN0012>
         </SISMSG>
     </DOC>
     """
@@ -433,7 +433,7 @@ def test_gen0012e_tag_error_from_xml() -> None:
     assert isinstance(gen0012e, GEN0012E)
     assert gen0012e.from_ispb == '31680151'
     assert gen0012e.to_ispb == '00038166'
-    assert gen0012e.message_code == 'GEN0012'
+    assert gen0012e.message_code == 'GEN0012E'
     assert gen0012e.institution_control_number == '123'
     assert gen0012e.institution_ispb == '31680151'
     assert gen0012e.recipient_ispb == '31680151'

@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Any
 
@@ -37,7 +37,7 @@ def make_valid_ldl0022r1_params() -> dict[str, Any]:
         'institution_ispb': '31680151',
         'str_control_number': 'STR20250101000000001',
         'ldl_settlement_status': 'EFFECTIVE',
-        'settlement_timestamp': '2025-12-10T15:30:00+00:00',
+        'settlement_timestamp': '2025-12-10T15:30:00',
         'settlement_date': '2025-12-10',
     }
 
@@ -50,7 +50,7 @@ def make_valid_ldl0022r2_params() -> dict[str, Any]:
         'operation_number': '31680151250908000000001',
         'message_code': 'LDL0022R2',
         'str_control_number': 'STR20250101000000001',
-        'vendor_timestamp': '2025-12-10T15:45:00+00:00',
+        'vendor_timestamp': '2025-12-10T15:45:00',
         'institution_ispb': '31680151',
         'ldl_ispb': '31680153',
         'product_code': 'AMEX_CREDIT_CARD',
@@ -65,7 +65,7 @@ def make_valid_ldl0022e_params(*, general_error: bool = False) -> dict[str, Any]
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
         'operation_number': '31680151250908000000001',
-        'message_code': 'LDL0022',
+        'message_code': 'LDL0022E',
         'institution_control_number': '123',
         'institution_ispb': '31680151',
         'ldl_ispb': '31680153',
@@ -114,7 +114,7 @@ def test_ldl0022r1_valid_model() -> None:
     assert ldl0022r1.institution_ispb == '31680151'
     assert ldl0022r1.str_control_number == 'STR20250101000000001'
     assert ldl0022r1.ldl_settlement_status == LdlSettlementStatus.EFFECTIVE
-    assert ldl0022r1.settlement_timestamp == datetime(2025, 12, 10, 15, 30, tzinfo=UTC)
+    assert ldl0022r1.settlement_timestamp == datetime(2025, 12, 10, 15, 30)
     assert ldl0022r1.settlement_date == date(2025, 12, 10)
 
 
@@ -129,7 +129,7 @@ def test_ldl0022r2_valid_model() -> None:
     assert ldl0022r2.operation_number == '31680151250908000000001'
     assert ldl0022r2.message_code == 'LDL0022R2'
     assert ldl0022r2.str_control_number == 'STR20250101000000001'
-    assert ldl0022r2.vendor_timestamp == datetime(2025, 12, 10, 15, 45, tzinfo=UTC)
+    assert ldl0022r2.vendor_timestamp == datetime(2025, 12, 10, 15, 45)
     assert ldl0022r2.institution_ispb == '31680151'
     assert ldl0022r2.ldl_ispb == '31680153'
     assert ldl0022r2.product_code == ProductCode.AMEX_CREDIT_CARD
@@ -146,7 +146,7 @@ def test_ldl0022e_valid_model() -> None:
     assert ldl0022e.to_ispb == '00038166'
     assert ldl0022e.system_domain == 'SPB01'
     assert ldl0022e.operation_number == '31680151250908000000001'
-    assert ldl0022e.message_code == 'LDL0022'
+    assert ldl0022e.message_code == 'LDL0022E'
     assert ldl0022e.institution_control_number == '123'
     assert ldl0022e.institution_ispb == '31680151'
     assert ldl0022e.ldl_ispb == '31680153'
@@ -222,7 +222,7 @@ def test_ldl0022_to_xml() -> None:
     xml = ldl0022.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0022.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0022.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -252,7 +252,7 @@ def test_ldl0022r1_to_xml() -> None:
     xml = ldl0022r1.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0022.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0022.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -266,7 +266,7 @@ def test_ldl0022r1_to_xml() -> None:
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <SitLancLDL>1</SitLancLDL>
-                <DtHrSit>2025-12-10 15:30:00+00:00</DtHrSit>
+                <DtHrSit>2025-12-10T15:30:00</DtHrSit>
                 <DtMovto>2025-12-10</DtMovto>
             </LDL0022R1>
         </SISMSG>
@@ -282,7 +282,7 @@ def test_ldl0022r2_to_xml() -> None:
     xml = ldl0022r2.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0022.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0022.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -293,7 +293,7 @@ def test_ldl0022r2_to_xml() -> None:
             <LDL0022R2>
                 <CodMsg>LDL0022R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-12-10 15:45:00+00:00</DtHrBC>
+                <DtHrBC>2025-12-10T15:45:00</DtHrBC>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBLDL>31680153</ISPBLDL>
                 <CodProdt>ACC</CodProdt>
@@ -313,7 +313,7 @@ def test_ldl0022e_general_error_to_xml() -> None:
     xml = ldl0022e.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0022E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0022E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -321,15 +321,15 @@ def test_ldl0022e_general_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <LDL0022E CodErro="EGEN0050">
-                <CodMsg>LDL0022</CodMsg>
+            <LDL0022 CodErro="EGEN0050">
+                <CodMsg>LDL0022E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBLDL>31680153</ISPBLDL>
                 <CodProdt>ACC</CodProdt>
                 <VlrLanc>177.22</VlrLanc>
                 <DtMovto>2025-12-10</DtMovto>
-            </LDL0022E>
+            </LDL0022>
         </SISMSG>
     </DOC>
     """
@@ -343,7 +343,7 @@ def test_ldl0022e_tag_error_to_xml() -> None:
     xml = ldl0022e.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0022E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0022E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -351,15 +351,15 @@ def test_ldl0022e_tag_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <LDL0022E>
-                <CodMsg>LDL0022</CodMsg>
+            <LDL0022>
+                <CodMsg>LDL0022E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBLDL CodErro="ELDL0123">31680153</ISPBLDL>
                 <CodProdt>ACC</CodProdt>
                 <VlrLanc>177.22</VlrLanc>
                 <DtMovto>2025-12-10</DtMovto>
-            </LDL0022E>
+            </LDL0022>
         </SISMSG>
     </DOC>
     """
@@ -368,7 +368,7 @@ def test_ldl0022e_tag_error_to_xml() -> None:
 
 def test_ldl0022_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0022.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0022.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -407,7 +407,7 @@ def test_ldl0022_from_xml() -> None:
 
 def test_ldl0022r1_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0022.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0022.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -421,7 +421,7 @@ def test_ldl0022r1_from_xml() -> None:
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <SitLancLDL>1</SitLancLDL>
-                <DtHrSit>2025-12-10 15:30:00+00:00</DtHrSit>
+                <DtHrSit>2025-12-10T15:30:00</DtHrSit>
                 <DtMovto>2025-12-10</DtMovto>
             </LDL0022R1>
         </SISMSG>
@@ -440,13 +440,13 @@ def test_ldl0022r1_from_xml() -> None:
     assert ldl0022r1.institution_ispb == '31680151'
     assert ldl0022r1.str_control_number == 'STR20250101000000001'
     assert ldl0022r1.ldl_settlement_status == LdlSettlementStatus.EFFECTIVE
-    assert ldl0022r1.settlement_timestamp == datetime(2025, 12, 10, 15, 30, tzinfo=UTC)
+    assert ldl0022r1.settlement_timestamp == datetime(2025, 12, 10, 15, 30)
     assert ldl0022r1.settlement_date == date(2025, 12, 10)
 
 
 def test_ldl0022r2_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0022.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0022.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -457,7 +457,7 @@ def test_ldl0022r2_from_xml() -> None:
             <LDL0022R2>
                 <CodMsg>LDL0022R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-12-10 15:45:00+00:00</DtHrBC>
+                <DtHrBC>2025-12-10T15:45:00</DtHrBC>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBLDL>31680153</ISPBLDL>
                 <CodProdt>ACC</CodProdt>
@@ -477,7 +477,7 @@ def test_ldl0022r2_from_xml() -> None:
     assert ldl0022r2.operation_number == '31680151250908000000001'
     assert ldl0022r2.message_code == 'LDL0022R2'
     assert ldl0022r2.str_control_number == 'STR20250101000000001'
-    assert ldl0022r2.vendor_timestamp == datetime(2025, 12, 10, 15, 45, tzinfo=UTC)
+    assert ldl0022r2.vendor_timestamp == datetime(2025, 12, 10, 15, 45)
     assert ldl0022r2.institution_ispb == '31680151'
     assert ldl0022r2.ldl_ispb == '31680153'
     assert ldl0022r2.product_code == ProductCode.AMEX_CREDIT_CARD
@@ -487,7 +487,7 @@ def test_ldl0022r2_from_xml() -> None:
 
 def test_ldl0022e_general_error_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0022E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0022E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -495,15 +495,15 @@ def test_ldl0022e_general_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <LDL0022E CodErro="EGEN0050">
-                <CodMsg>LDL0022</CodMsg>
+            <LDL0022 CodErro="EGEN0050">
+                <CodMsg>LDL0022E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBLDL>31680153</ISPBLDL>
                 <CodProdt>ACC</CodProdt>
                 <VlrLanc>177.22</VlrLanc>
                 <DtMovto>2025-12-10</DtMovto>
-            </LDL0022E>
+            </LDL0022>
         </SISMSG>
     </DOC>
     """
@@ -515,7 +515,7 @@ def test_ldl0022e_general_error_from_xml() -> None:
     assert ldl0022e.to_ispb == '00038166'
     assert ldl0022e.system_domain == 'SPB01'
     assert ldl0022e.operation_number == '31680151250908000000001'
-    assert ldl0022e.message_code == 'LDL0022'
+    assert ldl0022e.message_code == 'LDL0022E'
     assert ldl0022e.institution_control_number == '123'
     assert ldl0022e.institution_ispb == '31680151'
     assert ldl0022e.ldl_ispb == '31680153'
@@ -528,7 +528,7 @@ def test_ldl0022e_general_error_from_xml() -> None:
 
 def test_ldl0022e_tag_error_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0022E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0022E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -536,15 +536,15 @@ def test_ldl0022e_tag_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <LDL0022E>
-                <CodMsg>LDL0022</CodMsg>
+            <LDL0022>
+                <CodMsg>LDL0022E</CodMsg>
                 <NumCtrlIF>123</NumCtrlIF>
                 <ISPBIF>31680151</ISPBIF>
                 <ISPBLDL CodErro="ELDL0123">31680153</ISPBLDL>
                 <CodProdt>ACC</CodProdt>
                 <VlrLanc>177.22</VlrLanc>
                 <DtMovto>2025-12-10</DtMovto>
-            </LDL0022E>
+            </LDL0022>
         </SISMSG>
     </DOC>
     """
@@ -556,7 +556,7 @@ def test_ldl0022e_tag_error_from_xml() -> None:
     assert ldl0022e.to_ispb == '00038166'
     assert ldl0022e.system_domain == 'SPB01'
     assert ldl0022e.operation_number == '31680151250908000000001'
-    assert ldl0022e.message_code == 'LDL0022'
+    assert ldl0022e.message_code == 'LDL0022E'
     assert ldl0022e.institution_control_number == '123'
     assert ldl0022e.institution_ispb == '31680151'
     assert ldl0022e.ldl_ispb == '31680153'
@@ -599,7 +599,7 @@ def test_ldl0022r2_roundtrip() -> None:
 
 def test_ldl0022_from_xml_missing_required_fields() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/LDL/LDL0022.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/LDL0022.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>

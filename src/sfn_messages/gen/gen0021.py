@@ -1,12 +1,14 @@
 from datetime import date, datetime
 from typing import Annotated, ClassVar, Literal
 
+from pydantic import Field
+
 from sfn_messages.core.models import BaseMessage, BaseSubMessage, XmlPath
 from sfn_messages.core.types import ErrorCode, GridCode, Ispb, ProductCode, TimeType
 
 PATH = 'DOC/SISMSG/GEN0021'
 PATH_R1_GROUP = 'Grupo_GEN0021_GrdHrio'
-PATH_E = 'DOC/SISMSG/GEN0021E'
+PATH_E = 'DOC/SISMSG/GEN0021'
 XML_NAMESPACE = 'http://www.bcb.gov.br/GEN/GEN0021.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/GEN/GEN0021E.xsd'
 
@@ -31,10 +33,10 @@ class GEN0021(BaseMessage):
 
 
 class ScheduleGridError(BaseSubMessage):
-    code: Annotated[GridCode, XmlPath(f'{PATH_R1_GROUP}/CodGrd/text()')]
-    opening_hour: Annotated[datetime, XmlPath(f'{PATH_R1_GROUP}/DtHrAbert/text()')]
-    closing_hour: Annotated[datetime, XmlPath(f'{PATH_R1_GROUP}/DtHrFcht/text()')]
-    hour_type: Annotated[TimeType, XmlPath(f'{PATH_R1_GROUP}/TpHrio/text()')]
+    code: Annotated[GridCode | None, XmlPath(f'{PATH_R1_GROUP}/CodGrd/text()')] = None
+    opening_hour: Annotated[datetime | None, XmlPath(f'{PATH_R1_GROUP}/DtHrAbert/text()')] = None
+    closing_hour: Annotated[datetime | None, XmlPath(f'{PATH_R1_GROUP}/DtHrFcht/text()')] = None
+    hour_type: Annotated[TimeType | None, XmlPath(f'{PATH_R1_GROUP}/TpHrio/text()')] = None
 
     code_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_R1_GROUP}/CodGrd/@CodErro')] = None
     opening_hour_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_R1_GROUP}/DtHrAbert/@CodErro')] = None
@@ -45,13 +47,13 @@ class ScheduleGridError(BaseSubMessage):
 class GEN0021E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['GEN0021'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'GEN0021'
-    provider_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBPrestd/text()')]
+    message_code: Annotated[Literal['GEN0021E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'GEN0021E'
+    provider_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBPrestd/text()')] = None
     product_code: Annotated[ProductCode | None, XmlPath(f'{PATH_E}/CodProdt/text()')] = None
-    schedule_grid_group: Annotated[list[ScheduleGridError], XmlPath(f'{PATH_E}')]
-    reference_date: Annotated[date, XmlPath(f'{PATH_E}/DtRef/text()')]
-    provider_datetime: Annotated[datetime, XmlPath(f'{PATH_E}/DtHrPrestd/text()')]
-    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+    schedule_grid_group: Annotated[list[ScheduleGridError], XmlPath(f'{PATH_E}')] = Field(default_factory=list)
+    reference_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtRef/text()')] = None
+    provider_datetime: Annotated[datetime | None, XmlPath(f'{PATH_E}/DtHrPrestd/text()')] = None
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     provider_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBPrestd/@CodErro')] = None

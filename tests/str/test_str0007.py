@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime, time
+from datetime import date, datetime, time
 from decimal import Decimal
 from typing import Any
 
@@ -48,7 +48,7 @@ def make_valid_str0007r1_params() -> dict[str, Any]:
         'debtor_institution_ispb': '31680151',
         'str_control_number': 'STR20250101000000001',
         'str_settlement_status': 'EFFECTIVE',
-        'settlement_timestamp': '2025-11-20T15:30:00+00:00',
+        'settlement_timestamp': '2025-11-20T15:30:00',
         'settlement_date': '2025-09-08',
         'operation_number': '31680151250908000000001',
         'to_ispb': '00038166',
@@ -74,7 +74,7 @@ def make_valid_str0007r2_params() -> dict[str, Any]:
         'description': 'Payment for services',
         'from_ispb': '31680151',
         'str_control_number': 'STR20250101000000001',
-        'vendor_timestamp': '2025-11-20T15:30:00+00:00',
+        'vendor_timestamp': '2025-11-20T15:30:00',
         'operation_number': '31680151250908000000001',
         'purpose': 'FX_INTERBANK_MARKET',
         'settlement_date': '2025-09-08',
@@ -339,8 +339,8 @@ def test_str0007e_general_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0007E CodErro="EGEN0050">
-                <CodMsg>STR0007</CodMsg>
+            <STR0007 CodErro="EGEN0050">
+                <CodMsg>STR0007E</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
                 <TpPessoaRemet>J</TpPessoaRemet>
@@ -362,7 +362,7 @@ def test_str0007e_general_error_to_xml() -> None:
                 <HrAgendt>15:30:00</HrAgendt>
                 <NivelPref>C</NivelPref>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0007E>
+            </STR0007>
         </SISMSG>
     </DOC>
     """
@@ -384,8 +384,8 @@ def test_str0007e_tag_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0007E>
-                <CodMsg>STR0007</CodMsg>
+            <STR0007>
+                <CodMsg>STR0007E</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIFDebtd CodErro="EGEN0051">31680151</ISPBIFDebtd>
                 <TpPessoaRemet>J</TpPessoaRemet>
@@ -407,7 +407,7 @@ def test_str0007e_tag_error_to_xml() -> None:
                 <HrAgendt>15:30:00</HrAgendt>
                 <NivelPref>C</NivelPref>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0007E>
+            </STR0007>
         </SISMSG>
     </DOC>
     """
@@ -534,8 +534,8 @@ def test_str0007e_general_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0007E CodErro="EGEN0050">
-                <CodMsg>STR0007</CodMsg>
+            <STR0007 CodErro="EGEN0050">
+                <CodMsg>STR0007E</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
                 <TpPessoaRemet>J</TpPessoaRemet>
@@ -557,7 +557,7 @@ def test_str0007e_general_error_from_xml() -> None:
                 <HrAgendt>15:30:00</HrAgendt>
                 <NivelPref>C</NivelPref>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0007E>
+            </STR0007>
         </SISMSG>
     </DOC>
     """
@@ -598,8 +598,8 @@ def test_str0007e_tag_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0007E>
-                <CodMsg>STR0007</CodMsg>
+            <STR0007>
+                <CodMsg>STR0007E</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
                 <ISPBIFDebtd CodErro="EGEN0051">31680151</ISPBIFDebtd>
                 <TpPessoaRemet>J</TpPessoaRemet>
@@ -621,7 +621,7 @@ def test_str0007e_tag_error_from_xml() -> None:
                 <HrAgendt>15:30:00</HrAgendt>
                 <NivelPref>C</NivelPref>
                 <DtMovto>2025-09-08</DtMovto>
-            </STR0007E>
+            </STR0007>
         </SISMSG>
     </DOC>
     """
@@ -758,7 +758,7 @@ def test_str0007r1_valid_model() -> None:
     assert str0007r1.message_code == 'STR0007R1'
     assert str0007r1.operation_number == '31680151250908000000001'
     assert str0007r1.settlement_date == date(2025, 9, 8)
-    assert str0007r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0007r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30)
     assert str0007r1.str_control_number == 'STR20250101000000001'
     assert str0007r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
     assert str0007r1.to_ispb == '00038166'
@@ -803,7 +803,7 @@ def test_str0007r1_to_xml() -> None:
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <SitLancSTR>1</SitLancSTR>
-                <DtHrSit>2025-11-20 15:30:00+00:00</DtHrSit>
+                <DtHrSit>2025-11-20T15:30:00</DtHrSit>
                 <DtMovto>2025-09-08</DtMovto>
             </STR0007R1>
         </SISMSG>
@@ -829,7 +829,7 @@ def test_str0007r1_from_xml() -> None:
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <SitLancSTR>1</SitLancSTR>
-                <DtHrSit>2025-11-20 15:30:00+00:00</DtHrSit>
+                <DtHrSit>2025-11-20T15:30:00</DtHrSit>
                 <DtMovto>2025-09-08</DtMovto>
             </STR0007R1>
         </SISMSG>
@@ -843,7 +843,7 @@ def test_str0007r1_from_xml() -> None:
     assert str0007r1.message_code == 'STR0007R1'
     assert str0007r1.operation_number == '31680151250908000000001'
     assert str0007r1.settlement_date == date(2025, 9, 8)
-    assert str0007r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0007r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30)
     assert str0007r1.str_control_number == 'STR20250101000000001'
     assert str0007r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
     assert str0007r1.to_ispb == '00038166'
@@ -909,7 +909,7 @@ def test_str0007r2_model_valid() -> None:
     assert message.purpose == InstitutionPurpose.FX_INTERBANK_MARKET
     assert message.settlement_date == date(2025, 9, 8)
     assert message.transaction_id == '0000000000000000000000001'
-    assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert message.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
 
 
 def test_str0007r2_missing_required_fields() -> None:
@@ -1011,7 +1011,7 @@ def test_str0007r2_to_xml() -> None:
             <STR0007R2>
                 <CodMsg>STR0007R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
                 <TpPessoaRemet>J</TpPessoaRemet>
                 <CNPJ_CPFRemet>56369416000136</CNPJ_CPFRemet>
@@ -1060,7 +1060,7 @@ def test_str0007r2_to_xml_omit_optional_fields() -> None:
             <STR0007R2>
                 <CodMsg>STR0007R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
                 <ISPBIFCredtd>60701190</ISPBIFCredtd>
                 <AgCredtd>0001</AgCredtd>
@@ -1094,7 +1094,7 @@ def test_str0007r2_from_xml() -> None:
             <STR0007R2>
                 <CodMsg>STR0007R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
                 <TpPessoaRemet>J</TpPessoaRemet>
                 <CNPJ_CPFRemet>56369416000136</CNPJ_CPFRemet>
@@ -1137,7 +1137,7 @@ def test_str0007r2_from_xml() -> None:
     assert str0007.purpose == InstitutionPurpose.FX_INTERBANK_MARKET
     assert str0007.settlement_date == date(2025, 9, 8)
     assert str0007.transaction_id == '0000000000000000000000001'
-    assert str0007.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0007.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
 
 
 def test_str0007r2_from_xml_missing_optional_fields() -> None:
@@ -1153,7 +1153,7 @@ def test_str0007r2_from_xml_missing_optional_fields() -> None:
             <STR0007R2>
                 <CodMsg>STR0007R2</CodMsg>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-11-20 15:30:00+00:00</DtHrBC>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
                 <ISPBIFDebtd>31680151</ISPBIFDebtd>
                 <ISPBIFCredtd>60701190</ISPBIFCredtd>
                 <AgCredtd>0001</AgCredtd>
@@ -1190,7 +1190,7 @@ def test_str0007r2_from_xml_missing_optional_fields() -> None:
     assert str0007.purpose == InstitutionPurpose.FX_INTERBANK_MARKET
     assert str0007.settlement_date == date(2025, 9, 8)
     assert str0007.transaction_id is None
-    assert str0007.vendor_timestamp == datetime(2025, 11, 20, 15, 30, tzinfo=UTC)
+    assert str0007.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
 
 
 def test_str0007r2_roundtrip() -> None:

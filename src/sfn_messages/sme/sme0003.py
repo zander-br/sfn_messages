@@ -19,7 +19,7 @@ from .types import SmeControlNumber
 PATH = 'DOC/SISMSG/SME0003'
 PATH_R1 = 'DOC/SISMSG/SME0003R1'
 PATH_R1_GROUP = 'Grupo_SME0003R1_Lanc'
-PATH_E = 'DOC/SISMSG/SME0003E'
+PATH_E = 'DOC/SISMSG/SME0003'
 XML_NAMESPACE = 'http://www.bcb.gov.br/SPB/SME0003.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/SME0003E.xsd'
 
@@ -64,10 +64,10 @@ class SME0003R1(BaseMessage):
 class SME0003E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['SME0003'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'SME0003'
-    ieme_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIEME/text()')]
-    ieme_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIEME/text()')]
-    settlement_date: Annotated[date, XmlPath(f'{PATH_E}/DtMovto/text()')]
+    message_code: Annotated[Literal['SME0003E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'SME0003E'
+    ieme_control_number: Annotated[InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlIEME/text()')] = None
+    ieme_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIEME/text()')] = None
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     ieme_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIEME/@CodErro')] = None

@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Any
 
@@ -42,7 +42,7 @@ def make_valid_slb0007r1_params() -> dict[str, Any]:
         'original_slb_control_number': 'SLB20250101000000001',
         'str_control_number': 'STR20250101000000001',
         'slb_settlement_status': 'EFFECTED',
-        'settlement_timestamp': '2025-12-10T17:22:00+00:00',
+        'settlement_timestamp': '2025-12-10T17:22:00',
         'settlement_date': '2025-12-10',
     }
 
@@ -53,7 +53,7 @@ def make_valid_slb0007e_params(*, general_error: bool = False) -> dict[str, Any]
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
         'operation_number': '31680151250908000000001',
-        'message_code': 'SLB0007',
+        'message_code': 'SLB0007E',
         'participant_institution_control_number': '123',
         'participant_ispb': '31680154',
         'original_slb_control_number': 'SLB20250101000000001',
@@ -109,7 +109,7 @@ def test_slb0007r1_valid_model() -> None:
     assert slb0007r1.original_slb_control_number == 'SLB20250101000000001'
     assert slb0007r1.str_control_number == 'STR20250101000000001'
     assert slb0007r1.slb_settlement_status == SlbSettlementStatus.EFFECTED
-    assert slb0007r1.settlement_timestamp == datetime(2025, 12, 10, 17, 22, tzinfo=UTC)
+    assert slb0007r1.settlement_timestamp == datetime(2025, 12, 10, 17, 22)
     assert slb0007r1.settlement_date == date(2025, 12, 10)
 
 
@@ -122,7 +122,7 @@ def test_slb0007e_general_error_valid_model() -> None:
     assert slb0007e.to_ispb == '00038166'
     assert slb0007e.system_domain == 'SPB01'
     assert slb0007e.operation_number == '31680151250908000000001'
-    assert slb0007e.message_code == 'SLB0007'
+    assert slb0007e.message_code == 'SLB0007E'
     assert slb0007e.participant_institution_control_number == '123'
     assert slb0007e.participant_ispb == '31680154'
     assert slb0007e.original_slb_control_number == 'SLB20250101000000001'
@@ -145,7 +145,7 @@ def test_slb0007e_tag_error_valid_model() -> None:
     assert slb0007e.to_ispb == '00038166'
     assert slb0007e.system_domain == 'SPB01'
     assert slb0007e.operation_number == '31680151250908000000001'
-    assert slb0007e.message_code == 'SLB0007'
+    assert slb0007e.message_code == 'SLB0007E'
     assert slb0007e.participant_institution_control_number == '123'
     assert slb0007e.participant_ispb == '31680154'
     assert slb0007e.original_slb_control_number == 'SLB20250101000000001'
@@ -205,7 +205,7 @@ def test_slb0007_to_xml() -> None:
     xml = slb0007.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0007.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SLB0007.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -238,7 +238,7 @@ def test_slb0007r1_to_xml() -> None:
     xml = slb0007r1.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0007.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SLB0007.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -253,7 +253,7 @@ def test_slb0007r1_to_xml() -> None:
                 <NumCtrlSLB>SLB20250101000000001</NumCtrlSLB>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <SitLancSLB>1</SitLancSLB>
-                <DtHrSit>2025-12-10 17:22:00+00:00</DtHrSit>
+                <DtHrSit>2025-12-10T17:22:00</DtHrSit>
                 <DtMovto>2025-12-10</DtMovto>
             </SLB0007R1>
         </SISMSG>
@@ -269,7 +269,7 @@ def test_slb0007e_general_error_to_xml() -> None:
     xml = slb0007e.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0007E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SLB0007E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -277,8 +277,8 @@ def test_slb0007e_general_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <SLB0007E CodErro="EGEN0050">
-                <CodMsg>SLB0007</CodMsg>
+            <SLB0007 CodErro="EGEN0050">
+                <CodMsg>SLB0007E</CodMsg>
                 <NumCtrlPart>123</NumCtrlPart>
                 <ISPBPart>31680154</ISPBPart>
                 <NumCtrlSLBOr>SLB20250101000000001</NumCtrlSLBOr>
@@ -288,7 +288,7 @@ def test_slb0007e_general_error_to_xml() -> None:
                 <NivelPref>B</NivelPref>
                 <Hist>Test description</Hist>
                 <DtMovto>2025-12-10</DtMovto>
-            </SLB0007E>
+            </SLB0007>
         </SISMSG>
     </DOC>
     """
@@ -302,7 +302,7 @@ def test_slb0007e_tag_error_to_xml() -> None:
     xml = slb0007e.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0007E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SLB0007E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -310,8 +310,8 @@ def test_slb0007e_tag_error_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <SLB0007E>
-                <CodMsg>SLB0007</CodMsg>
+            <SLB0007>
+                <CodMsg>SLB0007E</CodMsg>
                 <NumCtrlPart>123</NumCtrlPart>
                 <ISPBPart>31680154</ISPBPart>
                 <NumCtrlSLBOr>SLB20250101000000001</NumCtrlSLBOr>
@@ -321,7 +321,7 @@ def test_slb0007e_tag_error_to_xml() -> None:
                 <NivelPref>B</NivelPref>
                 <Hist>Test description</Hist>
                 <DtMovto>2025-12-10</DtMovto>
-            </SLB0007E>
+            </SLB0007>
         </SISMSG>
     </DOC>
     """
@@ -330,7 +330,7 @@ def test_slb0007e_tag_error_to_xml() -> None:
 
 def test_slb0007_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0007.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SLB0007.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -375,7 +375,7 @@ def test_slb0007_from_xml() -> None:
 
 def test_slb0007r1_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0007.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SLB0007.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -390,7 +390,7 @@ def test_slb0007r1_from_xml() -> None:
                 <NumCtrlSLB>SLB20250101000000001</NumCtrlSLB>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <SitLancSLB>1</SitLancSLB>
-                <DtHrSit>2025-12-10 17:22:00+00:00</DtHrSit>
+                <DtHrSit>2025-12-10T17:22:00</DtHrSit>
                 <DtMovto>2025-12-10</DtMovto>
             </SLB0007R1>
         </SISMSG>
@@ -410,13 +410,13 @@ def test_slb0007r1_from_xml() -> None:
     assert slb0007r1.original_slb_control_number == 'SLB20250101000000001'
     assert slb0007r1.str_control_number == 'STR20250101000000001'
     assert slb0007r1.slb_settlement_status == SlbSettlementStatus.EFFECTED
-    assert slb0007r1.settlement_timestamp == datetime(2025, 12, 10, 17, 22, tzinfo=UTC)
+    assert slb0007r1.settlement_timestamp == datetime(2025, 12, 10, 17, 22)
     assert slb0007r1.settlement_date == date(2025, 12, 10)
 
 
 def test_slb0007e_general_error_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0007E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SLB0007E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -424,8 +424,8 @@ def test_slb0007e_general_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <SLB0007E CodErro="EGEN0050">
-                <CodMsg>SLB0007</CodMsg>
+            <SLB0007 CodErro="EGEN0050">
+                <CodMsg>SLB0007E</CodMsg>
                 <NumCtrlPart>123</NumCtrlPart>
                 <ISPBPart>31680154</ISPBPart>
                 <NumCtrlSLBOr>SLB20250101000000001</NumCtrlSLBOr>
@@ -435,7 +435,7 @@ def test_slb0007e_general_error_from_xml() -> None:
                 <NivelPref>B</NivelPref>
                 <Hist>Test description</Hist>
                 <DtMovto>2025-12-10</DtMovto>
-            </SLB0007E>
+            </SLB0007>
         </SISMSG>
     </DOC>
     """
@@ -447,7 +447,7 @@ def test_slb0007e_general_error_from_xml() -> None:
     assert slb0007e.to_ispb == '00038166'
     assert slb0007e.system_domain == 'SPB01'
     assert slb0007e.operation_number == '31680151250908000000001'
-    assert slb0007e.message_code == 'SLB0007'
+    assert slb0007e.message_code == 'SLB0007E'
     assert slb0007e.participant_institution_control_number == '123'
     assert slb0007e.participant_ispb == '31680154'
     assert slb0007e.original_slb_control_number == 'SLB20250101000000001'
@@ -463,7 +463,7 @@ def test_slb0007e_general_error_from_xml() -> None:
 
 def test_slb0007e_tag_error_from_xml() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0007E.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SLB0007E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -471,8 +471,8 @@ def test_slb0007e_tag_error_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <SLB0007E>
-                <CodMsg>SLB0007</CodMsg>
+            <SLB0007>
+                <CodMsg>SLB0007E</CodMsg>
                 <NumCtrlPart>123</NumCtrlPart>
                 <ISPBPart>31680154</ISPBPart>
                 <NumCtrlSLBOr>SLB20250101000000001</NumCtrlSLBOr>
@@ -482,7 +482,7 @@ def test_slb0007e_tag_error_from_xml() -> None:
                 <NivelPref>B</NivelPref>
                 <Hist>Test description</Hist>
                 <DtMovto>2025-12-10</DtMovto>
-            </SLB0007E>
+            </SLB0007>
         </SISMSG>
     </DOC>
     """
@@ -494,7 +494,7 @@ def test_slb0007e_tag_error_from_xml() -> None:
     assert slb0007e.to_ispb == '00038166'
     assert slb0007e.system_domain == 'SPB01'
     assert slb0007e.operation_number == '31680151250908000000001'
-    assert slb0007e.message_code == 'SLB0007'
+    assert slb0007e.message_code == 'SLB0007E'
     assert slb0007e.participant_institution_control_number == '123'
     assert slb0007e.participant_ispb == '31680154'
     assert slb0007e.original_slb_control_number == 'SLB20250101000000001'
@@ -530,7 +530,7 @@ def test_slb0007r1_roundtrip() -> None:
 
 def test_slb0007_from_xml_missing_required_fields() -> None:
     xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SLB/SLB0007.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/SLB0007.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>

@@ -8,7 +8,7 @@ from .types import LastOperationNumber
 
 PATH = 'DOC/SISMSG/GEN0003'
 PATH_R1 = 'DOC/SISMSG/GEN0003R1'
-PATH_E = 'DOC/SISMSG/GEN0003E'
+PATH_E = 'DOC/SISMSG/GEN0003'
 XML_NAMESPACE = 'http://www.bcb.gov.br/GEN/GEN0003.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/GEN/GEN0003E.xsd'
 
@@ -37,10 +37,12 @@ class GEN0003R1(BaseMessage):
 class GEN0003E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['GEN0003'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'GEN0003'
-    institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_E}/NumCtrlIF/text()')]
-    issuing_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBEmissor/text()')]
-    recipient_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBDestinatario/text()')]
+    message_code: Annotated[Literal['GEN0003E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'GEN0003E'
+    institution_control_number: Annotated[InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlIF/text()')] = (
+        None
+    )
+    issuing_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBEmissor/text()')] = None
+    recipient_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBDestinatario/text()')] = None
 
     general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
     institution_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIF/@CodErro')] = None
