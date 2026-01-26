@@ -24,7 +24,7 @@ class STR0011(BaseMessage):
 class STR0011R1(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
 
-    message_code: Annotated[Literal['STR0011'], XmlPath(f'{PATH_R1}/CodMsg/text()')] = 'STR0011'
+    message_code: Annotated[Literal['STR0011R1'], XmlPath(f'{PATH_R1}/CodMsg/text()')] = 'STR0011R1'
     institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_R1}/NumCtrlIF/text()')]
     institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R1}/ISPBIF/text()')]
     vendor_timestamp: Annotated[datetime, XmlPath(f'{PATH_R1}/DtHrBC/text()')]
