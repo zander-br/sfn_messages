@@ -124,9 +124,9 @@ type MqMessageNumber = Annotated[
     str,
     GetPydanticSchema(
         lambda _tp, _handler: core_schema.str_schema(
-            pattern=r'^[0-9A-F]{24}$',
+            pattern=r'^[0-9A-F]{48}$',
             min_length=24,
-            max_length=24,
+            max_length=48,
             strip_whitespace=True,
             to_upper=True,
         )
