@@ -36,13 +36,17 @@ class SME0003(BaseMessage):
 class LaunchGroup(BaseSubMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
 
-    original_message_code: Annotated[MessageCode, XmlPath(f'{PATH_R1_GROUP}/CodMsgOr/text()')]
+    original_message_code: Annotated[MessageCode | None, XmlPath(f'{PATH_R1_GROUP}/CodMsgOr/text()')] = None
     ieme_control_number: Annotated[
         InstitutionControlNumber | None, XmlPath(f'{PATH_R1_GROUP}/NumCtrlIEMEOr/text()')
     ] = None
     counterparty_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_R1_GROUP}/ISPBCtrapart/text()')] = None
-    original_str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_R1_GROUP}/NumCtrlSTROr/text()')]
-    original_sme_control_number: Annotated[SmeControlNumber, XmlPath(f'{PATH_R1_GROUP}/NumCtrlSMEOr/text()')]
+    original_str_control_number: Annotated[
+        StrControlNumber | None, XmlPath(f'{PATH_R1_GROUP}/NumCtrlSTROr/text()')
+    ] = None
+    original_sme_control_number: Annotated[
+        SmeControlNumber | None, XmlPath(f'{PATH_R1_GROUP}/NumCtrlSMEOr/text()')
+    ] = None
     settlement_timestamp: Annotated[datetime, XmlPath(f'{PATH_R1_GROUP}/DtHrSit/text()')]
     credit_debit_type: Annotated[CreditDebitType, XmlPath(f'{PATH_R1_GROUP}/TpDeb_Cred/text()')]
     amount: Annotated[Decimal, XmlPath(f'{PATH_R1_GROUP}/VlrLanc/text()')]
