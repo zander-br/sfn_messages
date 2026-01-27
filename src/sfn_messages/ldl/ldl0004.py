@@ -41,7 +41,7 @@ class LDL0004(BaseMessage):
     institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH}/NumCtrlIF/text()')]
     institution_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBIF/text()')]
     original_ldl_control_number: Annotated[LdlControlNumber, XmlPath(f'{PATH}/NumCtrlLDLOr/text()')]
-    ldl_ispb: Annotated[Ispb | None, XmlPath(f'{PATH}/ISPBLDL/text()')] = None
+    ldl_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBLDL/text()')]
     amount: Annotated[Decimal, XmlPath(f'{PATH}/VlrLanc/text()')]
     net_result_group: Annotated[list[NetResult], XmlPath(f'{PATH}')] = Field(default_factory=list)
     settlement_date: Annotated[date, XmlPath(f'{PATH}/DtMovto/text()')]

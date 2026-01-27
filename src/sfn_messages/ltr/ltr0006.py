@@ -27,7 +27,7 @@ class LTR0006(BaseMessage):
     institution_or_ltr_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH}/NumCtrlIF_LTR/text()')]
     debtor_institution_or_ltr_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBIF_LTRDebtd/text()')]
     creditor_institution_or_ltr_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBIF_LTRCredtd/text()')]
-    original_ltr_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH}/NumCtrlLTROr/text()')]
+    original_str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH}/NumCtrlSTROr/text()')]
     amount: Annotated[Decimal, XmlPath(f'{PATH}/VlrLanc/text()')]
     description: Annotated[Description | None, XmlPath(f'{PATH}/Hist/text()')] = None
     settlement_date: Annotated[date, XmlPath(f'{PATH}/DtMovto/text()')]
