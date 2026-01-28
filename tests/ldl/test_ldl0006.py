@@ -327,7 +327,6 @@ def test_ldl0006r1_missing_required_fields() -> None:
         'institution_or_ldl_control_number',
         'debitor_institution_ispb',
         'str_control_number',
-        'str_settlement_status',
         'settlement_timestamp',
         'settlement_date',
     }

@@ -231,7 +231,6 @@ def test_ltr0004r1_missing_required_fields() -> None:
         'institution_control_number',
         'institution_ispb',
         'str_control_number',
-        'str_settlement_status',
         'settlement_timestamp',
         'settlement_date',
     }

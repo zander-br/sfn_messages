@@ -20,7 +20,7 @@ def make_valid_ltr0006_params() -> dict[str, Any]:
         'institution_or_ltr_control_number': '123',
         'debtor_institution_or_ltr_ispb': '31680151',
         'creditor_institution_or_ltr_ispb': '31680152',
-        'original_ltr_control_number': '321',
+        'original_str_control_number': 'STR20250101000000001',
         'amount': 123.0,
         'description': 'Test description',
         'settlement_date': '2025-12-04',
@@ -71,7 +71,7 @@ def make_valid_ltr0006e_params(*, general_error: bool = False) -> dict[str, Any]
         'institution_or_ltr_control_number': '123',
         'debtor_institution_or_ltr_ispb': '31680151',
         'creditor_institution_or_ltr_ispb': '31680152',
-        'original_ltr_control_number': '321',
+        'original_str_control_number': 'STR20250101000000001',
         'amount': 123.0,
         'description': 'Test description',
         'settlement_date': '2025-12-04',
@@ -80,7 +80,7 @@ def make_valid_ltr0006e_params(*, general_error: bool = False) -> dict[str, Any]
     if general_error:
         ltr0006e['general_error_code'] = 'EGEN0050'
     else:
-        ltr0006e['original_ltr_control_number_error_code'] = 'EGEN0051'
+        ltr0006e['original_str_control_number_error_code'] = 'EGEN0051'
 
     return ltr0006e
 
@@ -98,7 +98,7 @@ def test_ltr0006_valid_model() -> None:
     assert ltr0006.institution_or_ltr_control_number == '123'
     assert ltr0006.debtor_institution_or_ltr_ispb == '31680151'
     assert ltr0006.creditor_institution_or_ltr_ispb == '31680152'
-    assert ltr0006.original_ltr_control_number == '321'
+    assert ltr0006.original_str_control_number == 'STR20250101000000001'
     assert ltr0006.amount == Decimal('123.0')
     assert ltr0006.description == 'Test description'
     assert ltr0006.settlement_date == date(2025, 12, 4)
@@ -155,7 +155,7 @@ def test_ltr0006e_general_error_valid_model() -> None:
     assert ltr0006e.institution_or_ltr_control_number == '123'
     assert ltr0006e.debtor_institution_or_ltr_ispb == '31680151'
     assert ltr0006e.creditor_institution_or_ltr_ispb == '31680152'
-    assert ltr0006e.original_ltr_control_number == '321'
+    assert ltr0006e.original_str_control_number == 'STR20250101000000001'
     assert ltr0006e.amount == Decimal('123.0')
     assert ltr0006e.description == 'Test description'
     assert ltr0006e.settlement_date == date(2025, 12, 4)
@@ -176,12 +176,12 @@ def test_ltr0006e_tag_error_valid_model() -> None:
     assert ltr0006e.institution_or_ltr_control_number == '123'
     assert ltr0006e.debtor_institution_or_ltr_ispb == '31680151'
     assert ltr0006e.creditor_institution_or_ltr_ispb == '31680152'
-    assert ltr0006e.original_ltr_control_number == '321'
+    assert ltr0006e.original_str_control_number == 'STR20250101000000001'
     assert ltr0006e.amount == Decimal('123.0')
     assert ltr0006e.description == 'Test description'
     assert ltr0006e.settlement_date == date(2025, 12, 4)
 
-    assert ltr0006e.original_ltr_control_number_error_code == 'EGEN0051'
+    assert ltr0006e.original_str_control_number_error_code == 'EGEN0051'
 
 
 def test_ltr0006_missing_required_fields() -> None:
@@ -197,7 +197,7 @@ def test_ltr0006_missing_required_fields() -> None:
         'institution_or_ltr_control_number',
         'debtor_institution_or_ltr_ispb',
         'creditor_institution_or_ltr_ispb',
-        'original_ltr_control_number',
+        'original_str_control_number',
         'amount',
         'settlement_date',
     }
@@ -216,7 +216,6 @@ def test_ltr0006r1_missing_required_fields() -> None:
         'institution_or_ltr_control_number',
         'debtor_institution_or_ltr_ispb',
         'str_control_number',
-        'str_settlement_status',
         'settlement_timestamp',
         'settlement_date',
     }
@@ -262,7 +261,7 @@ def test_ltr0006_to_xml() -> None:
                 <NumCtrlIF_LTR>123</NumCtrlIF_LTR>
                 <ISPBIF_LTRDebtd>31680151</ISPBIF_LTRDebtd>
                 <ISPBIF_LTRCredtd>31680152</ISPBIF_LTRCredtd>
-                <NumCtrlLTROr>321</NumCtrlLTROr>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <VlrLanc>123.0</VlrLanc>
                 <Hist>Test description</Hist>
                 <DtMovto>2025-12-04</DtMovto>
@@ -356,7 +355,7 @@ def test_ltr0006e_general_error_to_xml() -> None:
                 <NumCtrlIF_LTR>123</NumCtrlIF_LTR>
                 <ISPBIF_LTRDebtd>31680151</ISPBIF_LTRDebtd>
                 <ISPBIF_LTRCredtd>31680152</ISPBIF_LTRCredtd>
-                <NumCtrlLTROr>321</NumCtrlLTROr>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <VlrLanc>123.0</VlrLanc>
                 <Hist>Test description</Hist>
                 <DtMovto>2025-12-04</DtMovto>
@@ -387,7 +386,7 @@ def test_ltr0006e_tag_error_to_xml() -> None:
                 <NumCtrlIF_LTR>123</NumCtrlIF_LTR>
                 <ISPBIF_LTRDebtd>31680151</ISPBIF_LTRDebtd>
                 <ISPBIF_LTRCredtd>31680152</ISPBIF_LTRCredtd>
-                <NumCtrlLTROr CodErro="EGEN0051">321</NumCtrlLTROr>
+                <NumCtrlSTROr CodErro="EGEN0051">STR20250101000000001</NumCtrlSTROr>
                 <VlrLanc>123.0</VlrLanc>
                 <Hist>Test description</Hist>
                 <DtMovto>2025-12-04</DtMovto>
@@ -413,7 +412,7 @@ def test_ltr0006_from_xml() -> None:
                 <NumCtrlIF_LTR>123</NumCtrlIF_LTR>
                 <ISPBIF_LTRDebtd>31680151</ISPBIF_LTRDebtd>
                 <ISPBIF_LTRCredtd>31680152</ISPBIF_LTRCredtd>
-                <NumCtrlLTROr>321</NumCtrlLTROr>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <VlrLanc>123.0</VlrLanc>
                 <Hist>Test description</Hist>
                 <DtMovto>2025-12-04</DtMovto>
@@ -433,7 +432,7 @@ def test_ltr0006_from_xml() -> None:
     assert ltr0006.institution_or_ltr_control_number == '123'
     assert ltr0006.debtor_institution_or_ltr_ispb == '31680151'
     assert ltr0006.creditor_institution_or_ltr_ispb == '31680152'
-    assert ltr0006.original_ltr_control_number == '321'
+    assert ltr0006.original_str_control_number == 'STR20250101000000001'
     assert ltr0006.amount == Decimal('123.0')
     assert ltr0006.description == 'Test description'
     assert ltr0006.settlement_date == date(2025, 12, 4)
@@ -536,7 +535,7 @@ def test_ltr0006e_general_error_from_xml() -> None:
                 <NumCtrlIF_LTR>123</NumCtrlIF_LTR>
                 <ISPBIF_LTRDebtd>31680151</ISPBIF_LTRDebtd>
                 <ISPBIF_LTRCredtd>31680152</ISPBIF_LTRCredtd>
-                <NumCtrlLTROr>321</NumCtrlLTROr>
+                <NumCtrlSTROr>STR20250101000000001</NumCtrlSTROr>
                 <VlrLanc>123.0</VlrLanc>
                 <Hist>Test description</Hist>
                 <DtMovto>2025-12-04</DtMovto>
@@ -556,7 +555,7 @@ def test_ltr0006e_general_error_from_xml() -> None:
     assert ltr0006e.institution_or_ltr_control_number == '123'
     assert ltr0006e.debtor_institution_or_ltr_ispb == '31680151'
     assert ltr0006e.creditor_institution_or_ltr_ispb == '31680152'
-    assert ltr0006e.original_ltr_control_number == '321'
+    assert ltr0006e.original_str_control_number == 'STR20250101000000001'
     assert ltr0006e.amount == Decimal('123.0')
     assert ltr0006e.description == 'Test description'
     assert ltr0006e.settlement_date == date(2025, 12, 4)
@@ -579,7 +578,7 @@ def test_ltr0006e_tag_error_from_xml() -> None:
                 <NumCtrlIF_LTR>123</NumCtrlIF_LTR>
                 <ISPBIF_LTRDebtd>31680151</ISPBIF_LTRDebtd>
                 <ISPBIF_LTRCredtd>31680152</ISPBIF_LTRCredtd>
-                <NumCtrlLTROr CodErro="EGEN0051">321</NumCtrlLTROr>
+                <NumCtrlSTROr CodErro="EGEN0051">STR20250101000000001</NumCtrlSTROr>
                 <VlrLanc>123.0</VlrLanc>
                 <Hist>Test description</Hist>
                 <DtMovto>2025-12-04</DtMovto>
@@ -599,12 +598,12 @@ def test_ltr0006e_tag_error_from_xml() -> None:
     assert ltr0006e.institution_or_ltr_control_number == '123'
     assert ltr0006e.debtor_institution_or_ltr_ispb == '31680151'
     assert ltr0006e.creditor_institution_or_ltr_ispb == '31680152'
-    assert ltr0006e.original_ltr_control_number == '321'
+    assert ltr0006e.original_str_control_number == 'STR20250101000000001'
     assert ltr0006e.amount == Decimal('123.0')
     assert ltr0006e.description == 'Test description'
     assert ltr0006e.settlement_date == date(2025, 12, 4)
 
-    assert ltr0006e.original_ltr_control_number_error_code == 'EGEN0051'
+    assert ltr0006e.original_str_control_number_error_code == 'EGEN0051'
 
 
 def test_ltr0006_roundtrip() -> None:

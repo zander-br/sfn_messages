@@ -31,8 +31,8 @@ class LTR0001(BaseMessage):
     message_code: Annotated[Literal['LTR0001'], XmlPath(f'{PATH}/CodMsg/text()')] = 'LTR0001'
     ltr_control_number: Annotated[LdlControlNumber, XmlPath(f'{PATH}/NumCtrlLTR/text()')]
     ltr_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBLTR/text()')]
-    debtor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIFDebtd/text()')]
-    creditor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBIFCredtd/text()')]
+    debtor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBIFDebtd/text()')]
+    creditor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBIFCredtd/text()')]
     cnpj: Annotated[Cnpj, XmlPath(f'{PATH}/CNPJNLiqdant/text()')]
     participant_identifier: Annotated[ParticipantIdentifier | None, XmlPath(f'{PATH}/IdentdPartCamr/text()')] = None
     debtor_branch: Annotated[Branch | None, XmlPath(f'{PATH}/AgDebtd/text()')] = None

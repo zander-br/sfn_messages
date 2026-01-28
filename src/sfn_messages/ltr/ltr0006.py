@@ -68,9 +68,7 @@ class LTR0006E(BaseMessage):
     ] = None
     debtor_institution_or_ltr_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIF_LTRDebtd/text()')] = None
     creditor_institution_or_ltr_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIF_LTRCredtd/text()')] = None
-    original_ltr_control_number: Annotated[
-        InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlLTROr/text()')
-    ] = None
+    original_str_control_number: Annotated[StrControlNumber | None, XmlPath(f'{PATH}/NumCtrlSTROr/text()')] = None
     amount: Annotated[Decimal | None, XmlPath(f'{PATH_E}/VlrLanc/text()')] = None
     description: Annotated[Description | None, XmlPath(f'{PATH_E}/Hist/text()')] = None
     settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
@@ -85,7 +83,7 @@ class LTR0006E(BaseMessage):
     creditor_institution_or_ltr_ispb_error_code: Annotated[
         ErrorCode | None, XmlPath(f'{PATH_E}/ISPBIF_LTRCredtd/@CodErro')
     ] = None
-    original_ltr_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlLTROr/@CodErro')] = (
+    original_str_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlSTROr/@CodErro')] = (
         None
     )
     amount_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/VlrLanc/@CodErro')] = None

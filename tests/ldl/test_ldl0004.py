@@ -245,6 +245,7 @@ def test_ldl0004_missing_required_fields() -> None:
         'original_ldl_control_number',
         'amount',
         'settlement_date',
+        'ldl_ispb',
     }
 
 
@@ -823,4 +824,5 @@ def test_ldl0004_from_xml_missing_required_fields() -> None:
         'original_ldl_control_number',
         'amount',
         'settlement_date',
+        'ldl_ispb',
     }
