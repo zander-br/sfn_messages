@@ -1,609 +1,184 @@
-from datetime import date, datetime, time
-from decimal import Decimal
+from datetime import date, datetime
 from typing import Any
 
 import pytest
 from pydantic import ValidationError
 
-from sfn_messages.core.types import Priority, StrSettlementStatus
-from sfn_messages.str.str0004 import STR0004, STR0004E, STR0004R1, STR0004R2
-from sfn_messages.str.types import InstitutionPurpose
+from sfn_messages.core.types import GridCode, TimeType
+from sfn_messages.str.str0001 import STR0001, STR0001E, STR0001R1, ScheduleGrid
 from tests.conftest import extract_missing_fields, normalize_xml
 
 
-def make_valid_str0004_params() -> dict[str, Any]:
+def make_valid_str0001_params() -> dict[str, Any]:
     return {
         'from_ispb': '31680151',
-        'operation_number': '31680151250908000000001',
-        'system_domain': 'SPB01',
         'to_ispb': '00038166',
+        'system_domain': 'SPB01',
+        'operation_number': '31680151250908000000001',
+        'message_code': 'STR0001',
         'institution_control_number': '31680151202509090425',
-        'debtor_institution_ispb': '31680151',
-        'creditor_institution_ispb': '60701190',
-        'creditor_branch': '0001',
-        'purpose': 'FX_INTERBANK_MARKET',
-        'transaction_id': '0000000000000000000000001',
-        'amount': 100.00,
-        'description': 'Payment for services',
-        'scheduled_date': '2025-09-09',
-        'scheduled_time': '15:30:00',
-        'priority': 'MEDIUM',
-        'settlement_date': '2025-09-08',
+        'institution_ispb': '31680151',
+        'reference_date': '2026-01-28',
+        'hour_type': 'STANDARD',
     }
 
 
-def make_valid_str0004r1_params() -> dict[str, Any]:
+def make_valid_str0001r1_params() -> dict[str, Any]:
     return {
-        'institution_control_number': '31680151202509090425',
         'from_ispb': '31680151',
-        'debtor_institution_ispb': '31680151',
-        'str_control_number': 'STR20250101000000001',
-        'str_settlement_status': 'EFFECTIVE',
-        'settlement_timestamp': '2025-11-20T15:30:00',
-        'settlement_date': '2025-09-08',
-        'operation_number': '31680151250908000000001',
         'to_ispb': '00038166',
         'system_domain': 'SPB01',
+        'operation_number': '31680151250908000000001',
+        'message_code': 'STR0001R1',
+        'institution_control_number': '31680151202509090425',
+        'institution_ispb': '31680151',
+        'schedule_grid_group': [
+            {
+                'code': 'PAYMENT_ORDER_SCHEDULING',
+                'opening_hour': '2026-01-28T09:30:00',
+                'closing_hour': '2026-01-28T18:30:00',
+                'hour_type': 'STANDARD',
+            }
+        ],
+        'reference_date': '2026-01-28',
+        'vendor_timestamp': '2026-01-28T16:30:21',
     }
 
 
-def make_valid_str0004r2_params() -> dict[str, Any]:
-    return {
+def make_valid_str0001e_params(*, general_error: bool = False) -> dict[str, Any]:
+    str0001e = {
         'from_ispb': '31680151',
-        'operation_number': '31680151250908000000001',
-        'system_domain': 'SPB01',
         'to_ispb': '00038166',
-        'debtor_institution_ispb': '31680151',
-        'creditor_institution_ispb': '60701190',
-        'creditor_branch': '0001',
-        'purpose': 'FX_INTERBANK_MARKET',
-        'transaction_id': '0000000000000000000000001',
-        'amount': 100.00,
-        'description': 'Payment for services',
-        'settlement_date': '2025-09-08',
-        'vendor_timestamp': '2025-11-20T15:30:00',
-        'str_control_number': 'STR20250101000000001',
-    }
-
-
-def make_valid_str0004e_params(*, general_error: bool = False) -> dict[str, Any]:
-    str0004e = {
-        'from_ispb': '31680151',
-        'operation_number': '31680151250908000000001',
         'system_domain': 'SPB01',
-        'to_ispb': '00038166',
+        'operation_number': '31680151250908000000001',
+        'message_code': 'STR0001E',
         'institution_control_number': '31680151202509090425',
-        'debtor_institution_ispb': '31680151',
-        'creditor_institution_ispb': '60701190',
-        'creditor_branch': '0001',
-        'purpose': 'FX_INTERBANK_MARKET',
-        'transaction_id': '0000000000000000000000001',
-        'amount': 100.00,
-        'description': 'Payment for services',
-        'scheduled_date': '2025-09-09',
-        'scheduled_time': '15:30:00',
-        'priority': 'MEDIUM',
-        'settlement_date': '2025-09-08',
+        'institution_ispb': '31680151',
+        'reference_date': '2026-01-28',
+        'hour_type': 'STANDARD',
     }
 
     if general_error:
-        str0004e['general_error_code'] = 'EGEN0050'
+        str0001e['general_error_code'] = 'EGEN0050'
     else:
-        str0004e['transaction_id_error_code'] = 'EIDT0001'
+        str0001e['reference_date_error_code'] = 'EIDT0001'
 
-    return str0004e
-
-
-def test_str0004_valid_params() -> None:
-    params = make_valid_str0004_params()
-    str0004 = STR0004.model_validate(params)
-    assert isinstance(str0004, STR0004)
-    assert str0004.from_ispb == '31680151'
-    assert str0004.operation_number == '31680151250908000000001'
-    assert str0004.system_domain == 'SPB01'
-    assert str0004.to_ispb == '00038166'
-    assert str0004.institution_control_number == '31680151202509090425'
-    assert str0004.debtor_institution_ispb == '31680151'
-    assert str0004.creditor_institution_ispb == '60701190'
-    assert str0004.creditor_branch == '0001'
-    assert str0004.purpose == InstitutionPurpose.FX_INTERBANK_MARKET
-    assert str0004.transaction_id == '0000000000000000000000001'
-    assert str0004.amount == Decimal('100.00')
-    assert str0004.description == 'Payment for services'
-    assert str0004.scheduled_date == date(2025, 9, 9)
-    assert str0004.scheduled_time == time(15, 30)
-    assert str0004.priority == Priority.MEDIUM
-    assert str0004.settlement_date == date(2025, 9, 8)
+    return str0001e
 
 
-def test_str0004e_general_error_valid_params() -> None:
-    params = make_valid_str0004e_params(general_error=True)
-    str0004e = STR0004E.model_validate(params)
-    assert isinstance(str0004e, STR0004E)
-    assert str0004e.from_ispb == '31680151'
-    assert str0004e.operation_number == '31680151250908000000001'
-    assert str0004e.system_domain == 'SPB01'
-    assert str0004e.to_ispb == '00038166'
-    assert str0004e.institution_control_number == '31680151202509090425'
-    assert str0004e.debtor_institution_ispb == '31680151'
-    assert str0004e.creditor_institution_ispb == '60701190'
-    assert str0004e.creditor_branch == '0001'
-    assert str0004e.purpose == InstitutionPurpose.FX_INTERBANK_MARKET
-    assert str0004e.transaction_id == '0000000000000000000000001'
-    assert str0004e.amount == Decimal('100.00')
-    assert str0004e.description == 'Payment for services'
-    assert str0004e.scheduled_date == date(2025, 9, 9)
-    assert str0004e.scheduled_time == time(15, 30)
-    assert str0004e.priority == Priority.MEDIUM
-    assert str0004e.settlement_date == date(2025, 9, 8)
-    assert str0004e.general_error_code == 'EGEN0050'
+def test_str0001_valid_params() -> None:
+    params = make_valid_str0001_params()
+    str0001 = STR0001.model_validate(params)
+
+    assert isinstance(str0001, STR0001)
+    assert str0001.from_ispb == '31680151'
+    assert str0001.operation_number == '31680151250908000000001'
+    assert str0001.system_domain == 'SPB01'
+    assert str0001.to_ispb == '00038166'
+    assert str0001.message_code == 'STR0001'
+    assert str0001.institution_control_number == '31680151202509090425'
+    assert str0001.institution_ispb == '31680151'
+    assert str0001.reference_date == date(2026, 1, 28)
+    assert str0001.hour_type == TimeType.STANDARD
 
 
-def test_str0004e_tag_error_valid_params() -> None:
-    params = make_valid_str0004e_params()
-    str0004e = STR0004E.model_validate(params)
-    assert isinstance(str0004e, STR0004E)
-    assert str0004e.from_ispb == '31680151'
-    assert str0004e.operation_number == '31680151250908000000001'
-    assert str0004e.system_domain == 'SPB01'
-    assert str0004e.to_ispb == '00038166'
-    assert str0004e.institution_control_number == '31680151202509090425'
-    assert str0004e.debtor_institution_ispb == '31680151'
-    assert str0004e.creditor_institution_ispb == '60701190'
-    assert str0004e.creditor_branch == '0001'
-    assert str0004e.purpose == InstitutionPurpose.FX_INTERBANK_MARKET
-    assert str0004e.transaction_id == '0000000000000000000000001'
-    assert str0004e.amount == Decimal('100.00')
-    assert str0004e.description == 'Payment for services'
-    assert str0004e.scheduled_date == date(2025, 9, 9)
-    assert str0004e.scheduled_time == time(15, 30)
-    assert str0004e.priority == Priority.MEDIUM
-    assert str0004e.settlement_date == date(2025, 9, 8)
-    assert str0004e.transaction_id_error_code == 'EIDT0001'
+def test_str0001r1_valid_params() -> None:
+    params = make_valid_str0001r1_params()
+    str0001r1 = STR0001R1.model_validate(params)
+
+    assert isinstance(str0001r1, STR0001R1)
+    assert str0001r1.from_ispb == '31680151'
+    assert str0001r1.operation_number == '31680151250908000000001'
+    assert str0001r1.system_domain == 'SPB01'
+    assert str0001r1.to_ispb == '00038166'
+    assert str0001r1.message_code == 'STR0001R1'
+    assert str0001r1.institution_control_number == '31680151202509090425'
+    assert str0001r1.institution_ispb == '31680151'
+    assert str0001r1.reference_date == date(2026, 1, 28)
+    assert str0001r1.vendor_timestamp == datetime(2026, 1, 28, 16, 30, 21)
+
+    assert len(str0001r1.schedule_grid_group) == 1
+    schedule1 = str0001r1.schedule_grid_group[0]
+    assert isinstance(schedule1, ScheduleGrid)
+    assert schedule1.code == GridCode.PAYMENT_ORDER_SCHEDULING
+    assert schedule1.opening_hour == datetime(2026, 1, 28, 9, 30)
+    assert schedule1.closing_hour == datetime(2026, 1, 28, 18, 30)
+    assert schedule1.hour_type == TimeType.STANDARD
 
 
-def test_str0004_missing_required_fields() -> None:
+def test_str0001e_general_error_valid_params() -> None:
+    params = make_valid_str0001e_params(general_error=True)
+    str0001e = STR0001E.model_validate(params)
+
+    assert isinstance(str0001e, STR0001E)
+    assert str0001e.from_ispb == '31680151'
+    assert str0001e.operation_number == '31680151250908000000001'
+    assert str0001e.system_domain == 'SPB01'
+    assert str0001e.to_ispb == '00038166'
+    assert str0001e.message_code == 'STR0001E'
+    assert str0001e.institution_control_number == '31680151202509090425'
+    assert str0001e.institution_ispb == '31680151'
+    assert str0001e.reference_date == date(2026, 1, 28)
+    assert str0001e.hour_type == TimeType.STANDARD
+    assert str0001e.general_error_code == 'EGEN0050'
+
+
+def test_str0001e_tag_error_valid_params() -> None:
+    params = make_valid_str0001e_params()
+    str0001e = STR0001E.model_validate(params)
+
+    assert isinstance(str0001e, STR0001E)
+    assert str0001e.from_ispb == '31680151'
+    assert str0001e.operation_number == '31680151250908000000001'
+    assert str0001e.system_domain == 'SPB01'
+    assert str0001e.to_ispb == '00038166'
+    assert str0001e.message_code == 'STR0001E'
+    assert str0001e.institution_control_number == '31680151202509090425'
+    assert str0001e.institution_ispb == '31680151'
+    assert str0001e.reference_date == date(2026, 1, 28)
+    assert str0001e.hour_type == TimeType.STANDARD
+    assert str0001e.reference_date_error_code == 'EIDT0001'
+
+
+def test_str0001_missing_required_fields() -> None:
     with pytest.raises(ValidationError) as exc:
-        STR0004.model_validate({})
+        STR0001.model_validate({})
     missing_fields = extract_missing_fields(exc.value)
     assert missing_fields == {
-        'to_ispb',
-        'amount',
-        'debtor_institution_ispb',
-        'institution_control_number',
         'from_ispb',
-        'creditor_institution_ispb',
-        'description',
-        'purpose',
-        'system_domain',
-        'settlement_date',
         'operation_number',
-    }
-
-
-def test_str0004_to_xml() -> None:
-    params = make_valid_str0004_params()
-    str0004 = STR0004.model_validate(params)
-    xml = str0004.to_xml()
-
-    expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004.xsd">
-        <BCMSG>
-            <IdentdEmissor>31680151</IdentdEmissor>
-            <IdentdDestinatario>00038166</IdentdDestinatario>
-            <DomSist>SPB01</DomSist>
-            <NUOp>31680151250908000000001</NUOp>
-        </BCMSG>
-        <SISMSG>
-            <STR0004>
-                <CodMsg>STR0004</CodMsg>
-                <NumCtrlIF>31680151202509090425</NumCtrlIF>
-                <ISPBIFDebtd>31680151</ISPBIFDebtd>
-                <ISPBIFCredtd>60701190</ISPBIFCredtd>
-                <AgCredtd>0001</AgCredtd>
-                <FinlddIF>1</FinlddIF>
-                <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
-                <VlrLanc>100.0</VlrLanc>
-                <Hist>Payment for services</Hist>
-                <DtAgendt>2025-09-09</DtAgendt>
-                <HrAgendt>15:30:00</HrAgendt>
-                <NivelPref>C</NivelPref>
-                <DtMovto>2025-09-08</DtMovto>
-            </STR0004>
-        </SISMSG>
-    </DOC>
-    """
-
-    assert normalize_xml(expected_xml) == normalize_xml(xml)
-
-
-def test_str0004e_general_error_to_xml() -> None:
-    params = make_valid_str0004e_params(general_error=True)
-    str0004e = STR0004E.model_validate(params)
-    xml = str0004e.to_xml()
-
-    expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004E.xsd">
-        <BCMSG>
-            <IdentdEmissor>31680151</IdentdEmissor>
-            <IdentdDestinatario>00038166</IdentdDestinatario>
-            <DomSist>SPB01</DomSist>
-            <NUOp>31680151250908000000001</NUOp>
-        </BCMSG>
-        <SISMSG>
-            <STR0004 CodErro="EGEN0050">
-                <CodMsg>STR0004E</CodMsg>
-                <NumCtrlIF>31680151202509090425</NumCtrlIF>
-                <ISPBIFDebtd>31680151</ISPBIFDebtd>
-                <ISPBIFCredtd>60701190</ISPBIFCredtd>
-                <AgCredtd>0001</AgCredtd>
-                <FinlddIF>1</FinlddIF>
-                <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
-                <VlrLanc>100.0</VlrLanc>
-                <Hist>Payment for services</Hist>
-                <DtAgendt>2025-09-09</DtAgendt>
-                <HrAgendt>15:30:00</HrAgendt>
-                <NivelPref>C</NivelPref>
-                <DtMovto>2025-09-08</DtMovto>
-            </STR0004>
-        </SISMSG>
-    </DOC>
-    """
-
-    assert normalize_xml(expected_xml) == normalize_xml(xml)
-
-
-def test_str0004e_tag_error_to_xml() -> None:
-    params = make_valid_str0004e_params()
-    str0004e = STR0004E.model_validate(params)
-    xml = str0004e.to_xml()
-
-    expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004E.xsd">
-        <BCMSG>
-            <IdentdEmissor>31680151</IdentdEmissor>
-            <IdentdDestinatario>00038166</IdentdDestinatario>
-            <DomSist>SPB01</DomSist>
-            <NUOp>31680151250908000000001</NUOp>
-        </BCMSG>
-        <SISMSG>
-            <STR0004>
-                <CodMsg>STR0004E</CodMsg>
-                <NumCtrlIF>31680151202509090425</NumCtrlIF>
-                <ISPBIFDebtd>31680151</ISPBIFDebtd>
-                <ISPBIFCredtd>60701190</ISPBIFCredtd>
-                <AgCredtd>0001</AgCredtd>
-                <FinlddIF>1</FinlddIF>
-                <CodIdentdTransf CodErro="EIDT0001">0000000000000000000000001</CodIdentdTransf>
-                <VlrLanc>100.0</VlrLanc>
-                <Hist>Payment for services</Hist>
-                <DtAgendt>2025-09-09</DtAgendt>
-                <HrAgendt>15:30:00</HrAgendt>
-                <NivelPref>C</NivelPref>
-                <DtMovto>2025-09-08</DtMovto>
-            </STR0004>
-        </SISMSG>
-    </DOC>
-    """
-
-    assert normalize_xml(expected_xml) == normalize_xml(xml)
-
-
-def test_str0004_to_xml_omit_optional_fields() -> None:
-    params = make_valid_str0004_params()
-    del params['creditor_branch']
-    del params['transaction_id']
-    del params['scheduled_date']
-    del params['scheduled_time']
-    del params['priority']
-
-    str0004 = STR0004.model_validate(params)
-    xml = str0004.to_xml()
-
-    expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004.xsd">
-        <BCMSG>
-            <IdentdEmissor>31680151</IdentdEmissor>
-            <IdentdDestinatario>00038166</IdentdDestinatario>
-            <DomSist>SPB01</DomSist>
-            <NUOp>31680151250908000000001</NUOp>
-        </BCMSG>
-        <SISMSG>
-            <STR0004>
-                <CodMsg>STR0004</CodMsg>
-                <NumCtrlIF>31680151202509090425</NumCtrlIF>
-                <ISPBIFDebtd>31680151</ISPBIFDebtd>
-                <ISPBIFCredtd>60701190</ISPBIFCredtd>
-                <FinlddIF>1</FinlddIF>
-                <VlrLanc>100.0</VlrLanc>
-                <Hist>Payment for services</Hist>
-                <DtMovto>2025-09-08</DtMovto>
-            </STR0004>
-        </SISMSG>
-    </DOC>
-    """
-
-    assert normalize_xml(expected_xml) == normalize_xml(xml)
-
-
-def test_str0004_from_xml() -> None:
-    xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004.xsd">
-        <BCMSG>
-            <IdentdEmissor>31680151</IdentdEmissor>
-            <IdentdDestinatario>00038166</IdentdDestinatario>
-            <DomSist>SPB01</DomSist>
-            <NUOp>31680151250908000000001</NUOp>
-        </BCMSG>
-        <SISMSG>
-            <STR0004>
-                <CodMsg>STR0004</CodMsg>
-                <NumCtrlIF>31680151202509090425</NumCtrlIF>
-                <ISPBIFDebtd>31680151</ISPBIFDebtd>
-                <ISPBIFCredtd>60701190</ISPBIFCredtd>
-                <AgCredtd>0001</AgCredtd>
-                <FinlddIF>1</FinlddIF>
-                <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
-                <VlrLanc>100.0</VlrLanc>
-                <Hist>Payment for services</Hist>
-                <DtAgendt>2025-09-09</DtAgendt>
-                <HrAgendt>15:30:00</HrAgendt>
-                <NivelPref>C</NivelPref>
-                <DtMovto>2025-09-08</DtMovto>
-            </STR0004>
-        </SISMSG>
-    </DOC>
-    """
-
-    str0004 = STR0004.from_xml(xml)
-
-    assert isinstance(str0004, STR0004)
-    assert str0004.from_ispb == '31680151'
-    assert str0004.operation_number == '31680151250908000000001'
-    assert str0004.system_domain == 'SPB01'
-    assert str0004.to_ispb == '00038166'
-    assert str0004.institution_control_number == '31680151202509090425'
-    assert str0004.debtor_institution_ispb == '31680151'
-    assert str0004.creditor_institution_ispb == '60701190'
-    assert str0004.creditor_branch == '0001'
-    assert str0004.purpose == InstitutionPurpose.FX_INTERBANK_MARKET
-    assert str0004.transaction_id == '0000000000000000000000001'
-    assert str0004.amount == Decimal('100.0')
-    assert str0004.description == 'Payment for services'
-    assert str0004.scheduled_date == date(2025, 9, 9)
-    assert str0004.scheduled_time == time(15, 30)
-    assert str0004.priority == Priority.MEDIUM
-    assert str0004.settlement_date == date(2025, 9, 8)
-
-
-def test_str0004e_general_error_from_xml() -> None:
-    xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004E.xsd">
-        <BCMSG>
-            <IdentdEmissor>31680151</IdentdEmissor>
-            <IdentdDestinatario>00038166</IdentdDestinatario>
-            <DomSist>SPB01</DomSist>
-            <NUOp>31680151250908000000001</NUOp>
-        </BCMSG>
-        <SISMSG>
-            <STR0004 CodErro="EGEN0050">
-                <CodMsg>STR0004E</CodMsg>
-                <NumCtrlIF>31680151202509090425</NumCtrlIF>
-                <ISPBIFDebtd>31680151</ISPBIFDebtd>
-                <ISPBIFCredtd>60701190</ISPBIFCredtd>
-                <AgCredtd>0001</AgCredtd>
-                <FinlddIF>1</FinlddIF>
-                <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
-                <VlrLanc>100.0</VlrLanc>
-                <Hist>Payment for services</Hist>
-                <DtAgendt>2025-09-09</DtAgendt>
-                <HrAgendt>15:30:00</HrAgendt>
-                <NivelPref>C</NivelPref>
-                <DtMovto>2025-09-08</DtMovto>
-            </STR0004>
-        </SISMSG>
-    </DOC>
-    """
-
-    str0004e = STR0004E.from_xml(xml)
-
-    assert isinstance(str0004e, STR0004E)
-    assert str0004e.from_ispb == '31680151'
-    assert str0004e.operation_number == '31680151250908000000001'
-    assert str0004e.system_domain == 'SPB01'
-    assert str0004e.to_ispb == '00038166'
-    assert str0004e.institution_control_number == '31680151202509090425'
-    assert str0004e.debtor_institution_ispb == '31680151'
-    assert str0004e.creditor_institution_ispb == '60701190'
-    assert str0004e.creditor_branch == '0001'
-    assert str0004e.purpose == InstitutionPurpose.FX_INTERBANK_MARKET
-    assert str0004e.transaction_id == '0000000000000000000000001'
-    assert str0004e.amount == Decimal('100.00')
-    assert str0004e.description == 'Payment for services'
-    assert str0004e.scheduled_date == date(2025, 9, 9)
-    assert str0004e.scheduled_time == time(15, 30)
-    assert str0004e.priority == Priority.MEDIUM
-    assert str0004e.settlement_date == date(2025, 9, 8)
-    assert str0004e.general_error_code == 'EGEN0050'
-
-
-def test_str0004e_tag_error_from_xml() -> None:
-    xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004E.xsd">
-        <BCMSG>
-            <IdentdEmissor>31680151</IdentdEmissor>
-            <IdentdDestinatario>00038166</IdentdDestinatario>
-            <DomSist>SPB01</DomSist>
-            <NUOp>31680151250908000000001</NUOp>
-        </BCMSG>
-        <SISMSG>
-            <STR0004>
-                <CodMsg>STR0004E</CodMsg>
-                <NumCtrlIF>31680151202509090425</NumCtrlIF>
-                <ISPBIFDebtd>31680151</ISPBIFDebtd>
-                <ISPBIFCredtd>60701190</ISPBIFCredtd>
-                <AgCredtd>0001</AgCredtd>
-                <FinlddIF>1</FinlddIF>
-                <CodIdentdTransf CodErro="EIDT0001">0000000000000000000000001</CodIdentdTransf>
-                <VlrLanc>100.0</VlrLanc>
-                <Hist>Payment for services</Hist>
-                <DtAgendt>2025-09-09</DtAgendt>
-                <HrAgendt>15:30:00</HrAgendt>
-                <NivelPref>C</NivelPref>
-                <DtMovto>2025-09-08</DtMovto>
-            </STR0004>
-        </SISMSG>
-    </DOC>
-    """
-
-    str0004e = STR0004E.from_xml(xml)
-
-    assert isinstance(str0004e, STR0004E)
-    assert str0004e.from_ispb == '31680151'
-    assert str0004e.operation_number == '31680151250908000000001'
-    assert str0004e.system_domain == 'SPB01'
-    assert str0004e.to_ispb == '00038166'
-    assert str0004e.institution_control_number == '31680151202509090425'
-    assert str0004e.debtor_institution_ispb == '31680151'
-    assert str0004e.creditor_institution_ispb == '60701190'
-    assert str0004e.creditor_branch == '0001'
-    assert str0004e.purpose == InstitutionPurpose.FX_INTERBANK_MARKET
-    assert str0004e.transaction_id == '0000000000000000000000001'
-    assert str0004e.amount == Decimal('100.00')
-    assert str0004e.description == 'Payment for services'
-    assert str0004e.scheduled_date == date(2025, 9, 9)
-    assert str0004e.scheduled_time == time(15, 30)
-    assert str0004e.priority == Priority.MEDIUM
-    assert str0004e.settlement_date == date(2025, 9, 8)
-    assert str0004e.transaction_id_error_code == 'EIDT0001'
-
-
-def test_str0004_from_xml_missing_optional_fields() -> None:
-    xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004.xsd">
-        <BCMSG>
-            <IdentdEmissor>31680151</IdentdEmissor>
-            <IdentdDestinatario>00038166</IdentdDestinatario>
-            <DomSist>SPB01</DomSist>
-            <NUOp>31680151250908000000001</NUOp>
-        </BCMSG>
-        <SISMSG>
-            <STR0004>
-                <CodMsg>STR0004</CodMsg>
-                <NumCtrlIF>31680151202509090425</NumCtrlIF>
-                <ISPBIFDebtd>31680151</ISPBIFDebtd>
-                <ISPBIFCredtd>60701190</ISPBIFCredtd>
-                <FinlddIF>1</FinlddIF>
-                <VlrLanc>100.0</VlrLanc>
-                <Hist>Payment for services</Hist>
-                <DtMovto>2025-09-08</DtMovto>
-            </STR0004>
-        </SISMSG>
-    </DOC>
-    """
-
-    str0004 = STR0004.from_xml(xml)
-
-    assert isinstance(str0004, STR0004)
-    assert str0004.from_ispb == '31680151'
-    assert str0004.operation_number == '31680151250908000000001'
-    assert str0004.system_domain == 'SPB01'
-    assert str0004.to_ispb == '00038166'
-    assert str0004.institution_control_number == '31680151202509090425'
-    assert str0004.debtor_institution_ispb == '31680151'
-    assert str0004.creditor_institution_ispb == '60701190'
-    assert str0004.creditor_branch is None
-    assert str0004.purpose == InstitutionPurpose.FX_INTERBANK_MARKET
-    assert str0004.transaction_id is None
-    assert str0004.amount == Decimal('100.00')
-    assert str0004.description == 'Payment for services'
-    assert str0004.scheduled_date is None
-    assert str0004.scheduled_time is None
-    assert str0004.priority is None
-    assert str0004.settlement_date == date(2025, 9, 8)
-
-
-def test_str0004_roundtrip() -> None:
-    params = make_valid_str0004_params()
-    str0004 = STR0004.model_validate(params)
-    xml = str0004.to_xml()
-    str0004_from_xml = STR0004.from_xml(xml)
-    assert str0004 == str0004_from_xml
-
-
-def test_str0004_from_xml_missing_required_fields() -> None:
-    xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004.xsd">
-        <BCMSG>
-            <IdentdEmissor>31680151</IdentdEmissor>
-            <IdentdDestinatario>00038166</IdentdDestinatario>
-            <DomSist>SPB01</DomSist>
-            <NUOp>31680151250908000000001</NUOp>
-        </BCMSG>
-        <SISMSG>
-            <STR0004>
-                <CodMsg>STR0004</CodMsg>
-            </STR0004>
-        </SISMSG>
-    </DOC>
-    """
-
-    with pytest.raises(ValidationError) as exc:
-        STR0004.from_xml(xml)
-    missing_fields = extract_missing_fields(exc.value)
-    assert missing_fields == {
-        'settlement_date',
-        'creditor_institution_ispb',
-        'description',
-        'debtor_institution_ispb',
-        'amount',
-        'institution_control_number',
-        'purpose',
-    }
-
-
-def test_str0004r1_valid_model() -> None:
-    params = make_valid_str0004r1_params()
-    str0004r1 = STR0004R1.model_validate(params)
-    assert isinstance(str0004r1, STR0004R1)
-    assert str0004r1.debtor_institution_ispb == '31680151'
-    assert str0004r1.from_ispb == '31680151'
-    assert str0004r1.institution_control_number == '31680151202509090425'
-    assert str0004r1.message_code == 'STR0004R1'
-    assert str0004r1.operation_number == '31680151250908000000001'
-    assert str0004r1.settlement_date == date(2025, 9, 8)
-    assert str0004r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30)
-    assert str0004r1.str_control_number == 'STR20250101000000001'
-    assert str0004r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
-    assert str0004r1.to_ispb == '00038166'
-    assert str0004r1.system_domain == 'SPB01'
-
-
-def test_str0004r1_missing_required_fields() -> None:
-    with pytest.raises(ValidationError) as exc:
-        STR0004R1.model_validate({})
-    missing_fields = extract_missing_fields(exc.value)
-    assert missing_fields == {
-        'to_ispb',
-        'str_control_number',
-        'settlement_timestamp',
-        'str_settlement_status',
-        'institution_control_number',
-        'debtor_institution_ispb',
         'system_domain',
-        'operation_number',
-        'from_ispb',
-        'settlement_date',
+        'to_ispb',
+        'institution_control_number',
+        'institution_ispb',
+        'reference_date',
+        'hour_type',
     }
 
 
-def test_str0004r1_to_xml() -> None:
-    params = make_valid_str0004r1_params()
-    str0004r1 = STR0004R1.model_validate(params)
-    xml = str0004r1.to_xml()
+def test_str0001r1_missing_required_fields() -> None:
+    with pytest.raises(ValidationError) as exc:
+        STR0001.model_validate({})
+    missing_fields = extract_missing_fields(exc.value)
+    assert missing_fields == {
+        'from_ispb',
+        'operation_number',
+        'system_domain',
+        'to_ispb',
+        'institution_control_number',
+        'institution_ispb',
+        'reference_date',
+        'hour_type',
+    }
+
+
+def test_str0001_to_xml() -> None:
+    params = make_valid_str0001_params()
+    str0001 = STR0001.model_validate(params)
+    xml = str0001.to_xml()
 
     expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004.xsd">
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0001.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -611,15 +186,13 @@ def test_str0004r1_to_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0004R1>
-                <CodMsg>STR0004R1</CodMsg>
+            <STR0001>
+                <CodMsg>STR0001</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
-                <ISPBIFDebtd>31680151</ISPBIFDebtd>
-                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <SitLancSTR>1</SitLancSTR>
-                <DtHrSit>2025-11-20T15:30:00</DtHrSit>
-                <DtMovto>2025-09-08</DtMovto>
-            </STR0004R1>
+                <ISPBIF>31680151</ISPBIF>
+                <DtRef>2026-01-28</DtRef>
+                <TpHrio>P</TpHrio>
+            </STR0001>
         </SISMSG>
     </DOC>
     """
@@ -627,9 +200,13 @@ def test_str0004r1_to_xml() -> None:
     assert normalize_xml(expected_xml) == normalize_xml(xml)
 
 
-def test_str0004r1_from_xml() -> None:
-    xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004.xsd">
+def test_str0001r1_to_xml() -> None:
+    params = make_valid_str0001r1_params()
+    str0001r1 = STR0001R1.model_validate(params)
+    xml = str0001r1.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0001.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -637,45 +214,33 @@ def test_str0004r1_from_xml() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0004R1>
-                <CodMsg>STR0004R1</CodMsg>
+            <STR0001R1>
+                <CodMsg>STR0001R1</CodMsg>
                 <NumCtrlIF>31680151202509090425</NumCtrlIF>
-                <ISPBIFDebtd>31680151</ISPBIFDebtd>
-                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <SitLancSTR>1</SitLancSTR>
-                <DtHrSit>2025-11-20T15:30:00</DtHrSit>
-                <DtMovto>2025-09-08</DtMovto>
-            </STR0004R1>
+                <ISPBIF>31680151</ISPBIF>
+                <Grupo_STR0001R1_GrdHrio>
+                    <CodGrd>AGE01</CodGrd>
+                    <DtHrAbert>2026-01-28T09:30:00</DtHrAbert>
+                    <DtHrFcht>2026-01-28T18:30:00</DtHrFcht>
+                    <TpHrio>P</TpHrio>
+                </Grupo_STR0001R1_GrdHrio>
+                <DtRef>2026-01-28</DtRef>
+                <DtHrBC>2026-01-28T16:30:21</DtHrBC>
+            </STR0001R1>
         </SISMSG>
     </DOC>
     """
 
-    str0004r1 = STR0004R1.from_xml(xml)
-    assert isinstance(str0004r1, STR0004R1)
-    assert str0004r1.debtor_institution_ispb == '31680151'
-    assert str0004r1.from_ispb == '31680151'
-    assert str0004r1.institution_control_number == '31680151202509090425'
-    assert str0004r1.message_code == 'STR0004R1'
-    assert str0004r1.operation_number == '31680151250908000000001'
-    assert str0004r1.settlement_date == date(2025, 9, 8)
-    assert str0004r1.settlement_timestamp == datetime(2025, 11, 20, 15, 30)
-    assert str0004r1.str_control_number == 'STR20250101000000001'
-    assert str0004r1.str_settlement_status == StrSettlementStatus.EFFECTIVE
-    assert str0004r1.to_ispb == '00038166'
-    assert str0004r1.system_domain == 'SPB01'
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
 
 
-def test_str0004r1_roundtrip() -> None:
-    params = make_valid_str0004r1_params()
-    str0004r1 = STR0004R1.model_validate(params)
-    xml = str0004r1.to_xml()
-    str0008r1_from_xml = STR0004R1.from_xml(xml)
-    assert str0004r1 == str0008r1_from_xml
+def test_str0001e_general_error_to_xml() -> None:
+    params = make_valid_str0001e_params(general_error=True)
+    str0001e = STR0001E.model_validate(params)
+    xml = str0001e.to_xml()
 
-
-def test_str0004r1_from_xml_missing_required_fields() -> None:
-    xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004.xsd">
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0001E.xsd">
         <BCMSG>
             <IdentdEmissor>31680151</IdentdEmissor>
             <IdentdDestinatario>00038166</IdentdDestinatario>
@@ -683,249 +248,273 @@ def test_str0004r1_from_xml_missing_required_fields() -> None:
             <NUOp>31680151250908000000001</NUOp>
         </BCMSG>
         <SISMSG>
-            <STR0004R1>
-                <CodMsg>STR0004R1</CodMsg>
-            </STR0004R1>
+            <STR0001 CodErro="EGEN0050">
+                <CodMsg>STR0001E</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <DtRef>2026-01-28</DtRef>
+                <TpHrio>P</TpHrio>
+            </STR0001>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_str0001e_tag_error_to_xml() -> None:
+    params = make_valid_str0001e_params()
+    str0001e = STR0001E.model_validate(params)
+    xml = str0001e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0001E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0001>
+                <CodMsg>STR0001E</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <DtRef CodErro="EIDT0001">2026-01-28</DtRef>
+                <TpHrio>P</TpHrio>
+            </STR0001>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_str0001_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0001.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0001>
+                <CodMsg>STR0001</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <DtRef>2026-01-28</DtRef>
+                <TpHrio>P</TpHrio>
+            </STR0001>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0001 = STR0001.from_xml(xml)
+
+    assert isinstance(str0001, STR0001)
+    assert str0001.from_ispb == '31680151'
+    assert str0001.operation_number == '31680151250908000000001'
+    assert str0001.system_domain == 'SPB01'
+    assert str0001.to_ispb == '00038166'
+    assert str0001.message_code == 'STR0001'
+    assert str0001.institution_control_number == '31680151202509090425'
+    assert str0001.institution_ispb == '31680151'
+    assert str0001.reference_date == date(2026, 1, 28)
+    assert str0001.hour_type == TimeType.STANDARD
+
+
+def test_str0001r1_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0001.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0001R1>
+                <CodMsg>STR0001R1</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <Grupo_STR0001R1_GrdHrio>
+                    <CodGrd>AGE01</CodGrd>
+                    <DtHrAbert>2026-01-28T09:30:00</DtHrAbert>
+                    <DtHrFcht>2026-01-28T18:30:00</DtHrFcht>
+                    <TpHrio>P</TpHrio>
+                </Grupo_STR0001R1_GrdHrio>
+                <DtRef>2026-01-28</DtRef>
+                <DtHrBC>2026-01-28T16:30:21</DtHrBC>
+            </STR0001R1>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0001r1 = STR0001R1.from_xml(xml)
+
+    assert isinstance(str0001r1, STR0001R1)
+    assert str0001r1.from_ispb == '31680151'
+    assert str0001r1.operation_number == '31680151250908000000001'
+    assert str0001r1.system_domain == 'SPB01'
+    assert str0001r1.to_ispb == '00038166'
+    assert str0001r1.message_code == 'STR0001R1'
+    assert str0001r1.institution_control_number == '31680151202509090425'
+    assert str0001r1.institution_ispb == '31680151'
+    assert str0001r1.reference_date == date(2026, 1, 28)
+    assert str0001r1.vendor_timestamp == datetime(2026, 1, 28, 16, 30, 21)
+
+    assert len(str0001r1.schedule_grid_group) == 1
+    schedule1 = str0001r1.schedule_grid_group[0]
+    assert isinstance(schedule1, ScheduleGrid)
+    assert schedule1.code == GridCode.PAYMENT_ORDER_SCHEDULING
+    assert schedule1.opening_hour == datetime(2026, 1, 28, 9, 30)
+    assert schedule1.closing_hour == datetime(2026, 1, 28, 18, 30)
+    assert schedule1.hour_type == TimeType.STANDARD
+
+
+def test_str0001e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0001E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0001 CodErro="EGEN0050">
+                <CodMsg>STR0001E</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <DtRef>2026-01-28</DtRef>
+                <TpHrio>P</TpHrio>
+            </STR0001>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0001e = STR0001E.from_xml(xml)
+
+    assert isinstance(str0001e, STR0001E)
+    assert str0001e.from_ispb == '31680151'
+    assert str0001e.operation_number == '31680151250908000000001'
+    assert str0001e.system_domain == 'SPB01'
+    assert str0001e.to_ispb == '00038166'
+    assert str0001e.message_code == 'STR0001E'
+    assert str0001e.institution_control_number == '31680151202509090425'
+    assert str0001e.institution_ispb == '31680151'
+    assert str0001e.reference_date == date(2026, 1, 28)
+    assert str0001e.hour_type == TimeType.STANDARD
+    assert str0001e.general_error_code == 'EGEN0050'
+
+
+def test_str0001e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0001E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0001>
+                <CodMsg>STR0001E</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIF>31680151</ISPBIF>
+                <DtRef CodErro="EIDT0001">2026-01-28</DtRef>
+                <TpHrio>P</TpHrio>
+            </STR0001>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0001e = STR0001E.from_xml(xml)
+
+    assert isinstance(str0001e, STR0001E)
+    assert str0001e.from_ispb == '31680151'
+    assert str0001e.operation_number == '31680151250908000000001'
+    assert str0001e.system_domain == 'SPB01'
+    assert str0001e.to_ispb == '00038166'
+    assert str0001e.message_code == 'STR0001E'
+    assert str0001e.institution_control_number == '31680151202509090425'
+    assert str0001e.institution_ispb == '31680151'
+    assert str0001e.reference_date == date(2026, 1, 28)
+    assert str0001e.hour_type == TimeType.STANDARD
+    assert str0001e.reference_date_error_code == 'EIDT0001'
+
+
+def test_str0001_roundtrip() -> None:
+    params = make_valid_str0001_params()
+    str0001 = STR0001.model_validate(params)
+    xml = str0001.to_xml()
+    str0001_from_xml = STR0001.from_xml(xml)
+    assert str0001 == str0001_from_xml
+
+
+def test_str0001r1_roundtrip() -> None:
+    params = make_valid_str0001r1_params()
+    str0001r1 = STR0001R1.model_validate(params)
+    xml = str0001r1.to_xml()
+    str0001r1_from_xml = STR0001R1.from_xml(xml)
+    assert str0001r1 == str0001r1_from_xml
+
+
+def test_str0001_from_xml_missing_required_fields() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0001.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0001>
+                <CodMsg>STR0001</CodMsg>
+            </STR0001>
         </SISMSG>
     </DOC>
     """
 
     with pytest.raises(ValidationError) as exc:
-        STR0004R1.from_xml(xml)
+        STR0001.from_xml(xml)
+
     missing_fields = extract_missing_fields(exc.value)
     assert missing_fields == {
-        'settlement_date',
-        'debtor_institution_ispb',
-        'str_settlement_status',
-        'str_control_number',
         'institution_control_number',
-        'settlement_timestamp',
+        'institution_ispb',
+        'reference_date',
+        'hour_type',
     }
 
 
-def test_str0004r2_valid_model() -> None:
-    params = make_valid_str0004r2_params()
-    str0004r2 = STR0004R2.model_validate(params)
-    assert isinstance(str0004r2, STR0004R2)
-    assert str0004r2.debtor_institution_ispb == '31680151'
-    assert str0004r2.from_ispb == '31680151'
-    assert str0004r2.creditor_institution_ispb == '60701190'
-    assert str0004r2.creditor_branch == '0001'
-    assert str0004r2.purpose == InstitutionPurpose.FX_INTERBANK_MARKET
-    assert str0004r2.transaction_id == '0000000000000000000000001'
-    assert str0004r2.amount == Decimal('100.00')
-    assert str0004r2.description == 'Payment for services'
-    assert str0004r2.settlement_date == date(2025, 9, 8)
-    assert str0004r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
-    assert str0004r2.str_control_number == 'STR20250101000000001'
+def test_str0001r1_from_xml_missing_required_fields() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0001.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0001R1>
+                <CodMsg>STR0001R1</CodMsg>
+            </STR0001R1>
+        </SISMSG>
+    </DOC>
+    """
 
-
-def test_str0004r2_missing_required_fields() -> None:
     with pytest.raises(ValidationError) as exc:
-        STR0004R2.model_validate({})
+        STR0001R1.from_xml(xml)
+
     missing_fields = extract_missing_fields(exc.value)
     assert missing_fields == {
-        'creditor_institution_ispb',
-        'settlement_date',
-        'purpose',
-        'from_ispb',
+        'institution_control_number',
+        'institution_ispb',
+        'reference_date',
         'vendor_timestamp',
-        'debtor_institution_ispb',
-        'amount',
-        'system_domain',
-        'str_control_number',
-        'description',
-        'to_ispb',
-        'operation_number',
-    }
-
-
-def test_str0004r2_to_xml() -> None:
-    params = make_valid_str0004r2_params()
-    str0004r2 = STR0004R2.model_validate(params)
-    xml = str0004r2.to_xml()
-
-    expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004.xsd">
-        <BCMSG>
-            <IdentdEmissor>31680151</IdentdEmissor>
-            <IdentdDestinatario>00038166</IdentdDestinatario>
-            <DomSist>SPB01</DomSist>
-            <NUOp>31680151250908000000001</NUOp>
-        </BCMSG>
-        <SISMSG>
-            <STR0004R2>
-                <CodMsg>STR0004R2</CodMsg>
-                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
-                <ISPBIFDebtd>31680151</ISPBIFDebtd>
-                <ISPBIFCredtd>60701190</ISPBIFCredtd>
-                <AgCredtd>0001</AgCredtd>
-                <VlrLanc>100.0</VlrLanc>
-                <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
-                <FinlddIF>1</FinlddIF>
-                <Hist>Payment for services</Hist>
-                <DtMovto>2025-09-08</DtMovto>
-            </STR0004R2>
-        </SISMSG>
-    </DOC>
-    """
-
-    assert normalize_xml(expected_xml) == normalize_xml(xml)
-
-
-def test_str0004r2_to_xml_omit_optional_fields() -> None:
-    params = make_valid_str0004r2_params()
-    del params['creditor_branch']
-    del params['transaction_id']
-
-    str0004r2 = STR0004R2.model_validate(params)
-    xml = str0004r2.to_xml()
-
-    expected_xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004.xsd">
-        <BCMSG>
-            <IdentdEmissor>31680151</IdentdEmissor>
-            <IdentdDestinatario>00038166</IdentdDestinatario>
-            <DomSist>SPB01</DomSist>
-            <NUOp>31680151250908000000001</NUOp>
-        </BCMSG>
-        <SISMSG>
-            <STR0004R2>
-                <CodMsg>STR0004R2</CodMsg>
-                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
-                <ISPBIFDebtd>31680151</ISPBIFDebtd>
-                <ISPBIFCredtd>60701190</ISPBIFCredtd>
-                <VlrLanc>100.0</VlrLanc>
-                <FinlddIF>1</FinlddIF>
-                <Hist>Payment for services</Hist>
-                <DtMovto>2025-09-08</DtMovto>
-            </STR0004R2>
-        </SISMSG>
-    </DOC>
-    """
-
-    assert normalize_xml(expected_xml) == normalize_xml(xml)
-
-
-def test_str0004r2_from_xml() -> None:
-    xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004.xsd">
-        <BCMSG>
-            <IdentdEmissor>31680151</IdentdEmissor>
-            <IdentdDestinatario>00038166</IdentdDestinatario>
-            <DomSist>SPB01</DomSist>
-            <NUOp>31680151250908000000001</NUOp>
-        </BCMSG>
-        <SISMSG>
-            <STR0004R2>
-                <CodMsg>STR0004R2</CodMsg>
-                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
-                <ISPBIFDebtd>31680151</ISPBIFDebtd>
-                <ISPBIFCredtd>60701190</ISPBIFCredtd>
-                <AgCredtd>0001</AgCredtd>
-                <VlrLanc>100.0</VlrLanc>
-                <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
-                <FinlddIF>1</FinlddIF>
-                <Hist>Payment for services</Hist>
-                <DtMovto>2025-09-08</DtMovto>
-            </STR0004R2>
-        </SISMSG>
-    </DOC>
-    """
-
-    str0004r2 = STR0004R2.from_xml(xml)
-    assert isinstance(str0004r2, STR0004R2)
-    assert str0004r2.debtor_institution_ispb == '31680151'
-    assert str0004r2.from_ispb == '31680151'
-    assert str0004r2.creditor_institution_ispb == '60701190'
-    assert str0004r2.creditor_branch == '0001'
-    assert str0004r2.purpose == InstitutionPurpose.FX_INTERBANK_MARKET
-    assert str0004r2.transaction_id == '0000000000000000000000001'
-    assert str0004r2.amount == Decimal('100.00')
-    assert str0004r2.description == 'Payment for services'
-    assert str0004r2.settlement_date == date(2025, 9, 8)
-    assert str0004r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
-    assert str0004r2.str_control_number == 'STR20250101000000001'
-
-
-def test_str0004r2_from_xml_omit_optional_fields() -> None:
-    xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004.xsd">
-        <BCMSG>
-            <IdentdEmissor>31680151</IdentdEmissor>
-            <IdentdDestinatario>00038166</IdentdDestinatario>
-            <DomSist>SPB01</DomSist>
-            <NUOp>31680151250908000000001</NUOp>
-        </BCMSG>
-        <SISMSG>
-            <STR0004R2>
-                <CodMsg>STR0004R2</CodMsg>
-                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
-                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
-                <ISPBIFDebtd>31680151</ISPBIFDebtd>
-                <ISPBIFCredtd>60701190</ISPBIFCredtd>
-                <VlrLanc>100.0</VlrLanc>
-                <FinlddIF>1</FinlddIF>
-                <Hist>Payment for services</Hist>
-                <DtMovto>2025-09-08</DtMovto>
-            </STR0004R2>
-        </SISMSG>
-    </DOC>
-    """
-
-    str0004r2 = STR0004R2.from_xml(xml)
-    assert isinstance(str0004r2, STR0004R2)
-    assert str0004r2.debtor_institution_ispb == '31680151'
-    assert str0004r2.from_ispb == '31680151'
-    assert str0004r2.creditor_institution_ispb == '60701190'
-    assert str0004r2.creditor_branch is None
-    assert str0004r2.purpose == InstitutionPurpose.FX_INTERBANK_MARKET
-    assert str0004r2.transaction_id is None
-    assert str0004r2.amount == Decimal('100.00')
-    assert str0004r2.description == 'Payment for services'
-    assert str0004r2.settlement_date == date(2025, 9, 8)
-    assert str0004r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
-    assert str0004r2.str_control_number == 'STR20250101000000001'
-
-
-def test_str0004r2_roundtrip() -> None:
-    params = make_valid_str0004r2_params()
-    str0004r2 = STR0004R2.model_validate(params)
-    xml = str0004r2.to_xml()
-    str0004r2_from_xml = STR0004R2.from_xml(xml)
-    assert str0004r2 == str0004r2_from_xml
-
-
-def test_str0004r2_from_xml_missing_required_fields() -> None:
-    xml = """<?xml version="1.0"?>
-    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0004.xsd">
-        <BCMSG>
-            <IdentdEmissor>31680151</IdentdEmissor>
-            <IdentdDestinatario>00038166</IdentdDestinatario>
-            <DomSist>SPB01</DomSist>
-            <NUOp>31680151250908000000001</NUOp>
-        </BCMSG>
-        <SISMSG>
-            <STR0004R2>
-                <CodMsg>STR0004R2</CodMsg>
-            </STR0004R2>
-        </SISMSG>
-    </DOC>
-    """
-
-    with pytest.raises(ValidationError) as exc:
-        STR0004R2.from_xml(xml)
-    missing_fields = extract_missing_fields(exc.value)
-    assert missing_fields == {
-        'settlement_date',
-        'creditor_institution_ispb',
-        'amount',
-        'vendor_timestamp',
-        'purpose',
-        'str_control_number',
-        'debtor_institution_ispb',
-        'description',
     }

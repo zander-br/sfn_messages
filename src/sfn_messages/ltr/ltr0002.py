@@ -18,8 +18,8 @@ class LTR0002(BaseMessage):
     institution_control_number: Annotated[LdlControlNumber, XmlPath(f'{PATH}/NumCtrlIF/text()')]
     institution_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBIF/text()')]
     original_ltr_control_number: Annotated[LdlControlNumber, XmlPath(f'{PATH}/NumCtrlLTROr/text()')]
-    ltr_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBLTR/text()')]
-    institution_datetime: Annotated[datetime, XmlPath(f'{PATH_R1}/DtHrIF/text()')]
+    ltr_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBLTR/text()')]
+    institution_datetime: Annotated[datetime, XmlPath(f'{PATH}/DtHrIF/text()')]
     reconciliation_type: Annotated[ReconciliationType, XmlPath(f'{PATH}/TpConf_Divg/text()')]
     settlement_date: Annotated[date, XmlPath(f'{PATH}/DtMovto/text()')]
 
@@ -27,11 +27,11 @@ class LTR0002(BaseMessage):
 class LTR0002R1(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
 
-    message_code: Annotated[Literal['LTR0002R1'], XmlPath(f'{PATH}/CodMsg/text()')] = 'LTR0002R1'
-    institution_control_number: Annotated[LdlControlNumber, XmlPath(f'{PATH}/NumCtrlIF/text()')]
-    ltr_ispb: Annotated[Ispb, XmlPath(f'{PATH_E}/ISPBLTR/text()')]
+    message_code: Annotated[Literal['LTR0002R1'], XmlPath(f'{PATH_R1}/CodMsg/text()')] = 'LTR0002R1'
+    institution_control_number: Annotated[LdlControlNumber, XmlPath(f'{PATH_R1}/NumCtrlIF/text()')]
+    ltr_ispb: Annotated[Ispb, XmlPath(f'{PATH_R1}/ISPBLTR/text()')]
     ltr_datetime: Annotated[datetime, XmlPath(f'{PATH_R1}/DtHrLTR/text()')]
-    settlement_date: Annotated[date, XmlPath(f'{PATH}/DtMovto/text()')]
+    settlement_date: Annotated[date, XmlPath(f'{PATH_R1}/DtMovto/text()')]
 
 
 class LTR0002E(BaseMessage):
@@ -42,7 +42,7 @@ class LTR0002E(BaseMessage):
     institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIF/text()')] = None
     original_ltr_control_number: Annotated[LdlControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlLTROr/text()')] = None
     ltr_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBLTR/text()')] = None
-    institution_datetime: Annotated[datetime | None, XmlPath(f'{PATH_R1}/DtHrIF/text()')] = None
+    institution_datetime: Annotated[datetime | None, XmlPath(f'{PATH_E}/DtHrIF/text()')] = None
     reconciliation_type: Annotated[ReconciliationType | None, XmlPath(f'{PATH_E}/TpConf_Divg/text()')] = None
     settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
@@ -53,6 +53,6 @@ class LTR0002E(BaseMessage):
         None
     )
     ltr_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBLTR/@CodErro')] = None
-    institution_datetime_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_R1}/DtHrIF/@CodErro')] = None
+    institution_datetime_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/DtHrIF/@CodErro')] = None
     reconciliation_type_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/TpConf_Divg/@CodErro')] = None
     settlement_date_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/DtMovto/@CodErro')] = None
