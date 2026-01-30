@@ -1752,3 +1752,24 @@ class ReconciliationType(EnumMixin, StrEnum):
     @classmethod
     def _value_to_xml(cls) -> dict[ReconciliationType, str]:
         return {cls.CONFIRM: 'C', cls.DIFFER: 'D'}
+
+
+class ReturnType(EnumMixin, StrEnum):
+    MESSAGE = 'MESSAGE'
+    POSITIONAL_FILE_FTP = 'POSITIONAL_FILE_FTP'
+    XML_FILE_PSTA = 'XML_FILE_PSTA'
+    XML_FILE_FTP = 'XML_FILE_FTP'
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[ReturnType, str]:
+        return {
+            cls.MESSAGE: 'M',
+            cls.POSITIONAL_FILE_FTP: 'P',
+            cls.XML_FILE_PSTA: 'S',
+            cls.XML_FILE_FTP: 'X',
+        }
+
+
+type FileSizeInBytes = Annotated[
+    int, GetPydanticSchema(lambda _tp, _handler: core_schema.int_schema(ge=0, le=999_999_999_999_999))
+]
