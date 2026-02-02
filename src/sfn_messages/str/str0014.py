@@ -72,22 +72,22 @@ class STR0014R1(BaseMessage):
 class STR0014E(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE_ERROR
 
-    message_code: Annotated[Literal['STR0014E'], XmlPath(f'{PATH}/CodMsg/text()')] = 'STR0014E'
-    institution_control_number: Annotated[InstitutionControlNumber | None, XmlPath(f'{PATH}/NumCtrlIF_LDL/text()')] = (
-        None
-    )
-    institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH}/ISPBIF_LDL/text()')] = None
-    return_type: Annotated[ReturnType | None, XmlPath(f'{PATH}/TpRet/text()')] = None
-    start_timestamp: Annotated[datetime | None, XmlPath(f'{PATH}/DtHrIni/text()')] = None
-    finish_timestamp: Annotated[datetime | None, XmlPath(f'{PATH}/DtHrFim/text()')] = None
-    settlement_date: Annotated[date | None, XmlPath(f'{PATH}/DtMovto/text()')] = None
+    message_code: Annotated[Literal['STR0014E'], XmlPath(f'{PATH_E}/CodMsg/text()')] = 'STR0014E'
+    institution_control_number: Annotated[
+        InstitutionControlNumber | None, XmlPath(f'{PATH_E}/NumCtrlIF_LDL/text()')
+    ] = None
+    institution_ispb: Annotated[Ispb | None, XmlPath(f'{PATH_E}/ISPBIF_LDL/text()')] = None
+    return_type: Annotated[ReturnType | None, XmlPath(f'{PATH_E}/TpRet/text()')] = None
+    start_timestamp: Annotated[datetime | None, XmlPath(f'{PATH_E}/DtHrIni/text()')] = None
+    finish_timestamp: Annotated[datetime | None, XmlPath(f'{PATH_E}/DtHrFim/text()')] = None
+    settlement_date: Annotated[date | None, XmlPath(f'{PATH_E}/DtMovto/text()')] = None
 
-    general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH}/CodMsg/@CodErro')] = None
-    institution_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH}/NumCtrlIF_LDL/@CodErro')] = (
+    general_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/@CodErro')] = None
+    institution_control_number_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/NumCtrlIF_LDL/@CodErro')] = (
         None
     )
-    institution_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH}/ISPBIF_LDL/@CodErro')] = None
-    return_type_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH}/TpRet/@CodErro')] = None
-    start_timestamp_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH}/DtHrIni/@CodErro')] = None
-    finish_timestamp_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH}/DtHrFim/@CodErro')] = None
-    settlement_date_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH}/DtMovto/@CodErro')] = None
+    institution_ispb_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/ISPBIF_LDL/@CodErro')] = None
+    return_type_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/TpRet/@CodErro')] = None
+    start_timestamp_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/DtHrIni/@CodErro')] = None
+    finish_timestamp_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/DtHrFim/@CodErro')] = None
+    settlement_date_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_E}/DtMovto/@CodErro')] = None
