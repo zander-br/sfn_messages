@@ -421,6 +421,10 @@ def test_str0014r1_from_xml() -> None:
             <IdentdDestinatario>00038166</IdentdDestinatario>
             <DomSist>SPB01</DomSist>
             <NUOp>31680151250908000000001</NUOp>
+            <Grupo_Seq>
+                <NumSeq>1</NumSeq>
+                <IndrCont>N</IndrCont>
+            </Grupo_Seq>
         </BCMSG>
         <SISMSG>
             <STR0014R1>
@@ -469,6 +473,10 @@ def test_str0014r1_from_xml() -> None:
     str0014r1 = STR0014R1.from_xml(xml)
 
     assert isinstance(str0014r1, STR0014R1)
+    assert str0014r1.sequence_number == 1
+    if str0014r1.continuation_indicator is not None:
+        assert str0014r1.continuation_indicator.to_bool() is False
+
     assert str0014r1.message_code == 'STR0014R1'
     assert str0014r1.institution_control_number == '123'
     assert str0014r1.institution_ispb == '31680151'

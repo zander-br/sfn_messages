@@ -13,7 +13,7 @@ from sfn_messages.core.errors import (
     LocalNameSetInFieldError,
 )
 from sfn_messages.core.models import BaseMessage, BaseSubMessage, XmlPath, XmlSerializerMixin
-from sfn_messages.core.types import SystemDomain
+from sfn_messages.core.types import ContinuationIndicator, SystemDomain
 from tests.conftest import normalize_xml
 
 
@@ -470,3 +470,51 @@ class TestBaseMessage:
             field1='value1',
             field2=SubSut(f1='v1', f2='v2'),
         )
+
+    def test_to_xml_with_pagination_tag(self) -> None:
+        expected = """
+        <DOC>
+            <BCMSG>
+                <IdentdEmissor>12345ABC</IdentdEmissor>
+                <IdentdDestinatario>67890XYZ</IdentdDestinatario>
+                <DomSist>MES01</DomSist>
+                <NUOp>12345678123456789000123</NUOp>
+                <Grupo_Seq>
+                    <NumSeq>2</NumSeq>
+                    <IndrCont>S</IndrCont>
+                </Grupo_Seq>
+            </BCMSG>
+            <SISMSG>
+                <Test>
+                    <field1>value1</field1>
+                    <field2>
+                        <sub>
+                            <field f2="v2">v1</field>
+                        </sub>
+                    </field2>
+                </Test>
+            </SISMSG>
+        </DOC>
+        """
+
+        class SubSut(BaseSubMessage):
+            f1: Annotated[str, XmlPath('sub/field/text()')]
+            f2: Annotated[str, XmlPath('sub/field/@f2')]
+
+        class Sut(BaseMessage):
+            field1: Annotated[str, XmlPath('DOC/SISMSG/Test/field1/text()')]
+            field2: Annotated[SubSut, XmlPath('DOC/SISMSG/Test/field2')]
+
+        sut = Sut(
+            from_ispb='12345abc',
+            to_ispb='67890xyz',
+            system_domain=SystemDomain.MES01,
+            operation_number='12345678123456789000123',
+            sequence_number='2',
+            continuation_indicator=ContinuationIndicator.YES,
+            field1='value1',
+            field2=SubSut(f1='v1', f2='v2'),
+        )
+        returned = sut.to_xml()
+
+        assert normalize_xml(returned) == normalize_xml(expected)

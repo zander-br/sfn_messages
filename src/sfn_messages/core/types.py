@@ -1782,3 +1782,6 @@ class ContinuationIndicator(EnumMixin, StrEnum):
     @classmethod
     def _value_to_xml(cls) -> dict[ContinuationIndicator, str]:
         return {cls.YES: 'S', cls.NO: 'N'}
+
+    def to_bool(self) -> bool:
+        return self is ContinuationIndicator.YES
