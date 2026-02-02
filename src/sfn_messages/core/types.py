@@ -1773,3 +1773,12 @@ class ReturnType(EnumMixin, StrEnum):
 type FileSizeInBytes = Annotated[
     int, GetPydanticSchema(lambda _tp, _handler: core_schema.int_schema(ge=0, le=999_999_999_999_999))
 ]
+
+
+class ContinuationIndicator(EnumMixin, StrEnum):
+    YES = 'YES'
+    NO = 'NO'
+
+    @classmethod
+    def _value_to_xml(cls) -> dict[ContinuationIndicator, str]:
+        return {cls.YES: 'S', cls.NO: 'N'}

@@ -18,7 +18,7 @@ from .errors import (
     LocalNameNotSetInFieldError,
     LocalNameSetInFieldError,
 )
-from .types import Ispb, MappableToXmlValue, OperationNumber, SystemDomain
+from .types import ContinuationIndicator, Ispb, MappableToXmlValue, OperationNumber, SystemDomain
 
 
 @dataclass(frozen=True)
@@ -279,6 +279,10 @@ class BaseMessage(BaseSubMessage):
     to_ispb: Annotated[Ispb, XmlPath('DOC/BCMSG/IdentdDestinatario/text()')]
     system_domain: Annotated[SystemDomain, XmlPath('DOC/BCMSG/DomSist/text()')]
     operation_number: Annotated[OperationNumber, XmlPath('DOC/BCMSG/NUOp/text()')]
+    sequence_number: Annotated[int | None, XmlPath('DOC/BCMSG/Grupo_Seq/NumSeq/text()')] = None
+    continuation_indicator: Annotated[ContinuationIndicator | None, XmlPath('DOC/BCMSG/Grupo_Seq/IndrCont/text()')] = (
+        None
+    )
 
     def to_xml(self) -> str:
         xml = self.to_xml_value()

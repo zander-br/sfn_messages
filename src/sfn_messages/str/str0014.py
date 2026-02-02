@@ -59,7 +59,7 @@ class STR0014R1(BaseMessage):
     message_code: Annotated[Literal['STR0014R1'], XmlPath(f'{PATH_R1}/CodMsg/text()')] = 'STR0014R1'
     institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_R1}/NumCtrlIF_LDL/text()')]
     institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R1}/ISPBIF_LDL/text()')]
-    start_timestamp: Annotated[datetime | None, XmlPath(f'{PATH}/DtHrIni/text()')] = None
+    start_timestamp: Annotated[datetime | None, XmlPath(f'{PATH_R1}/DtHrIni/text()')] = None
     initial_amount: Annotated[Decimal, XmlPath(f'{PATH_R1}/SldInial/text()')]
     launch_group: Annotated[list[LaunchGroup], XmlPath(f'{PATH_R1}')] = Field(default_factory=list)
     final_amount: Annotated[Decimal, XmlPath(f'{PATH_R1}/SldFinl/text()')]
