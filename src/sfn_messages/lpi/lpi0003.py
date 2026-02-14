@@ -8,6 +8,7 @@ from sfn_messages.core.types import (
     Branch,
     Cnpj,
     ErrorCode,
+    InstitutionControlNumber,
     Ispb,
     StrControlNumber,
     StrSettlementStatus,
@@ -38,6 +39,7 @@ class LPI0003(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
 
     message_code: Annotated[Literal['LPI0003'], XmlPath(f'{PATH}/CodMsg/text()')] = 'LPI0003'
+    pspi_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH}/NumCtrlPSPI/text()')]
     pspi_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBPSPI/text()')]
     creditor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH}/ISPBIFCredtd/text()')]
     creditor_client_group: Annotated[CreditorClientGroup | None, XmlPath(f'{PATH}')] = None
@@ -51,7 +53,7 @@ class LPI0003R1(BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
 
     message_code: Annotated[Literal['LPI0003R1'], XmlPath(f'{PATH_R1}/CodMsg/text()')] = 'LPI0003R1'
-    pspi_control_number: Annotated[str, XmlPath(f'{PATH_R1}/NumCtrlPSPI/text()')]
+    pspi_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_R1}/NumCtrlPSPI/text()')]
     pspi_ispb: Annotated[Ispb, XmlPath(f'{PATH_R1}/ISPBPSPI/text()')]
     str_control_number: Annotated[StrControlNumber, XmlPath(f'{PATH_R1}/NumCtrlSTR/text()')]
     str_settlement_status: Annotated[StrSettlementStatus, XmlPath(f'{PATH_R1}/SitLancSTR/text()')]

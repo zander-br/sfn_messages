@@ -26,6 +26,7 @@ def make_valid_lpi0003_params() -> dict[str, Any]:
         'system_domain': 'SPB01',
         'operation_number': '31680151250908000000001',
         'message_code': 'LPI0003',
+        'pspi_control_number': '123',
         'pspi_ispb': '31680153',
         'creditor_institution_ispb': '31680151',
         'creditor_client_group': {'branch': '001', 'account_number': '123456', 'cnpj': '39548823000191'},
@@ -101,6 +102,7 @@ def test_lpi0003_valid_model() -> None:
 
     assert isinstance(lpi0003, LPI0003)
     assert lpi0003.message_code == 'LPI0003'
+    assert lpi0003.pspi_control_number == '123'
     assert lpi0003.pspi_ispb == '31680153'
     assert lpi0003.creditor_institution_ispb == '31680151'
     assert lpi0003.lpi_purpose == LpiPurpose.OWN_MOVEMENT_OR_TO_SETTLER_ACCOUNT_ON_STR
@@ -204,6 +206,7 @@ def test_lpi0003_missing_required_fields() -> None:
         'system_domain',
         'operation_number',
         'pspi_ispb',
+        'pspi_control_number',
         'creditor_institution_ispb',
         'lpi_purpose',
         'amount',
@@ -267,6 +270,7 @@ def test_lpi0003_to_xml() -> None:
         <SISMSG>
             <LPI0003>
                 <CodMsg>LPI0003</CodMsg>
+                <NumCtrlPSPI>123</NumCtrlPSPI>
                 <ISPBPSPI>31680153</ISPBPSPI>
                 <ISPBIFCredtd>31680151</ISPBIFCredtd>
                 <Grupo_LPI0003_CliCredtd>
@@ -434,6 +438,7 @@ def test_lpi0003_from_xml() -> None:
         <SISMSG>
             <LPI0003>
                 <CodMsg>LPI0003</CodMsg>
+                <NumCtrlPSPI>123</NumCtrlPSPI>
                 <ISPBPSPI>31680153</ISPBPSPI>
                 <ISPBIFCredtd>31680151</ISPBIFCredtd>
                 <Grupo_LPI0003_CliCredtd>
@@ -454,6 +459,7 @@ def test_lpi0003_from_xml() -> None:
 
     assert isinstance(lpi0003, LPI0003)
     assert lpi0003.message_code == 'LPI0003'
+    assert lpi0003.pspi_control_number == '123'
     assert lpi0003.pspi_ispb == '31680153'
     assert lpi0003.creditor_institution_ispb == '31680151'
     assert lpi0003.lpi_purpose == LpiPurpose.OWN_MOVEMENT_OR_TO_SETTLER_ACCOUNT_ON_STR
