@@ -120,22 +120,69 @@ def test_str0005_missing_required_fields() -> None:
     with pytest.raises(ValidationError) as exc:
         STR0005.model_validate({})
     missing_fields = extract_missing_fields(exc.value)
-    assert 'amount' in missing_fields
-    assert 'debtor_institution_ispb' in missing_fields
+    assert missing_fields == {
+        'creditor_institution_ispb',
+        'sender_type',
+        'operation_number',
+        'recipient_name',
+        'recipient_type',
+        'institution_control_number',
+        'from_ispb',
+        'purpose',
+        'debtor_institution_ispb',
+        'debtor_branch',
+        'recipient_document',
+        'sender_name',
+        'amount',
+        'system_domain',
+        'to_ispb',
+        'settlement_date',
+        'sender_document',
+    }
 
 
 def test_str0005r1_missing_required_fields() -> None:
     with pytest.raises(ValidationError) as exc:
         STR0005R1.model_validate({})
     missing_fields = extract_missing_fields(exc.value)
-    assert 'str_control_number' in missing_fields
+    assert missing_fields == {
+        'institution_control_number',
+        'debtor_institution_ispb',
+        'str_control_number',
+        'str_settlement_status',
+        'settlement_timestamp',
+        'settlement_date',
+        'from_ispb',
+        'to_ispb',
+        'system_domain',
+        'operation_number',
+    }
 
 
 def test_str0005r2_missing_required_fields() -> None:
     with pytest.raises(ValidationError) as exc:
         STR0005R2.model_validate({})
     missing_fields = extract_missing_fields(exc.value)
-    assert 'str_control_number' in missing_fields
+    assert missing_fields == {
+        'operation_number',
+        'sender_type',
+        'from_ispb',
+        'purpose',
+        'to_ispb',
+        'system_domain',
+        'recipient_name',
+        'sender_document',
+        'debtor_institution_ispb',
+        'recipient_type',
+        'debtor_branch',
+        'vendor_timestamp',
+        'amount',
+        'creditor_institution_ispb',
+        'recipient_document',
+        'str_control_number',
+        'settlement_date',
+        'sender_name',
+    }
 
 
 def test_str0005_business_rules_invalid_documents() -> None:
