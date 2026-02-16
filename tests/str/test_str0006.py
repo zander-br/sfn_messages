@@ -6,7 +6,7 @@ import pytest
 from pydantic import ValidationError
 
 from sfn_messages.core.types import AccountType, CustomerPurpose, PersonType, Priority, StrSettlementStatus
-from sfn_messages.str.str0006 import STR0006, STR0006R1, STR0006R2
+from sfn_messages.str.str0006 import STR0006, STR0006E, STR0006R1, STR0006R2
 from tests.conftest import extract_missing_fields, normalize_xml
 
 
@@ -85,6 +85,45 @@ def make_valid_str0006r2_params() -> dict[str, Any]:
         'credit_contract_number': '1234567890',
         'str_control_number': 'STR20250101000000001',
     }
+
+
+def make_valid_str0006e_params(*, general_error: bool = False) -> dict[str, Any]:
+    str0006e = {
+        'amount': 100.00,
+        'creditor_account_number': '123456',
+        'creditor_institution_ispb': '60701190',
+        'creditor_branch': '0001',
+        'recipient_document': '69327934075',
+        'recipient_name': 'Joe Doe',
+        'recipient_type': 'INDIVIDUAL',
+        'debtor_account_number': '654321',
+        'debtor_account_type': 'CURRENT',
+        'debtor_institution_ispb': '31680151',
+        'debtor_branch': '0002',
+        'sender_document': '56369416000136',
+        'sender_name': 'ACME Inc',
+        'sender_type': 'BUSINESS',
+        'description': 'Payment for services',
+        'from_ispb': '31680151',
+        'institution_control_number': '31680151202509090425',
+        'operation_number': '31680151250908000000001',
+        'priority': 'MEDIUM',
+        'purpose': 'CREDIT_IN_ACCOUNT',
+        'scheduled_date': '2025-09-09',
+        'scheduled_time': '15:30:00',
+        'settlement_date': '2025-09-08',
+        'system_domain': 'SPB01',
+        'to_ispb': '00038166',
+        'credit_contract_number': '1234567890',
+        'transaction_id': '0000000000000000000000001',
+    }
+
+    if general_error:
+        str0006e['general_error_code'] = 'EGEN0050'
+    else:
+        str0006e['debtor_institution_ispb_error_code'] = 'EGEN0051'
+
+    return str0006e
 
 
 def test_str0006_valid_model() -> None:
@@ -559,3 +598,657 @@ def test_str0006r2_from_xml() -> None:
     assert str0006r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
     assert str0006r2.credit_contract_number == '1234567890'
     assert str0006r2.str_control_number == 'STR20250101000000001'
+
+
+def test_str0006e_general_error_valid_model() -> None:
+    params = make_valid_str0006e_params(general_error=True)
+    str0006e = STR0006E.model_validate(params)
+    assert isinstance(str0006e, STR0006E)
+    assert str0006e.general_error_code == 'EGEN0050'
+    assert str0006e.amount == Decimal('100.00')
+    assert str0006e.debtor_institution_ispb == '31680151'
+    assert str0006e.debtor_branch == '0002'
+    assert str0006e.debtor_account_type == AccountType.CURRENT
+    assert str0006e.debtor_account_number == '654321'
+    assert str0006e.sender_type == PersonType.BUSINESS
+    assert str0006e.sender_document == '56369416000136'
+    assert str0006e.sender_name == 'ACME Inc'
+    assert str0006e.creditor_institution_ispb == '60701190'
+    assert str0006e.creditor_branch == '0001'
+    assert str0006e.creditor_account_number == '123456'
+    assert str0006e.recipient_type == PersonType.INDIVIDUAL
+    assert str0006e.recipient_document == '69327934075'
+    assert str0006e.recipient_name == 'Joe Doe'
+    assert str0006e.credit_contract_number == '1234567890'
+    assert str0006e.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
+    assert str0006e.transaction_id == '0000000000000000000000001'
+    assert str0006e.description == 'Payment for services'
+    assert str0006e.priority == Priority.MEDIUM
+    assert str0006e.scheduled_date == date(2025, 9, 9)
+    assert str0006e.scheduled_time == time(15, 30)
+    assert str0006e.settlement_date == date(2025, 9, 8)
+
+
+def test_str0006e_tag_error_valid_model() -> None:
+    params = make_valid_str0006e_params(general_error=False)
+    str0006e = STR0006E.model_validate(params)
+    assert isinstance(str0006e, STR0006E)
+    assert str0006e.general_error_code is None
+    assert str0006e.debtor_institution_ispb_error_code == 'EGEN0051'
+    assert str0006e.debtor_institution_ispb == '31680151'
+
+
+def test_str0006e_general_error_to_xml() -> None:
+    params = make_valid_str0006e_params(general_error=True)
+    str0006e = STR0006E.model_validate(params)
+    xml = str0006e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0006E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0006 CodErro="EGEN0050">
+                <CodMsg>STR0006E</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <AgDebtd>0002</AgDebtd>
+                <Grupo_STR0006_CtDebtd>
+                    <TpCtDebtd>CC</TpCtDebtd>
+                    <CtDebtd>654321</CtDebtd>
+                </Grupo_STR0006_CtDebtd>
+                <TpPessoaDebtd_Remet>J</TpPessoaDebtd_Remet>
+                <CNPJ_CPFCliDebtd_Remet>56369416000136</CNPJ_CPFCliDebtd_Remet>
+                <NomCliDebtd_Remet>ACME Inc</NomCliDebtd_Remet>
+                <ISPBIFCredtd>60701190</ISPBIFCredtd>
+                <AgCredtd>0001</AgCredtd>
+                <CtCredtd>123456</CtCredtd>
+                <TpPessoaDestinatario>F</TpPessoaDestinatario>
+                <CNPJ_CPFDestinatario>69327934075</CNPJ_CPFDestinatario>
+                <NomDestinatario>Joe Doe</NomDestinatario>
+                <NumContrtoOpCred>1234567890</NumContrtoOpCred>
+                <VlrLanc>100.0</VlrLanc>
+                <FinlddCli>10</FinlddCli>
+                <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
+                <Hist>Payment for services</Hist>
+                <DtAgendt>2025-09-09</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0006>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_str0006e_tag_error_to_xml() -> None:
+    params = make_valid_str0006e_params(general_error=False)
+    str0006e = STR0006E.model_validate(params)
+    xml = str0006e.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0006E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0006>
+                <CodMsg>STR0006E</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd CodErro="EGEN0051">31680151</ISPBIFDebtd>
+                <AgDebtd>0002</AgDebtd>
+                <Grupo_STR0006_CtDebtd>
+                    <TpCtDebtd>CC</TpCtDebtd>
+                    <CtDebtd>654321</CtDebtd>
+                </Grupo_STR0006_CtDebtd>
+                <TpPessoaDebtd_Remet>J</TpPessoaDebtd_Remet>
+                <CNPJ_CPFCliDebtd_Remet>56369416000136</CNPJ_CPFCliDebtd_Remet>
+                <NomCliDebtd_Remet>ACME Inc</NomCliDebtd_Remet>
+                <ISPBIFCredtd>60701190</ISPBIFCredtd>
+                <AgCredtd>0001</AgCredtd>
+                <CtCredtd>123456</CtCredtd>
+                <TpPessoaDestinatario>F</TpPessoaDestinatario>
+                <CNPJ_CPFDestinatario>69327934075</CNPJ_CPFDestinatario>
+                <NomDestinatario>Joe Doe</NomDestinatario>
+                <NumContrtoOpCred>1234567890</NumContrtoOpCred>
+                <VlrLanc>100.0</VlrLanc>
+                <FinlddCli>10</FinlddCli>
+                <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
+                <Hist>Payment for services</Hist>
+                <DtAgendt>2025-09-09</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0006>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_str0006e_general_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0006E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0006 CodErro="EGEN0050">
+                <CodMsg>STR0006E</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <AgDebtd>0002</AgDebtd>
+                <Grupo_STR0006_CtDebtd>
+                    <TpCtDebtd>CC</TpCtDebtd>
+                    <CtDebtd>654321</CtDebtd>
+                </Grupo_STR0006_CtDebtd>
+                <TpPessoaDebtd_Remet>J</TpPessoaDebtd_Remet>
+                <CNPJ_CPFCliDebtd_Remet>56369416000136</CNPJ_CPFCliDebtd_Remet>
+                <NomCliDebtd_Remet>ACME Inc</NomCliDebtd_Remet>
+                <ISPBIFCredtd>60701190</ISPBIFCredtd>
+                <AgCredtd>0001</AgCredtd>
+                <CtCredtd>123456</CtCredtd>
+                <TpPessoaDestinatario>F</TpPessoaDestinatario>
+                <CNPJ_CPFDestinatario>69327934075</CNPJ_CPFDestinatario>
+                <NomDestinatario>Joe Doe</NomDestinatario>
+                <NumContrtoOpCred>1234567890</NumContrtoOpCred>
+                <VlrLanc>100.0</VlrLanc>
+                <FinlddCli>10</FinlddCli>
+                <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
+                <Hist>Payment for services</Hist>
+                <DtAgendt>2025-09-09</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0006>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0006e = STR0006E.from_xml(xml)
+    assert isinstance(str0006e, STR0006E)
+    assert str0006e.general_error_code == 'EGEN0050'
+    assert str0006e.amount == Decimal('100.0')
+    assert str0006e.debtor_institution_ispb == '31680151'
+    assert str0006e.debtor_branch == '0002'
+    assert str0006e.debtor_account_type == AccountType.CURRENT
+    assert str0006e.debtor_account_number == '654321'
+    assert str0006e.sender_type == PersonType.BUSINESS
+    assert str0006e.sender_document == '56369416000136'
+    assert str0006e.sender_name == 'ACME Inc'
+    assert str0006e.creditor_institution_ispb == '60701190'
+    assert str0006e.creditor_branch == '0001'
+    assert str0006e.creditor_account_number == '123456'
+    assert str0006e.recipient_type == PersonType.INDIVIDUAL
+    assert str0006e.recipient_document == '69327934075'
+    assert str0006e.recipient_name == 'Joe Doe'
+    assert str0006e.credit_contract_number == '1234567890'
+    assert str0006e.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
+    assert str0006e.transaction_id == '0000000000000000000000001'
+    assert str0006e.description == 'Payment for services'
+    assert str0006e.priority == Priority.MEDIUM
+    assert str0006e.scheduled_date == date(2025, 9, 9)
+    assert str0006e.scheduled_time == time(15, 30)
+    assert str0006e.settlement_date == date(2025, 9, 8)
+
+
+def test_str0006e_tag_error_from_xml() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0006E.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0006>
+                <CodMsg>STR0006E</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd CodErro="EGEN0051">31680151</ISPBIFDebtd>
+                <AgDebtd>0002</AgDebtd>
+                <Grupo_STR0006_CtDebtd>
+                    <TpCtDebtd>CC</TpCtDebtd>
+                    <CtDebtd>654321</CtDebtd>
+                </Grupo_STR0006_CtDebtd>
+                <TpPessoaDebtd_Remet>J</TpPessoaDebtd_Remet>
+                <CNPJ_CPFCliDebtd_Remet>56369416000136</CNPJ_CPFCliDebtd_Remet>
+                <NomCliDebtd_Remet>ACME Inc</NomCliDebtd_Remet>
+                <ISPBIFCredtd>60701190</ISPBIFCredtd>
+                <AgCredtd>0001</AgCredtd>
+                <CtCredtd>123456</CtCredtd>
+                <TpPessoaDestinatario>F</TpPessoaDestinatario>
+                <CNPJ_CPFDestinatario>69327934075</CNPJ_CPFDestinatario>
+                <NomDestinatario>Joe Doe</NomDestinatario>
+                <NumContrtoOpCred>1234567890</NumContrtoOpCred>
+                <VlrLanc>100.0</VlrLanc>
+                <FinlddCli>10</FinlddCli>
+                <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
+                <Hist>Payment for services</Hist>
+                <DtAgendt>2025-09-09</DtAgendt>
+                <HrAgendt>15:30:00</HrAgendt>
+                <NivelPref>C</NivelPref>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0006>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0006e = STR0006E.from_xml(xml)
+    assert isinstance(str0006e, STR0006E)
+    assert str0006e.general_error_code is None
+    assert str0006e.debtor_institution_ispb_error_code == 'EGEN0051'
+    assert str0006e.debtor_institution_ispb == '31680151'
+    assert str0006e.amount == Decimal('100.0')
+
+
+def test_str0006_from_xml_omit_optional_fields() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0006.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0006>
+                <CodMsg>STR0006</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <AgDebtd>0002</AgDebtd>
+                <Grupo_STR0006_CtDebtd>
+                    <TpCtDebtd>CC</TpCtDebtd>
+                    <CtDebtd>654321</CtDebtd>
+                </Grupo_STR0006_CtDebtd>
+                <ISPBIFCredtd>60701190</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <FinlddCli>10</FinlddCli>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0006>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0006 = STR0006.from_xml(xml)
+    assert isinstance(str0006, STR0006)
+    assert str0006.amount == Decimal('100.0')
+    assert str0006.creditor_account_number is None
+    assert str0006.creditor_branch is None
+    assert str0006.creditor_institution_ispb == '60701190'
+    assert str0006.credit_contract_number is None
+    assert str0006.debtor_account_number == '654321'
+    assert str0006.debtor_account_type == AccountType.CURRENT
+    assert str0006.debtor_branch == '0002'
+    assert str0006.debtor_institution_ispb == '31680151'
+    assert str0006.debtor_payment_account_number is None
+    assert str0006.description is None
+    assert str0006.from_ispb == '31680151'
+    assert str0006.institution_control_number == '31680151202509090425'
+    assert str0006.priority is None
+    assert str0006.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
+    assert str0006.recipient_document is None
+    assert str0006.recipient_name is None
+    assert str0006.recipient_type is None
+    assert str0006.scheduled_date is None
+    assert str0006.scheduled_time is None
+    assert str0006.sender_document is None
+    assert str0006.sender_name is None
+    assert str0006.sender_type is None
+    assert str0006.settlement_date == date(2025, 9, 8)
+    assert str0006.transaction_id is None
+
+
+def test_str0006_roundtrip() -> None:
+    params = make_valid_str0006_params()
+    del params['priority']
+    str0006 = STR0006.model_validate(params)
+    xml = str0006.to_xml()
+    str0006_from_xml = STR0006.from_xml(xml)
+    assert str0006 == str0006_from_xml
+
+
+def test_str0006_from_xml_missing_required_fields() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0006.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0006>
+                <CodMsg>STR0006</CodMsg>
+            </STR0006>
+        </SISMSG>
+    </DOC>
+    """
+
+    with pytest.raises(ValidationError) as exc:
+        STR0006.from_xml(xml)
+    missing_fields = extract_missing_fields(exc.value)
+    assert missing_fields == {
+        'amount',
+        'creditor_institution_ispb',
+        'debtor_account_type',
+        'debtor_institution_ispb',
+        'institution_control_number',
+        'purpose',
+        'settlement_date',
+    }
+
+
+def test_str0006r1_to_xml() -> None:
+    params = make_valid_str0006r1_params()
+    str0006r1 = STR0006R1.model_validate(params)
+    xml = str0006r1.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0006.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0006R1>
+                <CodMsg>STR0006R1</CodMsg>
+                <NumCtrlIF>31680151202509090425</NumCtrlIF>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
+                <SitLancSTR>1</SitLancSTR>
+                <DtHrSit>2025-11-20T15:30:00</DtHrSit>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0006R1>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_str0006r1_roundtrip() -> None:
+    params = make_valid_str0006r1_params()
+    str0006r1 = STR0006R1.model_validate(params)
+    xml = str0006r1.to_xml()
+    str0006r1_from_xml = STR0006R1.from_xml(xml)
+    assert str0006r1 == str0006r1_from_xml
+
+
+def test_str0006r1_from_xml_missing_required_fields() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0006.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0006R1>
+                <CodMsg>STR0006R1</CodMsg>
+            </STR0006R1>
+        </SISMSG>
+    </DOC>
+    """
+
+    with pytest.raises(ValidationError) as exc:
+        STR0006R1.from_xml(xml)
+    missing_fields = extract_missing_fields(exc.value)
+    assert missing_fields == {
+        'debtor_institution_ispb',
+        'institution_control_number',
+        'settlement_date',
+        'settlement_timestamp',
+        'str_control_number',
+        'str_settlement_status',
+    }
+
+
+def test_str0006r2_business_rules_missing_description_for_other_purpose() -> None:
+    params = make_valid_str0006r2_params()
+    params['purpose'] = 'OTHERS'
+    del params['description']
+
+    with pytest.raises(ValidationError) as exc:
+        STR0006R2.model_validate(params)
+    error_message = str(exc.value)
+    assert 'description is required when purpose is OTHERS' in error_message
+
+
+def test_str0006r2_business_rules_missing_debtor_branch_for_debtor_account_type_is_not_payment() -> None:
+    params = make_valid_str0006r2_params()
+    params['debtor_account_type'] = 'CURRENT'
+    del params['debtor_branch']
+
+    with pytest.raises(ValidationError) as exc:
+        STR0006R2.model_validate(params)
+    error_message = str(exc.value)
+    assert 'debtor_branch is required when debtor_account_type is not PAYMENT' in error_message
+
+
+def test_str0006r2_business_rules_missing_debtor_payment_account_number_for_debtor_account_type_is_payment() -> None:
+    params = make_valid_str0006r2_params()
+    params['debtor_account_type'] = 'PAYMENT'
+
+    with pytest.raises(ValidationError) as exc:
+        STR0006R2.model_validate(params)
+    error_message = str(exc.value)
+    assert 'debtor_payment_account_number is required when debtor_account_type is PAYMENT' in error_message
+
+
+def test_str0006r2_business_rules_missing_debtor_account_number_for_debtor_account_type_is_not_payment() -> None:
+    params = make_valid_str0006r2_params()
+    params['debtor_account_type'] = 'CURRENT'
+    del params['debtor_account_number']
+
+    with pytest.raises(ValidationError) as exc:
+        STR0006R2.model_validate(params)
+    error_message = str(exc.value)
+    assert 'debtor_account_number is required when debtor_account_type is not PAYMENT' in error_message
+
+
+def test_str0006r2_to_xml() -> None:
+    params = make_valid_str0006r2_params()
+    str0006r2 = STR0006R2.model_validate(params)
+    xml = str0006r2.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0006.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0006R2>
+                <CodMsg>STR0006R2</CodMsg>
+                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <AgDebtd>0002</AgDebtd>
+                <Grupo_STR0006R2_CtDebtd>
+                    <TpCtDebtd>CC</TpCtDebtd>
+                    <CtDebtd>654321</CtDebtd>
+                </Grupo_STR0006R2_CtDebtd>
+                <TpPessoaDebtd_Remet>J</TpPessoaDebtd_Remet>
+                <CNPJ_CPFCliDebtd_Remet>56369416000136</CNPJ_CPFCliDebtd_Remet>
+                <NomCliDebtd_Remet>ACME Inc</NomCliDebtd_Remet>
+                <ISPBIFCredtd>60701190</ISPBIFCredtd>
+                <AgCredtd>0001</AgCredtd>
+                <CtCredtd>123456</CtCredtd>
+                <TpPessoaDestinatario>F</TpPessoaDestinatario>
+                <CNPJ_CPFDestinatario>69327934075</CNPJ_CPFDestinatario>
+                <NomDestinatario>Joe Doe</NomDestinatario>
+                <NumContrtoOpCred>1234567890</NumContrtoOpCred>
+                <VlrLanc>100.0</VlrLanc>
+                <FinlddCli>10</FinlddCli>
+                <CodIdentdTransf>0000000000000000000000001</CodIdentdTransf>
+                <Hist>Payment for services</Hist>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0006R2>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_str0006r2_to_xml_omit_optional_fields() -> None:
+    params = make_valid_str0006r2_params()
+    del params['creditor_account_number']
+    del params['creditor_branch']
+    del params['description']
+    del params['transaction_id']
+    del params['credit_contract_number']
+    del params['sender_type']
+    del params['sender_document']
+    del params['sender_name']
+    del params['recipient_type']
+    del params['recipient_document']
+    del params['recipient_name']
+
+    str0006r2 = STR0006R2.model_validate(params)
+    xml = str0006r2.to_xml()
+
+    expected_xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0006.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0006R2>
+                <CodMsg>STR0006R2</CodMsg>
+                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <AgDebtd>0002</AgDebtd>
+                <Grupo_STR0006R2_CtDebtd>
+                    <TpCtDebtd>CC</TpCtDebtd>
+                    <CtDebtd>654321</CtDebtd>
+                </Grupo_STR0006R2_CtDebtd>
+                <ISPBIFCredtd>60701190</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <FinlddCli>10</FinlddCli>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0006R2>
+        </SISMSG>
+    </DOC>
+    """
+
+    assert normalize_xml(expected_xml) == normalize_xml(xml)
+
+
+def test_str0006r2_from_xml_omit_optional_fields() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0006.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0006R2>
+                <CodMsg>STR0006R2</CodMsg>
+                <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
+                <DtHrBC>2025-11-20T15:30:00</DtHrBC>
+                <ISPBIFDebtd>31680151</ISPBIFDebtd>
+                <AgDebtd>0002</AgDebtd>
+                <Grupo_STR0006R2_CtDebtd>
+                    <TpCtDebtd>CC</TpCtDebtd>
+                    <CtDebtd>654321</CtDebtd>
+                </Grupo_STR0006R2_CtDebtd>
+                <ISPBIFCredtd>60701190</ISPBIFCredtd>
+                <VlrLanc>100.0</VlrLanc>
+                <FinlddCli>10</FinlddCli>
+                <DtMovto>2025-09-08</DtMovto>
+            </STR0006R2>
+        </SISMSG>
+    </DOC>
+    """
+
+    str0006r2 = STR0006R2.from_xml(xml)
+    assert isinstance(str0006r2, STR0006R2)
+    assert str0006r2.amount == Decimal('100.0')
+    assert str0006r2.creditor_account_number is None
+    assert str0006r2.creditor_branch is None
+    assert str0006r2.creditor_institution_ispb == '60701190'
+    assert str0006r2.credit_contract_number is None
+    assert str0006r2.debtor_account_number == '654321'
+    assert str0006r2.debtor_account_type == AccountType.CURRENT
+    assert str0006r2.debtor_branch == '0002'
+    assert str0006r2.debtor_institution_ispb == '31680151'
+    assert str0006r2.debtor_payment_account_number is None
+    assert str0006r2.description is None
+    assert str0006r2.from_ispb == '31680151'
+    assert str0006r2.purpose == CustomerPurpose.CREDIT_IN_ACCOUNT
+    assert str0006r2.recipient_document is None
+    assert str0006r2.recipient_name is None
+    assert str0006r2.recipient_type is None
+    assert str0006r2.sender_document is None
+    assert str0006r2.sender_name is None
+    assert str0006r2.sender_type is None
+    assert str0006r2.settlement_date == date(2025, 9, 8)
+    assert str0006r2.str_control_number == 'STR20250101000000001'
+    assert str0006r2.transaction_id is None
+    assert str0006r2.vendor_timestamp == datetime(2025, 11, 20, 15, 30)
+
+
+def test_str0006r2_roundtrip() -> None:
+    params = make_valid_str0006r2_params()
+    str0006r2 = STR0006R2.model_validate(params)
+    xml = str0006r2.to_xml()
+    str0006r2_from_xml = STR0006R2.from_xml(xml)
+    assert str0006r2 == str0006r2_from_xml
+
+
+def test_str0006r2_from_xml_missing_required_fields() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/SPB/STR0006.xsd">
+        <BCMSG>
+            <IdentdEmissor>31680151</IdentdEmissor>
+            <IdentdDestinatario>00038166</IdentdDestinatario>
+            <DomSist>SPB01</DomSist>
+            <NUOp>31680151250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <STR0006R2>
+                <CodMsg>STR0006R2</CodMsg>
+            </STR0006R2>
+        </SISMSG>
+    </DOC>
+    """
+
+    with pytest.raises(ValidationError) as exc:
+        STR0006R2.from_xml(xml)
+    missing_fields = extract_missing_fields(exc.value)
+    assert missing_fields == {
+        'amount',
+        'creditor_institution_ispb',
+        'debtor_account_type',
+        'debtor_institution_ispb',
+        'purpose',
+        'settlement_date',
+        'str_control_number',
+        'vendor_timestamp',
+    }
