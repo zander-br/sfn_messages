@@ -27,7 +27,10 @@ def make_valid_gen0019_params() -> dict[str, Any]:
                 'email': 'john.doe.01@test.com',
                 'telephone_1': '65994861321',
                 'telephone_2': '6537132095',
-                'responsible_type': 'SPB_DIRECTOR',
+                'responsible_type': [
+                    {'responsible_type_field': 'SPB_DIRECTOR'},
+                    {'responsible_type_field': 'CONTINGENCY_STR'},
+                ],
             },
             {
                 'cpf': '30288815009',
@@ -36,7 +39,7 @@ def make_valid_gen0019_params() -> dict[str, Any]:
                 'email': 'john.doe.02@test.com',
                 'telephone_1': '63987350515',
                 'telephone_2': '6325324500',
-                'responsible_type': 'MONITOR',
+                'responsible_type': [{'responsible_type_field': 'MONITOR'}],
             },
         ],
         'description': 'GEN0019 Description Test',
@@ -75,7 +78,10 @@ def make_valid_gen0019e_params(*, general_error: bool = False) -> dict[str, Any]
                 'email': 'john.doe.01@test.com',
                 'telephone_1': '65994861321',
                 'telephone_2': '6537132095',
-                'responsible_type': 'SPB_DIRECTOR',
+                'responsible_type': [
+                    {'responsible_type_field': 'SPB_DIRECTOR'},
+                    {'responsible_type_field': 'CONTINGENCY_STR'},
+                ],
             },
             {
                 'cpf': '30288815009',
@@ -84,7 +90,7 @@ def make_valid_gen0019e_params(*, general_error: bool = False) -> dict[str, Any]
                 'email': 'john.doe.02@test.com',
                 'telephone_1': '63987350515',
                 'telephone_2': '6325324500',
-                'responsible_type': 'MONITOR',
+                'responsible_type': [{'responsible_type_field': 'MONITOR'}],
             },
         ],
         'description': 'GEN0019 Description Test',
@@ -255,6 +261,7 @@ def test_gen0019_to_xml() -> None:
                     <NumTelRespons1>65994861321</NumTelRespons1>
                     <NumTelRespons2>6537132095</NumTelRespons2>
                     <TpRespons>D</TpRespons>
+                    <TpRespons>C</TpRespons>
                 </Grupo_GEN0019_Respons>
                 <Grupo_GEN0019_Respons>
                     <CPFRespons>30288815009</CPFRespons>
@@ -329,6 +336,7 @@ def test_gen0019e_general_error_to_xml() -> None:
                     <NumTelRespons1>65994861321</NumTelRespons1>
                     <NumTelRespons2>6537132095</NumTelRespons2>
                     <TpRespons>D</TpRespons>
+                    <TpRespons>C</TpRespons>
                 </Grupo_GEN0019_Respons>
                 <Grupo_GEN0019_Respons>
                     <CPFRespons>30288815009</CPFRespons>
@@ -375,6 +383,7 @@ def test_gen0019e_tag_error_to_xml() -> None:
                     <NumTelRespons1>65994861321</NumTelRespons1>
                     <NumTelRespons2>6537132095</NumTelRespons2>
                     <TpRespons>D</TpRespons>
+                    <TpRespons>C</TpRespons>
                 </Grupo_GEN0019_Respons>
                 <Grupo_GEN0019_Respons>
                     <CPFRespons>30288815009</CPFRespons>
@@ -416,6 +425,7 @@ def test_gen0019_from_xml() -> None:
                     <NumTelRespons1>65994861321</NumTelRespons1>
                     <NumTelRespons2>6537132095</NumTelRespons2>
                     <TpRespons>D</TpRespons>
+                    <TpRespons>C</TpRespons>
                 </Grupo_GEN0019_Respons>
                 <Grupo_GEN0019_Respons>
                     <CPFRespons>30288815009</CPFRespons>
@@ -514,6 +524,7 @@ def test_gen0019e_general_error_from_xml() -> None:
                     <NumTelRespons1>65994861321</NumTelRespons1>
                     <NumTelRespons2>6537132095</NumTelRespons2>
                     <TpRespons>D</TpRespons>
+                    <TpRespons>C</TpRespons>
                 </Grupo_GEN0019_Respons>
                 <Grupo_GEN0019_Respons>
                     <CPFRespons>30288815009</CPFRespons>
@@ -578,6 +589,7 @@ def test_gen0019e_tag_error_from_xml() -> None:
                     <NumTelRespons1>65994861321</NumTelRespons1>
                     <NumTelRespons2>6537132095</NumTelRespons2>
                     <TpRespons>D</TpRespons>
+                    <TpRespons>C</TpRespons>
                 </Grupo_GEN0019_Respons>
                 <Grupo_GEN0019_Respons>
                     <CPFRespons>30288815009</CPFRespons>

@@ -16,6 +16,10 @@ XML_NAMESPACE = 'http://www.bcb.gov.br/GEN/GEN0019.xsd'
 XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/GEN/GEN0019E.xsd'
 
 
+class ResponsibleTypeField(BaseSubMessage):
+    responsible_type_field: Annotated[ResponsibleType, XmlPath('TpRespons/text()')]
+
+
 class Responsible(BaseSubMessage):
     cpf: Annotated[Cpf | None, XmlPath(f'{PATH_GROUP}/CPFRespons/text()')]
     document: Annotated[IndividualIdentificationNumber | None, XmlPath(f'{PATH_GROUP}/NumDocRespons/text()')]
@@ -24,7 +28,9 @@ class Responsible(BaseSubMessage):
     telephone_1: Annotated[Telephone, XmlPath(f'{PATH_GROUP}/NumTelRespons1/text()')]
     telephone_2: Annotated[Telephone | None, XmlPath(f'{PATH_GROUP}/NumTelRespons2/text()')]
     telephone_3: Annotated[Telephone | None, XmlPath(f'{PATH_GROUP}/NumTelRespons3/text()')] = None
-    responsible_type: Annotated[ResponsibleType | None, XmlPath(f'{PATH_GROUP}/TpRespons/text()')]
+    responsible_type: Annotated[list[ResponsibleTypeField] | None, XmlPath(f'{PATH_GROUP}')] = Field(
+        default_factory=list
+    )
 
 
 class GEN0019(BaseMessage):
@@ -50,6 +56,10 @@ class GEN0019R1(BaseMessage):
     settlement_date: Annotated[date, XmlPath(f'{PATH_R1}/DtMovto/text()')]
 
 
+class ResponsibleTypeFieldError(BaseSubMessage):
+    responsible_type_field: Annotated[ResponsibleType, XmlPath('TpRespons/text()')]
+
+
 class ResponsibleError(BaseSubMessage):
     cpf: Annotated[Cpf | None, XmlPath(f'{PATH_GROUP}/CPFRespons/text()')] = None
     document: Annotated[IndividualIdentificationNumber | None, XmlPath(f'{PATH_GROUP}/NumDocRespons/text()')] = None
@@ -58,7 +68,9 @@ class ResponsibleError(BaseSubMessage):
     telephone_1: Annotated[Telephone | None, XmlPath(f'{PATH_GROUP}/NumTelRespons1/text()')] = None
     telephone_2: Annotated[Telephone | None, XmlPath(f'{PATH_GROUP}/NumTelRespons2/text()')] = None
     telephone_3: Annotated[Telephone | None, XmlPath(f'{PATH_GROUP}/NumTelRespons3/text()')] = None
-    responsible_type: Annotated[ResponsibleType | None, XmlPath(f'{PATH_GROUP}/TpRespons/text()')] = None
+    responsible_type: Annotated[list[ResponsibleTypeFieldError] | None, XmlPath(f'{PATH_GROUP}')] = Field(
+        default_factory=list
+    )
 
     cpf_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_GROUP}/CPFRespons/@CodErro')] = None
     document_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_GROUP}/NumDocRespons/@CodErro')] = None
