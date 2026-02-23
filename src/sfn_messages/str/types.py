@@ -349,3 +349,14 @@ type PortabilityNumber = Annotated[
         )
     ),
 ]
+
+
+type BalanceType = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            pattern=r'^[12]$',
+            strip_whitespace=True,
+        )
+    ),
+]
