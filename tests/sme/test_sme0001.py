@@ -36,6 +36,7 @@ def make_valid_sme0001r1_params() -> dict[str, Any]:
         'institution_ispb': '31680151',
         'str_control_number': 'STR20250101000000001',
         'str_settlement_status': 'EFFECTIVE',
+        'situation_timestamp': '2025-12-03T12:30:45',
         'settlement_date': '2025-12-03',
     }
 
@@ -197,6 +198,7 @@ def test_sme0001r1_missing_required_fields() -> None:
         'institution_ispb',
         'str_control_number',
         'str_settlement_status',
+        'situation_timestamp',
         'settlement_date',
     }
 
@@ -270,6 +272,7 @@ def test_sme0001r1_to_xml() -> None:
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <SitLancSTR>1</SitLancSTR>
+                <DtHrSit>2025-12-03T12:30:45</DtHrSit>
                 <DtMovto>2025-12-03</DtMovto>
             </SME0001R1>
         </SISMSG>
@@ -419,6 +422,7 @@ def test_sme0001r1_from_xml() -> None:
                 <ISPBIF>31680151</ISPBIF>
                 <NumCtrlSTR>STR20250101000000001</NumCtrlSTR>
                 <SitLancSTR>1</SitLancSTR>
+                <DtHrSit>2025-12-03T12:30:45</DtHrSit>
                 <DtMovto>2025-12-03</DtMovto>
             </SME0001R1>
         </SISMSG>
