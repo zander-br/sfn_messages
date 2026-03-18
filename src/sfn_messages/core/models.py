@@ -4,12 +4,13 @@ from contextlib import suppress
 from dataclasses import dataclass
 from datetime import datetime
 from types import GenericAlias, UnionType
-from typing import Annotated, Any, ClassVar, Self, Union, get_args, get_origin
+from typing import Annotated, Any, ClassVar, Self, TypedDict, Union, get_args, get_origin
 from xml.etree import ElementTree as ET
 
 from defusedxml.ElementTree import fromstring
 from pydantic import BaseModel
 
+from .code_description import ERROR_CODE_DESCRIPTIONS
 from .errors import (
     BaseTagNameNotFoundInClassError,
     DiffBaseTagNameInFieldError,
@@ -18,7 +19,13 @@ from .errors import (
     LocalNameNotSetInFieldError,
     LocalNameSetInFieldError,
 )
-from .types import ContinuationIndicator, Ispb, MappableToXmlValue, OperationNumber, SystemDomain
+from .types import (
+    ContinuationIndicator,
+    Ispb,
+    MappableToXmlValue,
+    OperationNumber,
+    SystemDomain,
+)
 
 
 @dataclass(frozen=True)
@@ -298,3 +305,53 @@ class BaseMessage(BaseSubMessage):
     def from_xml(cls, value: str, /) -> Self:
         xml = fromstring(value)
         return cls.from_xml_value(xml)
+
+    def to_error(self) -> dict[str, Any]:
+        res: dict[str, Any] = {
+            'from_ispb': self.from_ispb,
+            'operation_number': self.operation_number,
+            'system_domain': self.system_domain,
+            'to_ispb': self.to_ispb,
+        }
+        institution_control_number = getattr(self, 'institution_control_number', None)
+        if institution_control_number:
+            res['institution_control_number'] = institution_control_number
+
+        errors: list[ErrorDetail] = []
+
+        general_error_code = getattr(self, 'general_error_code', None)
+        if general_error_code:
+            error_code = str(general_error_code)
+            errors.append(
+                {
+                    'errorCode': error_code,
+                    'description': ERROR_CODE_DESCRIPTIONS.get(error_code, 'Erro desconhecido'),
+                    'field': None,
+                    'value': None,
+                }
+            )
+
+        for field_name in self.__class__.model_fields:
+            if field_name.endswith('_error_code') and field_name != 'general_error_code':
+                error_code = getattr(self, field_name)
+                if error_code:
+                    base_field = field_name.replace('_error_code', '')
+                    value = getattr(self, base_field, None)
+                    errors.append(
+                        {
+                            'errorCode': error_code,
+                            'description': ERROR_CODE_DESCRIPTIONS.get(error_code, 'Erro desconhecido'),
+                            'field': base_field,
+                            'value': str(value) if value is not None else None,
+                        }
+                    )
+
+        res['errors'] = errors
+        return res
+
+
+class ErrorDetail(TypedDict):
+    errorCode: str
+    description: str
+    field: str | None
+    value: str | None

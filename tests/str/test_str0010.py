@@ -911,3 +911,21 @@ def test_str0010r2_from_xml_missing_required_fields() -> None:
         'settlement_date',
         'str_control_number',
     }
+
+
+def test_str0010e_to_error_mapping() -> None:
+    params = make_valid_str0010e_params()
+    params['original_str_control_number_error_code'] = 'ETES0165'
+
+    str0010e = STR0010E.model_validate(params)
+    error_dict = str0010e.to_error()
+
+    assert error_dict['from_ispb'] == '31680151'
+    assert error_dict['operation_number'] == '31680151250908000000001'
+    assert len(error_dict['errors']) == 1
+
+    error = error_dict['errors'][0]
+    assert error['errorCode'] == 'ETES0165'
+    assert error['description'] == 'Número de Controle STR inexistente'
+    assert error['field'] == 'original_str_control_number'
+    assert error['value'] == 'STR20250101000000001'
