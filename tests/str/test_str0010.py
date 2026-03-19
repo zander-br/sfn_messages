@@ -926,6 +926,6 @@ def test_str0010e_to_error_mapping() -> None:
 
     error = error_dict['errors'][0]
     assert error['errorCode'] == 'ETES0165'
-    assert error['description'] == 'Número de Controle STR inexistente'
+    assert error['description'] == 'Non-existent STR Control Number'
     assert error['field'] == 'original_str_control_number'
     assert error['value'] == 'STR20250101000000001'

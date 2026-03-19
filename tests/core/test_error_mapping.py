@@ -30,13 +30,13 @@ def test_str0010e_error_mapping() -> None:
     # Check first error
     error1 = next(e for e in error_dict['errors'] if e['field'] == 'original_str_control_number')
     assert error1['errorCode'] == 'ETES0165'
-    assert error1['description'] == 'Número de Controle STR inexistente'
+    assert error1['description'] == 'Non-existent STR Control Number'
     assert error1['value'] == 'STR20250101000000001'
 
     # Check second error
     error2 = next(e for e in error_dict['errors'] if e['field'] == 'amount')
     assert error2['errorCode'] == 'EBMC0050'
-    assert error2['description'] == 'Valor Inválido'
+    assert error2['description'] == 'Invalid Value'
     assert error2['value'] == '100.00'
     assert error2['field'] == 'amount'
 
@@ -55,7 +55,7 @@ def test_str0010e_general_error_mapping() -> None:
     assert len(error_dict['errors']) == 1
     error = error_dict['errors'][0]
     assert error['errorCode'] == 'EGEN0050'
-    assert error['description'] == 'Erro de Processamento'
+    assert error['description'] == 'Processing Error'
     assert error['field'] is None
     assert error['value'] is None
 
@@ -74,7 +74,7 @@ def test_str0008e_error_mapping() -> None:
     assert len(error_dict['errors']) == 1
     error = error_dict['errors'][0]
     assert error['errorCode'] == 'EBMC0001'
-    assert error['description'] == 'Campo Obrigatório Não Informado'
+    assert error['description'] == 'Mandatory Field Not Provided'
     assert error['field'] is None
     assert error['value'] is None
 
@@ -94,7 +94,7 @@ def test_ldl0006e_error_mapping() -> None:
     assert len(error_dict['errors']) == 1
     error = error_dict['errors'][0]
     assert error['errorCode'] == 'EBMC0050'
-    assert error['description'] == 'Valor Inválido'
+    assert error['description'] == 'Invalid Value'
     assert error['field'] == 'amount'
     assert error['value'] == '100.50'
 
@@ -114,7 +114,7 @@ def test_gen0006e_error_mapping() -> None:
     assert len(error_dict['errors']) == 1
     error = error_dict['errors'][0]
     assert error['errorCode'] == 'EBMC0003'
-    assert error['description'] == 'ISPBIF Inválido'
+    assert error['description'] == 'Invalid ISPBIF'
     assert error['field'] == 'institution_ispb'
     assert error['value'] == '31680151'
 
@@ -134,6 +134,6 @@ def test_gen0019e_error_mapping() -> None:
     assert len(error_dict['errors']) == 1
     error = error_dict['errors'][0]
     assert error['errorCode'] == 'EBMC0004'
-    assert error['description'] == 'ISPBIF Não Pertence ao Emissor da Mensagem'
+    assert error['description'] == 'ISPBIF Does Not Belong to the Message Issuer'
     assert error['field'] == 'participant_ispb'
     assert error['value'] == '31680151'
