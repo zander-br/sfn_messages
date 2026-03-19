@@ -4,7 +4,7 @@ from typing import Any, ClassVar, Self
 from pydantic import model_validator
 from validate_docbr import CNPJ, CPF
 
-from sfn_messages.core.types import AccountNumber, AccountType, Branch, PersonType
+from sfn_messages.core.types import AccountNumber, AccountType, Branch, PaymentAccountNumber, PersonType
 
 
 class PartyValidations:
@@ -70,7 +70,7 @@ class PartyValidations:
         account_type: AccountType | None = getattr(self, prefix + 'account_type', None)
         branch: Branch | None = getattr(self, prefix + 'branch', None)
         account_number: AccountNumber | None = getattr(self, prefix + 'account_number', None)
-        payment_account_number: AccountNumber | None = getattr(self, prefix + 'payment_account_number', None)
+        payment_account_number: PaymentAccountNumber | None = getattr(self, prefix + 'payment_account_number', None)
 
         if account_type is None:
             return

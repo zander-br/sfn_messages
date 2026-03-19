@@ -16,6 +16,7 @@ from sfn_messages.core.types import (
     InstitutionControlNumber,
     Ispb,
     Name,
+    PaymentAccountNumber,
     PersonType,
     Priority,
     StrControlNumber,
@@ -51,7 +52,7 @@ class STR0006(PartyValidations, BaseMessage):
         None
     )
     debtor_payment_account_number: Annotated[
-        AccountNumber | None, XmlPath(f'{PATH}/Grupo_STR0006_CtDebtd/CtPgtoDebtd/text()')
+        PaymentAccountNumber | None, XmlPath(f'{PATH}/Grupo_STR0006_CtDebtd/CtPgtoDebtd/text()')
     ] = None
     sender_type: Annotated[PersonType | None, XmlPath(f'{PATH}/TpPessoaDebtd_Remet/text()')] = None
     sender_document: Annotated[Cnpj | Cpf | None, XmlPath(f'{PATH}/CNPJ_CPFCliDebtd_Remet/text()')] = None
@@ -104,7 +105,7 @@ class STR0006R2(PartyValidations, BaseMessage):
         AccountNumber | None, XmlPath(f'{PATH_R2}/Grupo_STR0006R2_CtDebtd/CtDebtd/text()')
     ] = None
     debtor_payment_account_number: Annotated[
-        AccountNumber | None, XmlPath(f'{PATH_R2}/Grupo_STR0006R2_CtDebtd/CtPgtoDebtd/text()')
+        PaymentAccountNumber | None, XmlPath(f'{PATH_R2}/Grupo_STR0006R2_CtDebtd/CtPgtoDebtd/text()')
     ] = None
     sender_type: Annotated[PersonType | None, XmlPath(f'{PATH_R2}/TpPessoaDebtd_Remet/text()')] = None
     sender_document: Annotated[Cnpj | Cpf | None, XmlPath(f'{PATH_R2}/CNPJ_CPFCliDebtd_Remet/text()')] = None
@@ -147,7 +148,7 @@ class STR0006E(PartyValidations, BaseMessage):
         AccountNumber | None, XmlPath(f'{PATH_E}/Grupo_STR0006_CtDebtd/CtDebtd/text()')
     ] = None
     debtor_payment_account_number: Annotated[
-        AccountNumber | None, XmlPath(f'{PATH_E}/Grupo_STR0006_CtDebtd/CtPgtoDebtd/text()')
+        PaymentAccountNumber | None, XmlPath(f'{PATH_E}/Grupo_STR0006_CtDebtd/CtPgtoDebtd/text()')
     ] = None
     sender_type: Annotated[PersonType | None, XmlPath(f'{PATH_E}/TpPessoaDebtd_Remet/text()')] = None
     sender_document: Annotated[Cnpj | Cpf | None, XmlPath(f'{PATH_E}/CNPJ_CPFCliDebtd_Remet/text()')] = None

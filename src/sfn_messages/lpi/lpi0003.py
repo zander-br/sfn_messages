@@ -10,6 +10,7 @@ from sfn_messages.core.types import (
     ErrorCode,
     InstitutionControlNumber,
     Ispb,
+    PaymentAccountNumber,
     StrControlNumber,
     StrSettlementStatus,
 )
@@ -29,9 +30,9 @@ XML_NAMESPACE_ERROR = 'http://www.bcb.gov.br/SPB/LPI0003E.xsd'
 class CreditorClientGroup(BaseSubMessage):
     branch: Annotated[Branch | None, XmlPath(f'{PATH_GROUP}/AgCredtd/text()')] = None
     account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_GROUP}/CtCredtd/text()')] = None
-    creditor_payment_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_GROUP}/CtPgtoCredtd/text()')] = (
-        None
-    )
+    creditor_payment_account_number: Annotated[
+        PaymentAccountNumber | None, XmlPath(f'{PATH_GROUP}/CtPgtoCredtd/text()')
+    ] = None
     cnpj: Annotated[Cnpj, XmlPath(f'{PATH_GROUP}/CNPJCliCredtd/text()')]
 
 
@@ -65,7 +66,7 @@ class CreditorClientR2Group(BaseSubMessage):
     branch: Annotated[Branch | None, XmlPath(f'{PATH_R2_GROUP}/AgCredtd/text()')] = None
     account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_R2_GROUP}/CtCredtd/text()')] = None
     creditor_payment_account_number: Annotated[
-        AccountNumber | None, XmlPath(f'{PATH_R2_GROUP}/CtPgtoCredtd/text()')
+        PaymentAccountNumber | None, XmlPath(f'{PATH_R2_GROUP}/CtPgtoCredtd/text()')
     ] = None
     cnpj: Annotated[Cnpj, XmlPath(f'{PATH_R2_GROUP}/CNPJCliCredtd/text()')]
 
@@ -88,9 +89,9 @@ class LPI0003R2(BaseMessage):
 class CreditorClientGroupError(BaseSubMessage):
     branch: Annotated[Branch | None, XmlPath(f'{PATH_GROUP}/AgCredtd/text()')] = None
     account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_GROUP}/CtCredtd/text()')] = None
-    creditor_payment_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_GROUP}/CtPgtoCredtd/text()')] = (
-        None
-    )
+    creditor_payment_account_number: Annotated[
+        PaymentAccountNumber | None, XmlPath(f'{PATH_GROUP}/CtPgtoCredtd/text()')
+    ] = None
     cnpj: Annotated[Cnpj | None, XmlPath(f'{PATH_GROUP}/CNPJCliCredtd/text()')] = None
 
     branch_error_code: Annotated[ErrorCode | None, XmlPath(f'{PATH_GROUP}/AgCredtd/@CodErro')] = None

@@ -15,6 +15,7 @@ from sfn_messages.core.types import (
     InstitutionControlNumber,
     Ispb,
     Name,
+    PaymentAccountNumber,
     PersonType,
     Priority,
     StrControlNumber,
@@ -47,7 +48,7 @@ class STR0034(PartyValidations, BaseMessage):
     debtor_branch: Annotated[Branch | None, XmlPath(f'{PATH}/AgDebtd/text()')] = None
     debtor_account_type: Annotated[AccountType, XmlPath(f'{PATH}/TpCtDebtd/text()')]
     debtor_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH}/CtDebtd/text()')] = None
-    debtor_payment_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH}/CtPgtoDebtd/text()')] = None
+    debtor_payment_account_number: Annotated[PaymentAccountNumber | None, XmlPath(f'{PATH}/CtPgtoDebtd/text()')] = None
     debtor_type: Annotated[PersonType, XmlPath(f'{PATH}/TpPessoaDebtd/text()')]
     debtor_document: Annotated[Cnpj | Cpf, XmlPath(f'{PATH}/CNPJ_CPFCliDebtd/text()')]
     debtor_name: Annotated[Name, XmlPath(f'{PATH}/NomCliDebtd/text()')]
@@ -55,7 +56,9 @@ class STR0034(PartyValidations, BaseMessage):
     creditor_branch: Annotated[Branch | None, XmlPath(f'{PATH}/AgCredtd/text()')] = None
     creditor_account_type: Annotated[AccountType, XmlPath(f'{PATH}/TpCtCredtd/text()')]
     creditor_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH}/CtCredtd/text()')] = None
-    creditor_payment_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH}/CtPgtoCredtd/text()')] = None
+    creditor_payment_account_number: Annotated[PaymentAccountNumber | None, XmlPath(f'{PATH}/CtPgtoCredtd/text()')] = (
+        None
+    )
     creditor_type: Annotated[PersonType, XmlPath(f'{PATH}/TpPessoaCredtd/text()')]
     creditor_document: Annotated[Cnpj | Cpf, XmlPath(f'{PATH}/CNPJ_CPFCliCredtd/text()')]
     creditor_name: Annotated[Name, XmlPath(f'{PATH}/NomCliCredtd/text()')]
@@ -100,7 +103,9 @@ class STR0034R2(PartyValidations, BaseMessage):
     debtor_branch: Annotated[Branch | None, XmlPath(f'{PATH_R2}/AgDebtd/text()')] = None
     debtor_account_type: Annotated[AccountType, XmlPath(f'{PATH_R2}/TpCtDebtd/text()')]
     debtor_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_R2}/CtDebtd/text()')] = None
-    debtor_payment_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_R2}/CtPgtoDebtd/text()')] = None
+    debtor_payment_account_number: Annotated[PaymentAccountNumber | None, XmlPath(f'{PATH_R2}/CtPgtoDebtd/text()')] = (
+        None
+    )
     debtor_type: Annotated[PersonType, XmlPath(f'{PATH_R2}/TpPessoaDebtd/text()')]
     debtor_document: Annotated[Cnpj | Cpf, XmlPath(f'{PATH_R2}/CNPJ_CPFCliDebtd/text()')]
     debtor_name: Annotated[Name, XmlPath(f'{PATH_R2}/NomCliDebtd/text()')]
@@ -108,7 +113,9 @@ class STR0034R2(PartyValidations, BaseMessage):
     creditor_branch: Annotated[Branch | None, XmlPath(f'{PATH_R2}/AgCredtd/text()')] = None
     creditor_account_type: Annotated[AccountType, XmlPath(f'{PATH_R2}/TpCtCredtd/text()')]
     creditor_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_R2}/CtCredtd/text()')] = None
-    creditor_payment_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_R2}/CtPgtoCredtd/text()')] = None
+    creditor_payment_account_number: Annotated[
+        PaymentAccountNumber | None, XmlPath(f'{PATH_R2}/CtPgtoCredtd/text()')
+    ] = None
     creditor_type: Annotated[PersonType, XmlPath(f'{PATH_R2}/TpPessoaCredtd/text()')]
     creditor_document: Annotated[Cnpj | Cpf, XmlPath(f'{PATH_R2}/CNPJ_CPFCliCredtd/text()')]
     creditor_name: Annotated[Name, XmlPath(f'{PATH_R2}/NomCliCredtd/text()')]
@@ -139,7 +146,9 @@ class STR0034E(PartyValidations, BaseMessage):
     debtor_branch: Annotated[Branch | None, XmlPath(f'{PATH_E}/AgDebtd/text()')] = None
     debtor_account_type: Annotated[AccountType | None, XmlPath(f'{PATH_E}/TpCtDebtd/text()')] = None
     debtor_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_E}/CtDebtd/text()')] = None
-    debtor_payment_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_E}/CtPgtoDebtd/text()')] = None
+    debtor_payment_account_number: Annotated[PaymentAccountNumber | None, XmlPath(f'{PATH_E}/CtPgtoDebtd/text()')] = (
+        None
+    )
     debtor_type: Annotated[PersonType | None, XmlPath(f'{PATH_E}/TpPessoaDebtd/text()')] = None
     debtor_document: Annotated[Cnpj | None | Cpf, XmlPath(f'{PATH_E}/CNPJ_CPFCliDebtd/text()')] = None
     debtor_name: Annotated[Name | None, XmlPath(f'{PATH_E}/NomCliDebtd/text()')] = None
@@ -147,7 +156,9 @@ class STR0034E(PartyValidations, BaseMessage):
     creditor_branch: Annotated[Branch | None, XmlPath(f'{PATH_E}/AgCredtd/text()')] = None
     creditor_account_type: Annotated[AccountType | None, XmlPath(f'{PATH_E}/TpCtCredtd/text()')] = None
     creditor_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_E}/CtCredtd/text()')] = None
-    creditor_payment_account_number: Annotated[AccountNumber | None, XmlPath(f'{PATH_E}/CtPgtoCredtd/text()')] = None
+    creditor_payment_account_number: Annotated[
+        PaymentAccountNumber | None, XmlPath(f'{PATH_E}/CtPgtoCredtd/text()')
+    ] = None
     creditor_type: Annotated[PersonType | None, XmlPath(f'{PATH_E}/TpPessoaCredtd/text()')] = None
     creditor_document: Annotated[Cnpj | Cpf | None, XmlPath(f'{PATH_E}/CNPJ_CPFCliCredtd/text()')] = None
     creditor_name: Annotated[Name | None, XmlPath(f'{PATH_E}/NomCliCredtd/text()')] = None

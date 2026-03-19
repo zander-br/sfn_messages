@@ -486,6 +486,16 @@ type AccountNumber = Annotated[
     ),
 ]
 
+type PaymentAccountNumber = Annotated[
+    str,
+    GetPydanticSchema(
+        lambda _tp, _handler: core_schema.str_schema(
+            pattern=r'^[1-9][0-9]{0,19}$',
+            strip_whitespace=True,
+        )
+    ),
+]
+
 type Branch = Annotated[
     str,
     GetPydanticSchema(
