@@ -16,6 +16,9 @@ dependencies = [
     "validate-docbr>=1.11.1",
 ]
 
+[project.scripts]
+sfnmessages = "sfn_messages.cli:main"
+
 [dependency-groups]
 type = [
     "types-defusedxml >=0.7.0,<0.8",
