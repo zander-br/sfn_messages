@@ -13,7 +13,7 @@ classifiers = ["Private :: Do Not Upload"]
 dependencies = [
     "defusedxml >=0.7.1,<0.8",
     "pydantic >=2.12.4,<3",
-    "validate-docbr>=1.11.1",
+    "validate-docbr >=2.0.0,<3",
 ]
 
 [project.scripts]
@@ -61,12 +61,6 @@ sqlite_cache = true
 strict = true
 plugins = ["pydantic.mypy"]
 files = ["src/**/*.py", "tests/**/*.py"]
-
-[[tool.mypy.overrides]]
-module = [
-    "validate_docbr.*",
-]
-ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 pythonpath = ["tests"]
