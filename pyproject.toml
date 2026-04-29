@@ -7,7 +7,7 @@ name = "sfn-messages"
 version = "0.0.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.12"
 urls = {repository = "https://github.com/zander-br/sfn_messages"}
 classifiers = ["Private :: Do Not Upload"]
 dependencies = [
@@ -32,7 +32,7 @@ dev = [
 ]
 
 [tool.ruff]
-target-version = "py314"
+target-version = "py312"
 line-length = 119
 src = ["src", "tests"]
 
