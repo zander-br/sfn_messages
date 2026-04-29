@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import Annotated
+from typing import Annotated, Self
 
 from pydantic import GetPydanticSchema
 from pydantic_core import core_schema
@@ -160,7 +160,7 @@ class InstitutionPurpose(EnumMixin, StrEnum):
     OTHERS = 'OTHERS'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[InstitutionPurpose, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.FX_INTERBANK_MARKET: '1',
             cls.LAW_8727_REPASSES: '10',
@@ -324,7 +324,7 @@ class PortabilityReturnReason(EnumMixin, StrEnum):
     PORTABILITY_ALREADY_SETTLED_BY_ORIGINAL_CREDITOR = 'PORTABILITY_ALREADY_SETTLED_BY_ORIGINAL_CREDITOR'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[PortabilityReturnReason, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.DESTINATION_ACCOUNT_CLOSED: '1',
             cls.INVALID_DESTINATION_AGENCY_OR_ACCOUNT: '2',

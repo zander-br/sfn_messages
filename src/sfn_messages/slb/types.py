@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import Annotated
+from typing import Annotated, Self
 
 from pydantic import GetPydanticSchema
 from pydantic_core import core_schema
@@ -38,7 +38,7 @@ class SlbSettlementStatus(EnumMixin, StrEnum):
     REJECTED_NO_BALANCE_CONTINGENCY = 'REJECTED_NO_BALANCE_CONTINGENCY'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[SlbSettlementStatus, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.EFFECTED: '1',
             cls.TO_DEBIT: '10',
@@ -598,7 +598,7 @@ class SlbPurpose(EnumMixin, StrEnum):
     )
 
     @classmethod
-    def _value_to_xml(cls) -> dict[SlbPurpose, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.BCB_FX_PURCHASE_SPOT_CREDIT_REAIS_TO_FI: 'CAM060164',
             cls.BCB_FX_SALE_DOMESTIC_RECEIPT_OF_REAIS_FROM_FI: 'CAM060195',
