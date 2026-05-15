@@ -173,7 +173,6 @@ def test_str0004_missing_required_fields() -> None:
         'institution_control_number',
         'from_ispb',
         'creditor_institution_ispb',
-        'description',
         'purpose',
         'system_domain',
         'settlement_date',
@@ -554,7 +553,6 @@ def test_str0004_from_xml_missing_required_fields() -> None:
     assert missing_fields == {
         'settlement_date',
         'creditor_institution_ispb',
-        'description',
         'debtor_institution_ispb',
         'amount',
         'institution_control_number',
@@ -734,7 +732,6 @@ def test_str0004r2_missing_required_fields() -> None:
         'amount',
         'system_domain',
         'str_control_number',
-        'description',
         'to_ispb',
         'operation_number',
     }
@@ -927,5 +924,4 @@ def test_str0004r2_from_xml_missing_required_fields() -> None:
         'purpose',
         'str_control_number',
         'debtor_institution_ispb',
-        'description',
     }

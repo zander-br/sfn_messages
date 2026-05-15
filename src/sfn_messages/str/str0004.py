@@ -36,7 +36,7 @@ class STR0004(BaseMessage):
     purpose: Annotated[InstitutionPurpose, XmlPath(f'{PATH}/FinlddIF/text()')]
     transaction_id: Annotated[TransactionId | None, XmlPath(f'{PATH}/CodIdentdTransf/text()')] = None
     amount: Annotated[Decimal, XmlPath(f'{PATH}/VlrLanc/text()')]
-    description: Annotated[Description, XmlPath(f'{PATH}/Hist/text()')]
+    description: Annotated[Description | None, XmlPath(f'{PATH}/Hist/text()')] = None
     scheduled_date: Annotated[date | None, XmlPath(f'{PATH}/DtAgendt/text()')] = None
     scheduled_time: Annotated[time | None, XmlPath(f'{PATH}/HrAgendt/text()')] = None
     priority: Annotated[Priority | None, XmlPath(f'{PATH}/NivelPref/text()')] = None
@@ -67,7 +67,7 @@ class STR0004R2(BaseMessage):
     amount: Annotated[Decimal, XmlPath(f'{PATH_R2}/VlrLanc/text()')]
     transaction_id: Annotated[TransactionId | None, XmlPath(f'{PATH_R2}/CodIdentdTransf/text()')] = None
     purpose: Annotated[InstitutionPurpose, XmlPath(f'{PATH_R2}/FinlddIF/text()')]
-    description: Annotated[Description, XmlPath(f'{PATH_R2}/Hist/text()')]
+    description: Annotated[Description | None, XmlPath(f'{PATH_R2}/Hist/text()')] = None
     settlement_date: Annotated[date, XmlPath(f'{PATH_R2}/DtMovto/text()')]
 
 
