@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Self
 from xml.etree import ElementTree as ET
 
 import pytest
@@ -122,7 +122,7 @@ class TestXmlSerializerMixin:
                 return root
 
             @classmethod
-            def from_xml_value(cls, xml_value: str | ET.Element) -> SutField:
+            def from_xml_value(cls, xml_value: str | ET.Element) -> Self:
                 raise NotImplementedError
 
         class Sut(XmlSerializerMixin):

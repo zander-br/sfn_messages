@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import Annotated
+from typing import Annotated, Self
 
 from pydantic import GetPydanticSchema
 from pydantic_core import core_schema
@@ -16,7 +16,7 @@ class CertificateIssue(EnumMixin, StrEnum):
     AC_SOLUTI = 'AC_SOLUTI'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[CertificateIssue, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.SERPRO: '1',
             cls.CERTISIGN: '2',
@@ -68,7 +68,7 @@ class TransmissionType(EnumMixin, StrEnum):
     USERMSG_ATTACHED = 'USERMSG_ATTACHED'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[TransmissionType, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.EXTERNAL_AND_USERMSG_ATTACHED: 'A',
             cls.EXTERNAL: 'E',
@@ -109,7 +109,7 @@ class ResponsibleType(EnumMixin, StrEnum):
     ISSUER = 'ISSUER'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[ResponsibleType, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.CONTINGENCY_STR: 'C',
             cls.SPB_DIRECTOR: 'D',

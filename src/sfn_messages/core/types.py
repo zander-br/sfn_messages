@@ -80,7 +80,7 @@ class AccountType(EnumMixin, StrEnum):
     SAVINGS = 'SAVINGS'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[AccountType, str] | None:
+    def _value_to_xml(cls) -> dict[Self, str] | None:
         return {
             cls.CURRENT: 'CC',
             cls.DEPOSIT: 'CD',
@@ -95,7 +95,7 @@ class PersonType(EnumMixin, StrEnum):
     INDIVIDUAL = 'INDIVIDUAL'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[PersonType, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.BUSINESS: 'J',
             cls.INDIVIDUAL: 'F',
@@ -206,7 +206,7 @@ class CustomerPurpose(EnumMixin, StrEnum):
     OTHERS = 'OTHERS'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[CustomerPurpose, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.TAX_PAYMENT: '1',
             cls.CREDIT_IN_ACCOUNT: '10',
@@ -327,7 +327,7 @@ class Priority(EnumMixin, StrEnum):
     MEDIUM = 'MEDIUM'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[Priority, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.HIGH: 'B',
             cls.HIGHEST: 'A',
@@ -357,7 +357,7 @@ class StrSettlementStatus(EnumMixin, StrEnum):
     REJECTED_NO_FUNDS = 'REJECTED_NO_FUNDS'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[StrSettlementStatus, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.CANCELED: '14',
             cls.CANCELED_CONTINGENCY: '15',
@@ -426,7 +426,7 @@ class TransferReturnReason(EnumMixin, StrEnum):
     FRAUD_RETURN = 'FRAUD_RETURN'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[TransferReturnReason, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.DESTINATION_ACCOUNT_CLOSED: '1',
             cls.INVALID_JUDICIAL_DEPOSIT_ID: '15',
@@ -726,7 +726,7 @@ class ProductCode(EnumMixin, StrEnum):
     VISA_INTL_DEBIT_PURCHASE = 'VISA_INTL_DEBIT_PURCHASE'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[ProductCode, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.AMEX_CREDIT_CARD: 'ACC',
             cls.BANESCARD_CREDIT_CARD: 'BCC',
@@ -1044,7 +1044,7 @@ class GridCode(EnumMixin, StrEnum):
     TES_RETURN_OF_COLLECTION = 'TES_RETURN_OF_COLLECTION'  # TES12
 
     @classmethod
-    def _value_to_xml(cls) -> dict[GridCode, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             # AGE
             cls.PAYMENT_ORDER_SCHEDULING: 'AGE01',
@@ -1267,7 +1267,7 @@ class TimeType(EnumMixin, StrEnum):
     STANDARD = 'STANDARD'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[TimeType, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.EVENTUAL_EXCEPTION: 'E',
             cls.STANDARD: 'P',
@@ -1279,7 +1279,7 @@ class CreditDebitType(EnumMixin, StrEnum):
     DEBIT = 'DEBIT'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[CreditDebitType, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {cls.CREDIT: 'C', cls.DEBIT: 'D'}
 
 
@@ -1419,7 +1419,7 @@ class AssetType(EnumMixin, StrEnum):
     WARRANT = 'WARRANT'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[AssetType, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.STOCKS: 'ACAO',
             cls.INVESTMENT_PORTFOLIO_ASSETS: 'ACI',
@@ -1586,7 +1586,7 @@ class LdlSettlementStatus(EnumMixin, StrEnum):
     REJECTED_NO_BALANCE_CONTINGENCY = 'REJECTED_NO_BALANCE_CONTINGENCY'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[LdlSettlementStatus, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.EFFECTIVE: '1',
             cls.CANCELLED: '14',
@@ -1622,7 +1622,7 @@ class PaymentType(EnumMixin, StrEnum):
     OTHER = 'OTHER'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[PaymentType, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.NOT_APPLICABLE: '0',
             cls.INTEREST_PAYMENT: '1',
@@ -1664,7 +1664,7 @@ class MovementType(EnumMixin, StrEnum):
     SPIN_OFF = 'SPIN_OFF'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[MovementType, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.DEPOSIT_OF_ASSET: '1',
             cls.ISIN_CODE_UPDATE: '10',
@@ -1740,7 +1740,7 @@ class InformationType(EnumMixin, StrEnum):
     RECALCULATION = 'RECALCULATION'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[InformationType, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.COMPLEMENTARY: 'C',
             cls.DEFINITIVE: 'D',
@@ -1760,7 +1760,7 @@ class ReconciliationType(EnumMixin, StrEnum):
     DIFFER = 'DIFFER'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[ReconciliationType, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {cls.CONFIRM: 'C', cls.DIFFER: 'D'}
 
 
@@ -1771,7 +1771,7 @@ class ReturnType(EnumMixin, StrEnum):
     XML_FILE_FTP = 'XML_FILE_FTP'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[ReturnType, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {
             cls.MESSAGE: 'M',
             cls.POSITIONAL_FILE_FTP: 'P',
@@ -1790,7 +1790,7 @@ class ContinuationIndicator(EnumMixin, StrEnum):
     NO = 'NO'
 
     @classmethod
-    def _value_to_xml(cls) -> dict[ContinuationIndicator, str]:
+    def _value_to_xml(cls) -> dict[Self, str]:
         return {cls.YES: 'S', cls.NO: 'N'}
 
     def to_bool(self) -> bool:
