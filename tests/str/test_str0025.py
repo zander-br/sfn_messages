@@ -59,9 +59,9 @@ def make_valid_str0025r2_params() -> dict[str, Any]:
         'debtor_branch': '0001',
         'debtor_account_type': 'CURRENT',
         'debtor_account_number': '12345678',
-        'creditor_name': 'John Doe',
-        'creditor_type': 'INDIVIDUAL',
-        'creditor_document': '69327934075',
+        'debtor_name': 'John Doe',
+        'debtor_type': 'INDIVIDUAL',
+        'debtor_document': '69327934075',
         'creditor_institution_ispb': '00038166',
         'amount': 100.00,
         'deposit_identifier': '012345678901234567',
@@ -787,9 +787,9 @@ def test_str0025r2_valid_model() -> None:
     assert str0025r2.debtor_branch == '0001'
     assert str0025r2.debtor_account_type == AccountType.CURRENT
     assert str0025r2.debtor_account_number == '12345678'
-    assert str0025r2.creditor_name == 'John Doe'
-    assert str0025r2.creditor_type == PersonType.INDIVIDUAL
-    assert str0025r2.creditor_document == '69327934075'
+    assert str0025r2.debtor_name == 'John Doe'
+    assert str0025r2.debtor_type == PersonType.INDIVIDUAL
+    assert str0025r2.debtor_document == '69327934075'
     assert str0025r2.creditor_institution_ispb == '00038166'
     assert str0025r2.amount == Decimal('100.00')
     assert str0025r2.deposit_identifier == '012345678901234567'
@@ -817,23 +817,23 @@ def test_str0025r2_missing_required_fields() -> None:
         'to_ispb',
         'from_ispb',
         'operation_number',
-        'creditor_type',
+        'debtor_type',
         'system_domain',
-        'creditor_document',
+        'debtor_document',
         'debtor_institution_ispb',
-        'creditor_name',
+        'debtor_name',
     }
 
 
 def test_str0025r2_business_rules_invalid_documents() -> None:
     params = make_valid_str0025r2_params()
-    params['creditor_type'] = 'BUSINESS'
-    params['creditor_document'] = '69327934075'
+    params['debtor_type'] = 'BUSINESS'
+    params['debtor_document'] = '69327934075'
 
     with pytest.raises(ValidationError) as exc:
         STR0025R2.model_validate(params)
     error_message = str(exc.value)
-    assert 'Invalid CNPJ for creditor_type BUSINESS' in error_message
+    assert 'Invalid CNPJ for debtor_type BUSINESS' in error_message
 
 
 def test_str0025r2_business_rules_missing_debtor_branch_for_debtor_account_type_is_not_payment() -> None:
@@ -890,9 +890,9 @@ def test_str0025r2_to_xml() -> None:
                 <AgDebtd>0001</AgDebtd>
                 <TpCtDebtd>CC</TpCtDebtd>
                 <CtDebtd>12345678</CtDebtd>
-                <NomCliCredtd>John Doe</NomCliCredtd>
-                <TpPessoaCredtd>F</TpPessoaCredtd>
-                <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
+                <NomCliDebtd>John Doe</NomCliDebtd>
+                <TpPessoaDebtd>F</TpPessoaDebtd>
+                <CNPJ_CPFCliDebtd>69327934075</CNPJ_CPFCliDebtd>
                 <ISPBIFCredtd>00038166</ISPBIFCredtd>
                 <VlrLanc>100.0</VlrLanc>
                 <IdentcDep>012345678901234567</IdentcDep>
@@ -923,9 +923,9 @@ def test_str0025r2_from_xml() -> None:
                 <AgDebtd>0001</AgDebtd>
                 <TpCtDebtd>CC</TpCtDebtd>
                 <CtDebtd>12345678</CtDebtd>
-                <NomCliCredtd>John Doe</NomCliCredtd>
-                <TpPessoaCredtd>F</TpPessoaCredtd>
-                <CNPJ_CPFCliCredtd>69327934075</CNPJ_CPFCliCredtd>
+                <NomCliDebtd>John Doe</NomCliDebtd>
+                <TpPessoaDebtd>F</TpPessoaDebtd>
+                <CNPJ_CPFCliDebtd>69327934075</CNPJ_CPFCliDebtd>
                 <ISPBIFCredtd>00038166</ISPBIFCredtd>
                 <VlrLanc>100.0</VlrLanc>
                 <IdentcDep>012345678901234567</IdentcDep>
@@ -941,9 +941,9 @@ def test_str0025r2_from_xml() -> None:
     assert str0025r2.debtor_branch == '0001'
     assert str0025r2.debtor_account_type == AccountType.CURRENT
     assert str0025r2.debtor_account_number == '12345678'
-    assert str0025r2.creditor_name == 'John Doe'
-    assert str0025r2.creditor_type == PersonType.INDIVIDUAL
-    assert str0025r2.creditor_document == '69327934075'
+    assert str0025r2.debtor_name == 'John Doe'
+    assert str0025r2.debtor_type == PersonType.INDIVIDUAL
+    assert str0025r2.debtor_document == '69327934075'
     assert str0025r2.creditor_institution_ispb == '00038166'
     assert str0025r2.amount == Decimal('100.0')
     assert str0025r2.deposit_identifier == '012345678901234567'
@@ -986,14 +986,14 @@ def test_str0025r2_from_xml_missing_required_fields() -> None:
         STR0025R2.from_xml(xml)
     missing_fields = extract_missing_fields(exc.value)
     assert missing_fields == {
-        'creditor_type',
+        'debtor_type',
         'settlement_date',
         'debtor_institution_ispb',
         'vendor_timestamp',
         'amount',
         'str_control_number',
-        'creditor_name',
-        'creditor_document',
+        'debtor_name',
+        'debtor_document',
         'deposit_identifier',
         'creditor_institution_ispb',
     }

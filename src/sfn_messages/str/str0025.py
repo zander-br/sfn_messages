@@ -71,7 +71,7 @@ class STR0025R1(BaseMessage):
 class STR0025R2(PartyValidations, BaseMessage):
     XML_NAMESPACE: ClassVar[str | None] = XML_NAMESPACE
 
-    document_parties: ClassVar[list[str]] = ['creditor']
+    document_parties: ClassVar[list[str]] = ['debtor']
     account_parties: ClassVar[list[str]] = ['debtor']
 
     message_code: Annotated[Literal['STR0025R2'], XmlPath(f'{PATH_R2}/CodMsg/text()')] = 'STR0025R2'
@@ -84,9 +84,9 @@ class STR0025R2(PartyValidations, BaseMessage):
     debtor_payment_account_number: Annotated[PaymentAccountNumber | None, XmlPath(f'{PATH_R2}/CtPgtoDebtd/text()')] = (
         None
     )
-    creditor_name: Annotated[Name, XmlPath(f'{PATH_R2}/NomCliCredtd/text()')]
-    creditor_type: Annotated[PersonType, XmlPath(f'{PATH_R2}/TpPessoaCredtd/text()')]
-    creditor_document: Annotated[Cnpj | Cpf, XmlPath(f'{PATH_R2}/CNPJ_CPFCliCredtd/text()')]
+    debtor_name: Annotated[Name, XmlPath(f'{PATH_R2}/NomCliDebtd/text()')]
+    debtor_type: Annotated[PersonType, XmlPath(f'{PATH_R2}/TpPessoaDebtd/text()')]
+    debtor_document: Annotated[Cnpj | Cpf, XmlPath(f'{PATH_R2}/CNPJ_CPFCliDebtd/text()')]
     creditor_institution_ispb: Annotated[Ispb, XmlPath(f'{PATH_R2}/ISPBIFCredtd/text()')]
     amount: Annotated[Decimal, XmlPath(f'{PATH_R2}/VlrLanc/text()')]
     deposit_identifier: Annotated[DepositIdentifier, XmlPath(f'{PATH_R2}/IdentcDep/text()')]
